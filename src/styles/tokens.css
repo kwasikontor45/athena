@@ -1,0 +1,14 @@
+:root {
+  --athena-bg-base: #0a0e1a;
+  --athena-bg-surface: #0d1221;
+  --athena-bg-panel: #0d1525;
+  --athena-gold: #c9a84c;
+  --athena-gold-dim: rgba(201, 168, 76, 0.15);
+  --athena-gold-border: rgba(201, 168, 76, 0.25);
+  --athena-text-primary: rgba(255, 255, 255, 0.85);
+  --athena-text-secondary: rgba(255, 255, 255, 0.45);
+  --athena-green: #1d9e75;
+  --athena-radius-sm: 6px;
+  --athena-radius-md: 10px;
+  --athena-radius-lg: 12px;
+}
