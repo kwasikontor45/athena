@@ -230,6 +230,14 @@ export const athenaResponses = {
     ]
   },
 
+  'playground': {
+    'direct-question': [
+      "Great question — let's think through that together.",
+      "You're exploring exactly the right things. Here's what I know:",
+      "Perfect instinct to ask. Here's the answer:"
+    ]
+  },
+
   'school-portal': {
     'logged-in': [
       "Perfect! You're in. The school portal is your academic home base.",
