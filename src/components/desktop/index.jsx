@@ -13,7 +13,7 @@ const APP_ICONS = [
   { id: 'playground',    emoji: '🎮',  label: 'Playground'    },
 ]
 
-export default function Desktop({ openApp, onOpenApp }) {
+export default function Desktop({ openApp, onOpenApp, currentEvent, currentLesson, onEventHandled }) {
   return (
     <div className="desktop">
       <div className="desktop__grid-area">
@@ -32,7 +32,11 @@ export default function Desktop({ openApp, onOpenApp }) {
       </div>
 
       <aside className="desktop__sidebar">
-        <AthenaAssistant />
+        <AthenaAssistant
+          currentEvent={currentEvent}
+          currentLesson={currentLesson}
+          onEventHandled={onEventHandled}
+        />
         <LessonPanel />
       </aside>
     </div>

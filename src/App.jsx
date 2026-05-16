@@ -16,16 +16,32 @@ const SIM_MAP = {
   'school-portal': SchoolPortalSim,
 }
 
+const LESSON_MAP = {
+  'my-files':      'file-explorer',
+  email:           'email',
+  browser:         'browser',
+  documents:       'doc-editor',
+  'school-portal': 'school-portal',
+}
+
 export default function App() {
   const [currentView, setCurrentView] = useState('desktop')
   const [openApp, setOpenApp] = useState(null)
+  const [currentEvent, setCurrentEvent] = useState(null)
 
   const ActiveSim = openApp ? (SIM_MAP[openApp] ?? null) : null
+  const currentLesson = LESSON_MAP[openApp] ?? 'desktop-navigation'
 
   return (
     <div className="app">
       <Taskbar currentView={currentView} onNavigate={setCurrentView} />
-      <Desktop openApp={openApp} onOpenApp={setOpenApp} />
+      <Desktop
+        openApp={openApp}
+        onOpenApp={setOpenApp}
+        currentEvent={currentEvent}
+        currentLesson={currentLesson}
+        onEventHandled={() => setCurrentEvent(null)}
+      />
 
       {ActiveSim && (
         <div className="app__sim-overlay" onClick={() => setOpenApp(null)}>
@@ -37,7 +53,10 @@ export default function App() {
             >
               ✕
             </button>
-            <ActiveSim />
+            <ActiveSim
+              onClose={() => setOpenApp(null)}
+              onAthenaEvent={setCurrentEvent}
+            />
           </div>
         </div>
       )}

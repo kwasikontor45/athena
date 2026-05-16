@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import useAthena from '../../../utils/use-athena'
 import './file-explorer-sim.css'
 
 const INITIAL_FS = {
@@ -101,7 +100,6 @@ export default function FileExplorerSim({ onClose, onAthenaEvent }) {
   const [completed, setCompleted] = useState(new Set())
   const dragItemId = useRef(null)
   const renameInputRef = useRef(null)
-  const { ask } = useAthena()
 
   const currentFolder = findNode(fs, currentId) ?? fs
   const crumbs = buildCrumbs(fs, currentId) ?? [fs]
@@ -119,9 +117,8 @@ export default function FileExplorerSim({ onClose, onAthenaEvent }) {
     return () => window.removeEventListener('click', close)
   }, [])
 
-  const fireEvent = useCallback(async (event) => {
-    const msg = await ask({ lesson: 'file-explorer', event })
-    onAthenaEvent?.(msg)
+  const fireEvent = useCallback((event, context = '') => {
+    onAthenaEvent?.({ lesson: 'file-explorer', event, context })
 
     setCompleted(prev => {
       const next = new Set(prev)
@@ -129,11 +126,11 @@ export default function FileExplorerSim({ onClose, onAthenaEvent }) {
       const all = ['opened-folder', 'created-folder', 'renamed-file', 'moved-file', 'deleted-file']
       if (all.every(e => next.has(e)) && !prev.has('lesson-complete')) {
         next.add('lesson-complete')
-        ask({ lesson: 'file-explorer', event: 'lesson-complete' }).then(m => onAthenaEvent?.(m))
+        setTimeout(() => onAthenaEvent?.({ lesson: 'file-explorer', event: 'lesson-complete', context: '' }), 600)
       }
       return next
     })
-  }, [ask, onAthenaEvent])
+  }, [onAthenaEvent])
 
   function navigateTo(id) {
     const node = findNode(fs, id)
