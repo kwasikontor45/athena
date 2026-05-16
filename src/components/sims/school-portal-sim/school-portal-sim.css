@@ -60,6 +60,19 @@
   white-space: nowrap;
 }
 
+.sp__topbar-link {
+  background: none;
+  border: none;
+  color: var(--athena-text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--athena-radius-sm);
+  transition: color .15s, background .15s;
+}
+.sp__topbar-link:hover { color: var(--athena-text-primary); background: var(--athena-gold-dim); }
+
 .sp__topbar-user {
   margin-left: auto;
   font-size: 12px;
@@ -386,6 +399,32 @@
 }
 .sp__submit-btn:hover:not(:disabled) { background: rgba(201,168,76,.25); }
 .sp__submit-btn:disabled { opacity: .4; cursor: default; }
+
+/* ── Grades ── */
+.sp__grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.sp__grades-table th {
+  text-align: left;
+  font-size: 11px;
+  color: var(--athena-text-secondary);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 0 12px 10px 0;
+  border-bottom: 1px solid var(--athena-gold-border);
+}
+.sp__grades-table td {
+  padding: 12px 12px 12px 0;
+  color: var(--athena-text-primary);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sp__grade-score { font-weight: 600; color: var(--athena-gold); }
+.sp__grade-status { color: var(--athena-green); font-weight: 500; }
+.sp__grade-status--pending { color: var(--athena-text-secondary); font-weight: 400; }
+.sp__grade-pending td { opacity: .6; }
 
 /* ── Success ── */
 .sp__success {

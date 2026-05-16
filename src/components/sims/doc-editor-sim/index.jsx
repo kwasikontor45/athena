@@ -68,6 +68,19 @@ export default function DocEditorSim({ onClose, onAthenaEvent }) {
     fire('saved-doc')
   }
 
+  function handleExport() {
+    const text = editorRef.current?.innerText ?? ''
+    const name = (filename.trim() || 'untitled-document') + '.txt'
+    const blob = new Blob([text], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = name
+    a.click()
+    URL.revokeObjectURL(url)
+    fire('exported-doc')
+  }
+
   function handleFilenameBlur() {
     if (filename.trim()) fire('named-doc')
   }
@@ -98,6 +111,7 @@ export default function DocEditorSim({ onClose, onAthenaEvent }) {
         <button className={`de__fmt-btn${isUnder ? ' de__fmt-btn--active' : ''}`} onClick={() => format('underline')}><u>U</u></button>
         <div className="de__divider" />
         <button className="de__save-btn" onClick={handleSave}>{saveLabel}</button>
+        <button className="de__save-btn" onClick={handleExport}>Export</button>
       </div>
 
       <div className="de__page-wrap">

@@ -227,6 +227,75 @@
 .bsp__result-title:hover { text-decoration: underline; }
 .bsp__result-url { font-size: 11px; color: var(--athena-text-secondary); }
 
+/* Sketchy page */
+.bsp--sketchy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100%;
+  background: #1a0a00;
+  font-family: 'Arial', sans-serif;
+}
+.bsp__sketchy-banner {
+  width: 100%;
+  background: #ff2200;
+  color: #ffff00;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+  padding: 12px;
+  letter-spacing: 1px;
+  animation: sketchy-flash 0.6s step-end infinite;
+}
+@keyframes sketchy-flash {
+  0%, 100% { background: #ff2200; }
+  50% { background: #cc0000; }
+}
+.bsp__sketchy-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 40px;
+  text-align: center;
+}
+.bsp__sketchy-claim {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffff00;
+  margin: 0;
+  text-shadow: 2px 2px 0 #ff0000;
+}
+.bsp__sketchy-sub {
+  font-size: 15px;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.6;
+}
+.bsp__sketchy-btn {
+  background: linear-gradient(#ffdd00, #ff8800);
+  border: 3px solid #ff0000;
+  border-radius: 4px;
+  color: #000;
+  font-size: 16px;
+  font-weight: 900;
+  font-family: inherit;
+  padding: 14px 28px;
+  cursor: pointer;
+  animation: sketchy-pulse 0.8s ease-in-out infinite;
+}
+@keyframes sketchy-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.bsp__sketchy-fine {
+  font-size: 9px;
+  color: rgba(255,255,255,0.3);
+  max-width: 300px;
+  line-height: 1.4;
+  margin: 0;
+}
+
 /* School page */
 .bsp--school { padding: 24px 32px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
 .bsp__school-logo { font-size: 18px; font-weight: 700; color: var(--athena-gold); }

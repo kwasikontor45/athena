@@ -12,6 +12,7 @@ function pageForUrl(url) {
   if (u.includes('google')) return 'google'
   if (u.includes('school') || u.includes('portal') || u.includes('kontor.edu')) return 'school'
   if (u.includes('library')) return 'library'
+  if (u.includes('prizez') || u.includes('free-prize') || u.includes('claim-now') || u.includes('winner')) return 'sketchy'
   if (u === '') return 'blank'
   return 'notfound'
 }
@@ -80,6 +81,21 @@ function NotFound({ url, onNavigate }) {
         <button className="bsp__notfound-link" onClick={() => onNavigate('google.com')}>google.com</button>
         <button className="bsp__notfound-link" onClick={() => onNavigate('school.edu')}>school.edu</button>
         <button className="bsp__notfound-link" onClick={() => onNavigate('library.edu')}>library.edu</button>
+        <button className="bsp__notfound-link" onClick={() => onNavigate('free-prizez.net')}>free-prizez.net</button>
+      </div>
+    </div>
+  )
+}
+
+function SketchyPage({ onSpotted }) {
+  return (
+    <div className="bsp bsp--sketchy">
+      <div className="bsp__sketchy-banner">⚠️ CONGRATULATIONS WINNER ⚠️</div>
+      <div className="bsp__sketchy-body">
+        <p className="bsp__sketchy-claim">YOU HAVE BEEN SELECTED!!</p>
+        <p className="bsp__sketchy-sub">Claim your FREE prize before it expires!!<br />This offer ends in <strong>00:04:59</strong> — ACT NOW!!!</p>
+        <button className="bsp__sketchy-btn" onClick={onSpotted}>👉 CLICK HERE TO CLAIM YOUR PRIZE 👈</button>
+        <p className="bsp__sketchy-fine">By clicking you agree to our terms. Prize shippping and handeling fee of $49.99 applys. Limited time offfer. Not responsible for unclaimed rewards.</p>
       </div>
     </div>
   )
@@ -167,6 +183,7 @@ export default function BrowserSim({ onClose, onAthenaEvent }) {
     if (currentTab.page === 'search') return <SearchResults query={currentTab.searchQuery ?? ''} />
     if (currentTab.page === 'school') return <SchoolPage />
     if (currentTab.page === 'library') return <LibraryPage />
+    if (currentTab.page === 'sketchy') return <SketchyPage onSpotted={() => fire('spotted-sketchy-site')} />
     if (currentTab.page === 'blank') return <BlankPage />
     return <NotFound url={currentTab.url} onNavigate={navigate} />
   }

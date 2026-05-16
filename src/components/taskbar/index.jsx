@@ -13,7 +13,7 @@ function formatTime(date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
-export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP, weekCompleted, weekTotal }) {
+export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP, weekCompleted, weekTotal, completedLessons, earnedBadges }) {
   const [time, setTime] = useState(formatTime(new Date()))
 
   useEffect(() => {
@@ -47,6 +47,8 @@ export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP,
           totalXP={totalXP}
           weekCompleted={weekCompleted}
           weekTotal={weekTotal}
+          completedLessons={completedLessons}
+          earnedBadges={earnedBadges}
         />
       </div>
     </header>

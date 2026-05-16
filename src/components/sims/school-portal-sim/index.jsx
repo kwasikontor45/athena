@@ -104,6 +104,41 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
       )
     }
 
+    if (screen === 'grades') {
+      return (
+        <div className="sp__assignment">
+          <button className="sp__back-btn" onClick={() => setScreen('dashboard')}>← Back to Dashboard</button>
+          <div className="sp__assignment-card">
+            <h2 className="sp__assignment-title">My Grades</h2>
+            <table className="sp__grades-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Assignment</th>
+                  <th>Grade</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>BUS 101</td>
+                  <td>Week 1 Reflection</td>
+                  <td className="sp__grade-score">10 / 10</td>
+                  <td className="sp__grade-status">✓ Submitted</td>
+                </tr>
+                <tr className="sp__grade-pending">
+                  <td>BUS 101</td>
+                  <td>Week 2 Case Study</td>
+                  <td className="sp__grade-score">—</td>
+                  <td className="sp__grade-status sp__grade-status--pending">Not yet due</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )
+    }
+
     if (screen === 'dashboard') {
       return (
         <div className="sp__dashboard">
@@ -232,6 +267,8 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
       {screen !== 'login' && (
         <div className="sp__topbar">
           <span className="sp__logo">🎓 Kontor CC</span>
+          <button className="sp__topbar-link" onClick={() => setScreen('dashboard')}>Dashboard</button>
+          <button className="sp__topbar-link" onClick={() => setScreen('grades')}>Grades</button>
           <span className="sp__topbar-user">{displayName}</span>
           <button className="sp__logout-btn" onClick={() => { setScreen('login'); setUsername(''); setPassword('') }}>
             Sign Out

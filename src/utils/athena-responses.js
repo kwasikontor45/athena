@@ -170,6 +170,11 @@ export const athenaResponses = {
       "Excellent! Searching is one of the most powerful things you can do online.",
       "Perfect! Type what you're looking for and the internet brings it to you."
     ],
+    'spotted-sketchy-site': [
+      "Good instinct to pause here — that site has all the warning signs. Urgent language and big promises are red flags.",
+      "Excellent! Bad spelling, pressure tactics, 'claim your prize' — those are the exact clues to look for.",
+      "Perfect catch. Real sites don't pressure you like that. Trust that hesitation — it'll protect you online."
+    ],
     'lesson-complete': [
       "Browser — complete! You can navigate, search, and manage tabs like a natural.",
       "Excellent work. The browser is your window to everything online — and now you own it.",
@@ -197,6 +202,11 @@ export const athenaResponses = {
       "That's it — a good name makes your document easy to find later.",
       "Excellent! Named documents stay organized. You're setting yourself up for success.",
       "Perfect! Your document has an identity now. Well done."
+    ],
+    'exported-doc': [
+      "You exported it! Now your document can live anywhere — email it, print it, share it.",
+      "Excellent! Exporting turns your work into a file you can take with you.",
+      "Perfect! That's how you get your document out of the editor and into the world."
     ],
     'lesson-complete': [
       "Document Editor — complete! You can write, format, and save. That's the whole workflow.",

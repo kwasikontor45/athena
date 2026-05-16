@@ -11,7 +11,7 @@
 
 Athena is an interactive, browser-based desktop environment built to teach real computer skills — not just click-through tutorials. You practice inside simulated apps that behave like the real thing, guided by an AI assistant every step of the way.
 
-No downloads. No accounts needed to explore. Just open it and start learning.
+No downloads. No account needed. Just open it and start learning.
 
 ---
 
@@ -52,7 +52,11 @@ cd athena
 # 2. Install dependencies
 npm install
 
-# 3. Start the dev server
+# 3. Add your Anthropic API key
+echo "VITE_ANTHROPIC_API_KEY=sk-ant-..." > .env.local
+# Athena works without it — she'll use built-in responses offline
+
+# 4. Start the dev server
 npm run dev
 ```
 
@@ -66,7 +70,7 @@ Open your browser at `http://localhost:5173` — the sandbox loads instantly.
 src/
 ├── components/
 │   ├── desktop/            # The root OS-like shell
-│   ├── taskbar/            # Bottom navigation bar
+│   ├── taskbar/            # Top navigation bar
 │   ├── athena-assistant/   # AI guide sidebar
 │   ├── lesson-panel/       # Current lesson content
 │   ├── progress-tracker/   # Skill completion tracker
@@ -98,9 +102,9 @@ The visual identity lives in `src/styles/tokens.css`. Every color and radius is 
 
 ## For Course Instructors
 
-Athena is module-first by design. Each sim in `src/components/sims/` is fully independent — you can assign individual modules, track progress per-student via `progress-tracker`, and extend any sim without touching the others.
+Athena is module-first by design. Each sim in `src/components/sims/` is fully independent — you can assign individual modules, track progress via the built-in progress tracker, and extend any sim without touching the others.
 
-Want to add a module? Duplicate any sim folder and wire it into `desktop/index.jsx`. That's it.
+Want to add a module? Duplicate any sim folder, add one entry to `SIM_MAP` in `src/App.jsx`. That's it.
 
 ---
 

@@ -125,6 +125,7 @@ export default function useProgress() {
 
   return {
     earnedBadges: state.earnedBadges,
+    completedLessons: state.completedLessons,
     totalXP: state.totalXP,
     currentWeek,
     weekTotal,

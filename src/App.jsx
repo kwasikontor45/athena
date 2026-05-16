@@ -6,6 +6,8 @@ import EmailSim from './components/sims/email-sim'
 import BrowserSim from './components/sims/browser-sim'
 import DocEditorSim from './components/sims/doc-editor-sim'
 import SchoolPortalSim from './components/sims/school-portal-sim'
+import TypingSim from './components/sims/typing-sim'
+import PlaygroundSim from './components/sims/playground-sim'
 import useProgress from './utils/use-progress'
 import './app.css'
 
@@ -15,6 +17,8 @@ const SIM_MAP = {
   browser:         BrowserSim,
   documents:       DocEditorSim,
   'school-portal': SchoolPortalSim,
+  typing:          TypingSim,
+  playground:      PlaygroundSim,
 }
 
 const LESSON_MAP = {
@@ -39,7 +43,7 @@ export default function App() {
   const [currentEvent, setCurrentEvent] = useState(null)
 
   const {
-    earnedBadges, totalXP, currentWeek, weekTotal, weekCompleted,
+    earnedBadges, completedLessons, totalXP, currentWeek, weekTotal, weekCompleted,
     recordEvent, getLessonStatus, getEventProgress,
   } = useProgress()
 
@@ -65,6 +69,8 @@ export default function App() {
         totalXP={totalXP}
         weekCompleted={weekCompleted}
         weekTotal={weekTotal}
+        completedLessons={completedLessons}
+        earnedBadges={earnedBadges}
       />
       <Desktop
         openApp={openApp}
