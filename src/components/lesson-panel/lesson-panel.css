@@ -2,8 +2,8 @@
   border-top: 1px solid var(--athena-gold-border);
   padding: 10px 0 12px;
   overflow-y: auto;
-  flex-shrink: 0;
-  max-height: 260px;
+  flex: 1;
+  min-height: 0;
 }
 
 .lp__header {

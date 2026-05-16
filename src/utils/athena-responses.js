@@ -165,6 +165,11 @@ export const athenaResponses = {
   },
 
   'browser': {
+    'browser-opened': [
+      "Welcome to the web browser! Try clicking a bookmark at the top — School, Library, or Google. Or type any web address in the bar and press Enter.",
+      "This is your browser — your window to the internet. Click a bookmark to visit a site, or type an address like 'google.com' in the bar up top and press Enter.",
+      "Let's explore the web! Hit one of the bookmarks to jump straight to a site, or type a web address yourself. There's also a + button to open a new tab when you're ready."
+    ],
     'typed-url': [
       "Perfect! Typing a web address takes you exactly where you want to go.",
       "Excellent! The address bar is your gateway to the whole internet.",

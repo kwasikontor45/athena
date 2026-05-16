@@ -1,5 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './browser-sim.css'
+
+const BOOKMARKS = [
+  { label: '🎓 School',   url: 'kontor.edu'   },
+  { label: '📚 Library',  url: 'library.edu'  },
+  { label: '🔍 Google',   url: 'google.com'   },
+]
 
 const MAX_TABS = 4
 
@@ -113,6 +119,10 @@ export default function BrowserSim({ onClose, onAthenaEvent }) {
   const [fired, setFired] = useState(new Set())
   const urlRef = useRef(null)
 
+  useEffect(() => {
+    setTimeout(() => onAthenaEvent?.({ lesson: 'browser', event: 'browser-opened' }), 800)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const currentTab = tabs.find(t => t.id === activeTab) ?? tabs[0]
 
   function fire(event) {
@@ -211,6 +221,12 @@ export default function BrowserSim({ onClose, onAthenaEvent }) {
             spellCheck={false}
           />
         </div>
+      </div>
+
+      <div className="bs__bookmarks">
+        {BOOKMARKS.map(b => (
+          <button key={b.url} className="bs__bookmark" onClick={() => navigate(b.url)}>{b.label}</button>
+        ))}
       </div>
 
       <div className="bs__tabbar">

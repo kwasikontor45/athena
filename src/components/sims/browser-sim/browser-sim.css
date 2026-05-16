@@ -69,6 +69,34 @@
 }
 .bs__url:focus { border-color: var(--athena-gold); }
 
+/* Bookmarks bar */
+.bs__bookmarks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--athena-bg-surface);
+  border-bottom: 1px solid var(--athena-gold-border);
+  flex-shrink: 0;
+}
+
+.bs__bookmark {
+  background: none;
+  border: none;
+  color: var(--athena-text-secondary);
+  font-size: 11px;
+  font-family: inherit;
+  padding: 3px 10px;
+  border-radius: var(--athena-radius-sm);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.bs__bookmark:hover {
+  background: var(--athena-gold-dim);
+  color: var(--athena-text-primary);
+}
+
 /* Tab bar */
 .bs__tabbar {
   display: flex;
