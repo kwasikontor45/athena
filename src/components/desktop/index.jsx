@@ -34,7 +34,7 @@ export default function Desktop({
   earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
   if (currentView === 'progress') {
-    const completedIds = completedLessons ?? []
+    const completedIds = Array.from(completedLessons ?? [])
     const earned = earnedBadges ?? []
     const weeks = [1, 2, 3, 4]
 
