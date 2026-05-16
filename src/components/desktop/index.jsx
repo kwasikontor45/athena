@@ -35,44 +35,54 @@ export default function Desktop({
 }) {
   if (currentView === 'progress') {
     const completedIds = completedLessons ?? []
+    const earned = earnedBadges ?? []
+    const weeks = [1, 2, 3, 4]
+
     return (
       <div className="desktop">
         <div className="desktop__full-view">
           <div className="desktop__progress-screen">
             <button className="desktop__progress-back" onClick={onBack}>&#8592; Back to Desktop</button>
+
             <div className="desktop__progress-header">
               <span className="desktop__progress-owl">🦉</span>
               <div>
-                <div className="desktop__progress-xp">{totalXP} <span>XP</span></div>
-                <div className="desktop__progress-week">Week {currentWeek} of 4</div>
+                <div className="desktop__progress-xp">{totalXP} <span>XP earned</span></div>
+                <div className="desktop__progress-week">Week {currentWeek} of 4 — {completedIds.length} of {LESSONS.length} lessons complete</div>
               </div>
             </div>
 
-            <div className="desktop__progress-lessons">
-              {LESSONS.map(lesson => {
-                const done = completedIds.includes(lesson.id)
+            <div className="desktop__progress-weeks">
+              {weeks.map(w => {
+                const weekLessons = LESSONS.filter(l => l.week === w)
+                const doneCount   = weekLessons.filter(l => completedIds.includes(l.id)).length
+                const pct         = Math.round((doneCount / weekLessons.length) * 100)
+                const isActive    = w === currentWeek
+                const isLocked    = w > currentWeek
                 return (
-                  <div key={lesson.id} className={`desktop__progress-row${done ? ' desktop__progress-row--done' : ''}`}>
-                    <span className="desktop__progress-icon">{lesson.icon}</span>
-                    <span className="desktop__progress-name">{lesson.title}</span>
-                    <span className="desktop__progress-check">{done ? '✓' : '○'}</span>
+                  <div key={w} className={`desktop__progress-week-row${isActive ? ' desktop__progress-week-row--active' : ''}${isLocked ? ' desktop__progress-week-row--locked' : ''}`}>
+                    <div className="desktop__progress-week-meta">
+                      <span className="desktop__progress-week-label">Week {w}</span>
+                      <span className="desktop__progress-week-count">{isLocked ? 'locked' : `${doneCount} / ${weekLessons.length}`}</span>
+                    </div>
+                    <div className="desktop__progress-week-bar">
+                      <div className="desktop__progress-week-fill" style={{ width: `${pct}%` }} />
+                    </div>
                   </div>
                 )
               })}
             </div>
 
-            {earnedBadges?.length > 0 && (
-              <div className="desktop__progress-badges">
-                <div className="desktop__progress-badge-label">badges earned</div>
-                <div className="desktop__progress-badge-row">
-                  {earnedBadges.map(b => (
-                    <span key={b} className="desktop__progress-badge">
-                      {BADGE_LABELS[b] ?? b}
-                    </span>
-                  ))}
-                </div>
+            <div className="desktop__progress-badges">
+              <div className="desktop__progress-badge-label">badges</div>
+              <div className="desktop__progress-badge-row">
+                {Object.entries(BADGE_LABELS).map(([id, label]) => (
+                  <span key={id} className={`desktop__progress-badge${earned.includes(id) ? ' desktop__progress-badge--earned' : ' desktop__progress-badge--locked'}`}>
+                    {label}
+                  </span>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
