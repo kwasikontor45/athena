@@ -1,4 +1,32 @@
 export const athenaResponses = {
+  'circadian': {
+    'circadian-dawn': [
+      "Good morning! A fresh start — the best kind. Pick a lesson on the left whenever you're ready.",
+      "Morning energy is real. Let's put it to work — choose something from the lesson panel and we'll get moving.",
+      "Rise and shine! You're here early, and that says a lot. Let's learn something new today.",
+    ],
+    'circadian-day': [
+      "Afternoon session. Steady focus, steady progress — pick a lesson and let's go.",
+      "Good afternoon! Midday is when it all comes together. What are we working on?",
+      "You're in the thick of the day — good time to sharpen a skill. I'm right here.",
+    ],
+    'circadian-goldenHour': [
+      "Evening study takes real commitment. Let's make it worth it — what are we working on tonight?",
+      "Good evening! The day's winding down but you're here, and that matters. Let's learn something.",
+      "Evening sessions stick. You'll remember what we cover tonight. Ready when you are.",
+    ],
+    'circadian-night': [
+      "Late night. That kind of dedication deserves focus — let's make it a short, sharp session.",
+      "Still going at this hour? I see you. Let's keep it focused and end on a win.",
+      "Night study is quiet and deep. Take your time — I'm here either way.",
+    ],
+    'circadian-reentry': [
+      "Welcome back! It's been a while — no pressure. Just pick up wherever feels right.",
+      "You're back. Whether it's been hours or days, what matters is you're here now. Let's go.",
+      "Good to see you again. A break can be a good thing — ready to jump back in?",
+    ],
+  },
+
   'mouse-basics': {
     'first-click': [
       "Perfect! Your first click — that's how it all starts.",

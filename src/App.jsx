@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import Taskbar from './components/taskbar'
 import Desktop from './components/desktop'
 import FileExplorerSim from './components/sims/file-explorer-sim'
@@ -12,6 +12,7 @@ import VideoCallSim   from './components/sims/video-call-sim'
 import ShortcutsSim   from './components/sims/shortcuts-sim'
 import PasswordSim    from './components/sims/password-sim'
 import useProgress from './utils/use-progress'
+import { useCircadian } from './utils/use-circadian'
 import './app.css'
 
 function SimWindow({ children, simKey }) {
@@ -94,6 +95,24 @@ export default function App() {
     earnedBadges, completedLessons, totalXP, currentWeek, weekTotal, weekCompleted,
     recordEvent, getLessonStatus, getEventProgress,
   } = useProgress()
+
+  const { phase, palette, isReEntry } = useCircadian()
+
+  useEffect(() => {
+    const r = document.documentElement
+    r.style.setProperty('--athena-gold',        palette.gold)
+    r.style.setProperty('--athena-gold-dim',    `rgba(${palette.goldRgb}, 0.15)`)
+    r.style.setProperty('--athena-gold-border', `rgba(${palette.goldRgb}, 0.25)`)
+    r.style.setProperty('--athena-bg-base',     palette.bgBase)
+    r.style.setProperty('--athena-bg-surface',  palette.bgSurface)
+    r.style.setProperty('--athena-bg-panel',    palette.bgPanel)
+  }, [palette])
+
+  useEffect(() => {
+    const event = isReEntry ? 'circadian-reentry' : `circadian-${phase}`
+    const id = setTimeout(() => setCurrentEvent({ lesson: 'circadian', event }), 1400)
+    return () => clearTimeout(id)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const ActiveSim = openApp ? (SIM_MAP[openApp] ?? null) : null
   const currentLesson = LESSON_MAP[openApp] ?? 'desktop-navigation'
