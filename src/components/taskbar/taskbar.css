@@ -1,0 +1,87 @@
+.taskbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: var(--athena-bg-surface);
+  border-bottom: 1px solid var(--athena-gold-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+}
+
+.taskbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--athena-gold);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  min-width: 130px;
+  user-select: none;
+}
+
+.taskbar__brand-owl {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.taskbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.taskbar__nav-btn {
+  background: none;
+  border: none;
+  color: var(--athena-text-secondary);
+  font-size: 13px;
+  font-family: inherit;
+  padding: 6px 14px;
+  border-radius: var(--athena-radius-sm);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.taskbar__nav-btn:hover {
+  color: var(--athena-text-primary);
+}
+
+.taskbar__nav-btn--active {
+  color: var(--athena-gold);
+  background: var(--athena-gold-dim);
+}
+
+.taskbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 130px;
+  justify-content: flex-end;
+}
+
+.taskbar__time {
+  color: var(--athena-text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.taskbar__week-bar {
+  width: 56px;
+  height: 3px;
+  background: var(--athena-gold-dim);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.taskbar__week-fill {
+  height: 100%;
+  background: var(--athena-gold);
+  border-radius: 2px;
+  transition: width 60s linear;
+}

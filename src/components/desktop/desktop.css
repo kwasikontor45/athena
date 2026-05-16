@@ -1,0 +1,74 @@
+.desktop {
+  height: calc(100vh - 44px);
+  margin-top: 44px;
+  background: var(--athena-bg-base);
+  display: flex;
+  overflow: hidden;
+}
+
+.desktop__grid-area {
+  flex: 1;
+  padding: 40px 48px;
+  overflow-y: auto;
+}
+
+.desktop__icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  grid-template-rows: repeat(2, auto);
+  gap: 12px;
+}
+
+.desktop__icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px 12px;
+  border-radius: var(--athena-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: none;
+  color: var(--athena-text-primary);
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.desktop__icon:hover {
+  border-color: var(--athena-gold-border);
+  background: var(--athena-gold-dim);
+}
+
+.desktop__icon--active {
+  border-color: var(--athena-gold);
+  background: var(--athena-gold-dim);
+}
+
+.desktop__icon-face {
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--athena-radius-sm);
+  background: var(--athena-bg-surface);
+}
+
+.desktop__icon-label {
+  font-size: 11px;
+  color: var(--athena-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.desktop__sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--athena-gold-border);
+  background: var(--athena-bg-panel);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
