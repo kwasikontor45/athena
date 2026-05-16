@@ -18,8 +18,7 @@ const APP_ICONS = [
   { id: 'documents',     emoji: '📝',  label: 'Documents'     },
   { id: 'school-portal', emoji: '🏫',  label: 'School Portal' },
   { id: 'typing',        emoji: '⌨️',  label: 'Typing'        },
-  { id: 'lessons',       emoji: '📚',  label: 'Lessons'       },
-  { id: 'playground',    emoji: '🎮',  label: 'Playground'    },
+  { id: 'playground',   emoji: '🎮',  label: 'Playground'    },
   { id: 'video-call',    emoji: '📹',  label: 'Video Call'    },
   { id: 'shortcuts',     emoji: '⌨️',  label: 'Shortcuts'     },
   { id: 'password',      emoji: '🔐',  label: 'Passwords'     },
@@ -28,32 +27,19 @@ const APP_ICONS = [
 ]
 
 export default function Desktop({
-  currentView,
+  currentView, onBack,
   openApp, onOpenApp,
   currentEvent, currentLesson, onEventHandled,
   getLessonStatus, getEventProgress, onSelectLesson,
   earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
-  if (currentView === 'lessons') {
-    return (
-      <div className="desktop">
-        <div className="desktop__full-view">
-          <LessonPanel
-            getLessonStatus={getLessonStatus}
-            getEventProgress={getEventProgress}
-            onSelectLesson={onSelectLesson}
-          />
-        </div>
-      </div>
-    )
-  }
-
   if (currentView === 'progress') {
     const completedIds = completedLessons ?? []
     return (
       <div className="desktop">
         <div className="desktop__full-view">
           <div className="desktop__progress-screen">
+            <button className="desktop__progress-back" onClick={onBack}>&#8592; Back to Desktop</button>
             <div className="desktop__progress-header">
               <span className="desktop__progress-owl">🦉</span>
               <div>

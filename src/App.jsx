@@ -118,9 +118,7 @@ export default function App() {
   }, [])
 
   const handleOpenApp = useCallback((id) => {
-    if (id === 'lessons') {
-      setCurrentView('lessons')
-    } else if (id === 'kontor-studio') {
+    if (id === 'kontor-studio') {
       window.open('https://kontor.studio', '_blank', 'noopener,noreferrer')
     } else if (id === 'dev-site') {
       window.open('https://kwasikontor.dev', '_blank', 'noopener,noreferrer')
@@ -144,6 +142,7 @@ export default function App() {
       />
       <Desktop
         currentView={currentView}
+        onBack={() => setCurrentView('desktop')}
         openApp={openApp}
         onOpenApp={handleOpenApp}
         currentEvent={currentEvent}

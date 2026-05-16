@@ -4,7 +4,6 @@ import './taskbar.css'
 
 const NAV_ITEMS = [
   { id: 'desktop',  label: 'Desktop'  },
-  { id: 'lessons',  label: 'Lessons'  },
   { id: 'practice', label: 'Practice' },
   { id: 'progress', label: 'Progress' },
 ]
