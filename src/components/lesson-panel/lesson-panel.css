@@ -1,0 +1,169 @@
+.lp {
+  border-top: 1px solid var(--athena-gold-border);
+  padding: 10px 0 12px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  max-height: 260px;
+}
+
+.lp__header {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--athena-text-secondary);
+  padding: 0 14px 6px;
+  margin: 0;
+}
+
+/* Week group */
+.lp__week {
+  margin-bottom: 4px;
+}
+
+.lp__week-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 2px;
+}
+
+.lp__week-label {
+  font-size: 10px;
+  color: var(--athena-text-secondary);
+  opacity: 0.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lp__week-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--athena-gold-border);
+}
+
+/* Lesson row */
+.lp__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 6px 14px;
+  cursor: default;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.lp__row--active {
+  cursor: pointer;
+}
+
+.lp__row--active:hover {
+  background: var(--athena-gold-dim);
+}
+
+.lp__row:disabled {
+  cursor: default;
+}
+
+/* Status dot */
+.lp__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.lp__dot--complete {
+  background: var(--athena-gold);
+}
+
+.lp__dot--active {
+  background: var(--athena-green);
+  box-shadow: 0 0 0 0 rgba(29, 158, 117, 0.6);
+  animation: lp-pulse 2s ease-out infinite;
+}
+
+.lp__dot--locked {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes lp-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(29, 158, 117, 0.6); }
+  70%  { box-shadow: 0 0 0 6px rgba(29, 158, 117, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(29, 158, 117, 0); }
+}
+
+/* Icon */
+.lp__icon {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Info (title + bar) */
+.lp__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.lp__title {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lp__row--complete .lp__title {
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: line-through;
+}
+
+.lp__row--active .lp__title {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.lp__row--locked .lp__title {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Progress bar */
+.lp__bar-track {
+  display: block;
+  height: 3px;
+  background: var(--athena-bg-base);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.lp__bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--athena-green);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* Check / lock badge */
+.lp__badge {
+  flex-shrink: 0;
+  font-size: 12px;
+  width: 16px;
+  text-align: center;
+}
+
+.lp__check {
+  color: var(--athena-gold);
+}
+
+.lp__lock {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+}

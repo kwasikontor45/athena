@@ -70,18 +70,3 @@
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
-
-.taskbar__week-bar {
-  width: 56px;
-  height: 3px;
-  background: var(--athena-gold-dim);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.taskbar__week-fill {
-  height: 100%;
-  background: var(--athena-gold);
-  border-radius: 2px;
-  transition: width 60s linear;
-}

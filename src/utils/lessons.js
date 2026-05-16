@@ -1,0 +1,68 @@
+export const LESSONS = [
+  {
+    id: 'mouse-basics',
+    title: 'the mouse & clicking',
+    week: 1,
+    icon: '🖱️',
+    description: 'Learn to click, double-click, and right-click.',
+    requiredEvents: ['first-click', 'double-click', 'right-click'],
+  },
+  {
+    id: 'keyboard-basics',
+    title: 'the keyboard',
+    week: 1,
+    icon: '⌨️',
+    description: 'Get comfortable typing and using special keys.',
+    requiredEvents: ['first-keypress', 'typed-word', 'used-enter'],
+  },
+  {
+    id: 'desktop-navigation',
+    title: 'finding your way around',
+    week: 1,
+    icon: '🖥️',
+    description: 'Open apps, close windows, and use the taskbar.',
+    requiredEvents: ['opened-app', 'closed-window', 'found-taskbar'],
+  },
+  {
+    id: 'file-explorer',
+    title: 'files & folders',
+    week: 2,
+    icon: '🗂️',
+    description: 'Create, rename, move, and organize your files.',
+    requiredEvents: ['opened-folder', 'created-folder', 'renamed-file', 'moved-file', 'deleted-file'],
+  },
+  {
+    id: 'email',
+    title: 'sending email',
+    week: 2,
+    icon: '✉️',
+    description: 'Write, send, and reply to emails.',
+    requiredEvents: ['opened-compose', 'wrote-subject', 'sent-email', 'replied'],
+  },
+  {
+    id: 'browser',
+    title: 'browsing the web',
+    week: 3,
+    icon: '🌐',
+    description: 'Navigate websites, open tabs, and search.',
+    requiredEvents: ['typed-url', 'opened-tab', 'used-back-button', 'found-search-bar'],
+  },
+  {
+    id: 'doc-editor',
+    title: 'writing a document',
+    week: 3,
+    icon: '📝',
+    description: 'Type, format, name, and save a document.',
+    requiredEvents: ['started-typing', 'used-bold', 'saved-doc', 'named-doc'],
+  },
+  {
+    id: 'school-portal',
+    title: 'the school portal',
+    week: 4,
+    icon: '🎓',
+    description: 'Log in, find an assignment, and submit your work.',
+    requiredEvents: ['logged-in', 'found-assignment', 'uploaded-file', 'submitted-assignment'],
+  },
+]
+
+export const WEEKS = [...new Set(LESSONS.map(l => l.week))].sort()

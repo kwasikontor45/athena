@@ -1,0 +1,38 @@
+.pt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt__week {
+  font-size: 11px;
+  color: rgba(201, 168, 76, 0.6);
+  white-space: nowrap;
+}
+
+.pt__bar {
+  width: 64px;
+  height: 4px;
+  background: var(--athena-gold-dim);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pt__fill {
+  height: 100%;
+  background: var(--athena-gold);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.pt__xp {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.pt__xp--flash {
+  color: var(--athena-gold);
+}

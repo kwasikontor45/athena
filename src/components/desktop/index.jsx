@@ -13,7 +13,12 @@ const APP_ICONS = [
   { id: 'playground',    emoji: '🎮',  label: 'Playground'    },
 ]
 
-export default function Desktop({ openApp, onOpenApp, currentEvent, currentLesson, onEventHandled }) {
+export default function Desktop({
+  openApp, onOpenApp,
+  currentEvent, currentLesson, onEventHandled,
+  getLessonStatus, getEventProgress, onSelectLesson,
+  earnedBadges,
+}) {
   return (
     <div className="desktop">
       <div className="desktop__grid-area">
@@ -36,8 +41,13 @@ export default function Desktop({ openApp, onOpenApp, currentEvent, currentLesso
           currentEvent={currentEvent}
           currentLesson={currentLesson}
           onEventHandled={onEventHandled}
+          badges={earnedBadges}
         />
-        <LessonPanel />
+        <LessonPanel
+          getLessonStatus={getLessonStatus}
+          getEventProgress={getEventProgress}
+          onSelectLesson={onSelectLesson}
+        />
       </aside>
     </div>
   )
