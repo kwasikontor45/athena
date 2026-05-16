@@ -25,23 +25,6 @@
 .aa__owl {
   font-size: 18px;
   line-height: 1;
-  display: inline-block;
-  animation: aa-owl-float 3s ease-in-out infinite;
-  transform-origin: center bottom;
-}
-
-.aa__owl--talking {
-  animation: aa-owl-talk 0.35s ease-in-out infinite alternate;
-}
-
-@keyframes aa-owl-float {
-  0%, 100% { transform: translateY(0);     }
-  50%       { transform: translateY(-3px); }
-}
-
-@keyframes aa-owl-talk {
-  0%   { transform: rotate(-8deg) scale(1.05); }
-  100% { transform: rotate(8deg)  scale(1.1);  }
 }
 
 .aa__name {
