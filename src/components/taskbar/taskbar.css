@@ -65,6 +65,15 @@
   justify-content: flex-end;
 }
 
+.taskbar__contact {
+  color: var(--athena-text-secondary);
+  font-size: 11px;
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.taskbar__contact:hover { opacity: 1; color: var(--athena-gold); }
+
 .taskbar__time {
   color: var(--athena-text-secondary);
   font-size: 12px;

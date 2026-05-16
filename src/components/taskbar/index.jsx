@@ -41,6 +41,11 @@ export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP,
       </nav>
 
       <div className="taskbar__right">
+        <a
+          className="taskbar__contact"
+          href="mailto:autopsy@protonmail.com"
+          title="Contact instructor"
+        >autopsy@protonmail.com</a>
         <span className="taskbar__time">{time}</span>
         <ProgressTracker
           currentWeek={currentWeek}

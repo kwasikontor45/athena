@@ -1,6 +1,15 @@
 import AthenaAssistant from '../athena-assistant'
 import LessonPanel from '../lesson-panel'
+import { LESSONS } from '../../utils/lessons'
 import './desktop.css'
+
+const BADGE_LABELS = {
+  'first-click': '🖱️ First Click',
+  explorer:      '🗂️ Explorer',
+  emailer:       '✉️ Emailer',
+  scholar:       '🎓 Scholar',
+  graduate:      '🏆 Graduate',
+}
 
 const APP_ICONS = [
   { id: 'my-files',      emoji: '🗂️',  label: 'My Files'      },
@@ -11,14 +20,79 @@ const APP_ICONS = [
   { id: 'typing',        emoji: '⌨️',  label: 'Typing'        },
   { id: 'lessons',       emoji: '📚',  label: 'Lessons'       },
   { id: 'playground',    emoji: '🎮',  label: 'Playground'    },
+  { id: 'video-call',    emoji: '📹',  label: 'Video Call'    },
+  { id: 'shortcuts',     emoji: '⌨️',  label: 'Shortcuts'     },
+  { id: 'password',      emoji: '🔐',  label: 'Passwords'     },
+  { id: 'kontor-studio', emoji: '🏠',  label: 'kontor.studio' },
+  { id: 'dev-site',      emoji: '💻',  label: 'kwasikontor.dev'},
 ]
 
 export default function Desktop({
+  currentView,
   openApp, onOpenApp,
   currentEvent, currentLesson, onEventHandled,
   getLessonStatus, getEventProgress, onSelectLesson,
-  earnedBadges,
+  earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
+  if (currentView === 'lessons') {
+    return (
+      <div className="desktop">
+        <div className="desktop__full-view">
+          <LessonPanel
+            getLessonStatus={getLessonStatus}
+            getEventProgress={getEventProgress}
+            onSelectLesson={onSelectLesson}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  if (currentView === 'progress') {
+    const completedIds = completedLessons ?? []
+    return (
+      <div className="desktop">
+        <div className="desktop__full-view">
+          <div className="desktop__progress-screen">
+            <div className="desktop__progress-header">
+              <span className="desktop__progress-owl">🦉</span>
+              <div>
+                <div className="desktop__progress-xp">{totalXP} <span>XP</span></div>
+                <div className="desktop__progress-week">Week {currentWeek} of 4</div>
+              </div>
+            </div>
+
+            <div className="desktop__progress-lessons">
+              {LESSONS.map(lesson => {
+                const done = completedIds.includes(lesson.id)
+                return (
+                  <div key={lesson.id} className={`desktop__progress-row${done ? ' desktop__progress-row--done' : ''}`}>
+                    <span className="desktop__progress-icon">{lesson.icon}</span>
+                    <span className="desktop__progress-name">{lesson.title}</span>
+                    <span className="desktop__progress-check">{done ? '✓' : '○'}</span>
+                  </div>
+                )
+              })}
+            </div>
+
+            {earnedBadges?.length > 0 && (
+              <div className="desktop__progress-badges">
+                <div className="desktop__progress-badge-label">badges earned</div>
+                <div className="desktop__progress-badge-row">
+                  {earnedBadges.map(b => (
+                    <span key={b} className="desktop__progress-badge">
+                      {BADGE_LABELS[b] ?? b}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="desktop">
       <div className="desktop__grid-area">

@@ -63,6 +63,30 @@ export const LESSONS = [
     description: 'Log in, find an assignment, and submit your work.',
     requiredEvents: ['logged-in', 'found-assignment', 'uploaded-file', 'submitted-assignment'],
   },
+  {
+    id: 'video-call',
+    title: 'joining a video call',
+    week: 4,
+    icon: '📹',
+    description: 'Mute, manage your camera, raise your hand, and chat.',
+    requiredEvents: ['joined-call', 'muted-self', 'raised-hand'],
+  },
+  {
+    id: 'shortcuts',
+    title: 'keyboard shortcuts',
+    week: 4,
+    icon: '⌨️',
+    description: 'Learn Ctrl+A, C, V, Z, and S to work faster in any app.',
+    requiredEvents: ['used-select-all', 'used-copy', 'used-save'],
+  },
+  {
+    id: 'password-security',
+    title: 'passwords & security',
+    week: 4,
+    icon: '🔐',
+    description: 'Create a strong password and understand what makes one safe.',
+    requiredEvents: ['typed-password', 'reached-strong', 'created-account'],
+  },
 ]
 
 export const WEEKS = [...new Set(LESSONS.map(l => l.week))].sort()

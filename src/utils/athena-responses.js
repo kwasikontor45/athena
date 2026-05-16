@@ -266,6 +266,95 @@ export const athenaResponses = {
     ]
   },
 
+  'video-call': {
+    'joined-call': [
+      "You're in! Look for the controls at the bottom — those run the whole call.",
+      "Welcome to the call! Take a moment to find Mute, Camera, and Raise Hand.",
+      "You joined! The controls at the bottom are your tools for the whole meeting."
+    ],
+    'muted-self': [
+      "Good habit! Muting when you're not speaking keeps background noise out for everyone.",
+      "Perfect! Mute is one of the most important buttons in any video call.",
+      "Excellent! Muting yourself is meeting etiquette — and you've got it down."
+    ],
+    'camera-off': [
+      "That's it — you can turn your camera off and back on any time.",
+      "Good to know where that is. Camera control is yours whenever you need it.",
+      "Perfect! You're in control of what the camera shows — and what it doesn't."
+    ],
+    'raised-hand': [
+      "Your hand is raised! Prof. Mensah can see it — that's how you get attention without interrupting.",
+      "Perfect! Raising your hand in a video call is just like the classroom version.",
+      "Excellent! That's the right way to signal you have something to say."
+    ],
+    'sent-message': [
+      "Your message is in the chat! Everyone in the call can see it.",
+      "Perfect! The chat is great for questions and comments without interrupting.",
+      "Excellent! Chat keeps things organized when multiple people want to speak."
+    ],
+    'lesson-complete': [
+      "Video Call — complete! You know how to mute, manage your camera, raise your hand, and chat. You're ready.",
+      "Excellent work. Every video class and work call you'll ever join — you're prepared for it.",
+      "Look at what you just learned. Video calls hold no mystery for you now. Go get 'em."
+    ]
+  },
+
+  'shortcuts': {
+    'used-select-all': [
+      "Ctrl+A — every word selected instantly. That's a move that saves real time.",
+      "Perfect! Select All works in documents, emails, folders — almost everywhere.",
+      "Excellent! One shortcut, everything highlighted. You've got Ctrl+A."
+    ],
+    'used-copy': [
+      "Copied! Now that text lives in your clipboard — ready to paste anywhere.",
+      "Perfect! Ctrl+C is invisible but powerful. You'll use it every day.",
+      "Excellent! That text is saved in memory now. Ctrl+V will bring it back."
+    ],
+    'used-paste': [
+      "There it is — pasted right where you wanted it. Ctrl+V at work.",
+      "Perfect! Copy and paste together are one of the most useful skills on a computer.",
+      "Excellent! Ctrl+V drops it in exactly. No retyping, no mistakes."
+    ],
+    'used-undo': [
+      "Undo! Ctrl+Z is your safety net — it walks back your last action.",
+      "Perfect! Made a mistake? Ctrl+Z fixes it. Every time.",
+      "Excellent! Undo is one of those things you'll reach for without thinking once it's in your muscle memory."
+    ],
+    'used-save': [
+      "Saved! Ctrl+S is the most important habit you can build. Do it often.",
+      "Perfect! Saving frequently means you never lose your work. Ctrl+S, always.",
+      "Excellent! Your work is safe now. That shortcut is worth its weight in gold."
+    ],
+    'lesson-complete': [
+      "Keyboard Shortcuts — complete! Ctrl+A, C, V, Z, S — five tools that work everywhere, for life.",
+      "Excellent work. These shortcuts will make every document, email, and assignment faster from now on.",
+      "Look at what you just built. Five shortcuts locked in. You're already working smarter."
+    ]
+  },
+
+  'password-security': {
+    'typed-password': [
+      "Watch the strength bar as you type — it'll guide you toward a safer password.",
+      "Keep going! The checks on the right show you exactly what to add.",
+      "Good start! A strong password is long and has a mix of characters."
+    ],
+    'reached-strong': [
+      "That's a strong password! Long, mixed, and hard to guess — exactly right.",
+      "Excellent! Strong passwords protect your accounts from being broken into.",
+      "Perfect! That password would take a very long time to crack. Well done."
+    ],
+    'created-account': [
+      "Account created! You just built something secure from the ground up.",
+      "Excellent! You know what makes a password strong — that knowledge protects every account you'll ever have.",
+      "Perfect! Signed up, locked in, and secure. That's exactly the right way to create an account."
+    ],
+    'lesson-complete': [
+      "Passwords & Security — complete! You can build strong passwords and know why they matter. That's real protection.",
+      "Excellent work. Password skills keep your school accounts, email, and personal data safe.",
+      "Look at what you just learned. Strong password habits — built for life. You've got this."
+    ]
+  },
+
   _global: {
     'idle-30s': [
       "Take your time — there's no rush here. When you're ready, give it a try.",
