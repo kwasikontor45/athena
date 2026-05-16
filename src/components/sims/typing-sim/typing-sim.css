@@ -3,7 +3,7 @@
   top: 60px;
   left: 100px;
   width: 600px;
-  height: 420px;
+  height: 560px;
   background: var(--athena-bg-panel);
   border: 1px solid var(--athena-gold-border);
   border-radius: var(--athena-radius-lg);
@@ -48,7 +48,7 @@
   align-items: center;
   justify-content: center;
   gap: 48px;
-  padding: 12px 24px;
+  padding: 8px 24px;
   background: var(--athena-bg-surface);
   border-bottom: 1px solid var(--athena-gold-border);
   flex-shrink: 0;
@@ -81,10 +81,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 28px;
+  padding: 16px 20px;
   background: var(--athena-bg-surface);
   border-radius: var(--athena-radius-md);
-  margin: 16px 24px 0;
+  margin: 12px 20px 0;
   transition: background 0.25s ease;
 }
 
@@ -136,7 +136,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 12px 0 8px;
+  padding: 10px 0 6px;
   flex-shrink: 0;
 }
 
@@ -163,7 +163,7 @@
 
 /* Input */
 .ts__input-area {
-  padding: 0 24px 20px;
+  padding: 0 20px 10px;
   flex-shrink: 0;
 }
 
@@ -182,6 +182,78 @@
 }
 .ts__input:focus { border-color: var(--athena-gold-border); }
 .ts__input::placeholder { color: var(--athena-text-secondary); opacity: .4; }
+
+/* ── On-screen keyboard ──────────────────────────────────────────────────── */
+
+.ts__keyboard {
+  padding: 6px 8px 12px;
+  background: var(--athena-bg-base);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.ts__kb-row {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  margin-bottom: 3px;
+}
+.ts__kb-row:last-child { margin-bottom: 0; }
+
+.ts__key {
+  height: 26px;
+  width: 32px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--athena-text-secondary);
+  user-select: none;
+  cursor: default;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-bottom-width: 2px;
+  transition: background .1s, border-color .1s, color .1s, box-shadow .1s;
+}
+
+/* Finger zones — subtle tints */
+.ts__key--lp { background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.14); }
+.ts__key--lr { background: rgba(96,165,250,0.08);  border-color: rgba(96,165,250,0.14);  }
+.ts__key--lm { background: rgba(52,211,153,0.08);  border-color: rgba(52,211,153,0.14);  }
+.ts__key--li { background: rgba(251,191,36,0.08);  border-color: rgba(251,191,36,0.12);  }
+.ts__key--ri { background: rgba(251,191,36,0.08);  border-color: rgba(251,191,36,0.12);  }
+.ts__key--rm { background: rgba(52,211,153,0.08);  border-color: rgba(52,211,153,0.14);  }
+.ts__key--rr { background: rgba(96,165,250,0.08);  border-color: rgba(96,165,250,0.14);  }
+.ts__key--rp { background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.14); }
+.ts__key--th { background: var(--athena-bg-surface); border-color: rgba(255,255,255,0.07); }
+
+/* Next key to press */
+.ts__key--active {
+  background: var(--athena-gold) !important;
+  border-color: var(--athena-gold) !important;
+  color: #1a1200 !important;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(201,168,76,0.55);
+}
+
+/* Shift key when uppercase/symbol needed */
+.ts__key--shift {
+  background: rgba(201,168,76,0.15) !important;
+  border-color: var(--athena-gold) !important;
+  color: var(--athena-gold) !important;
+  font-weight: 600;
+}
+
+.ts__kb-hint {
+  text-align: center;
+  font-size: 10px;
+  color: var(--athena-gold);
+  opacity: 0.65;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
 
 /* Done screen */
 .ts__done {

@@ -19,6 +19,87 @@ const SENTENCES = [
   "Thank you for your email. I will respond shortly.",
 ]
 
+// ── Keyboard data ────────────────────────────────────────────────────────────
+
+const CHAR_TO_KEY = {}
+for (const c of 'abcdefghijklmnopqrstuvwxyz') {
+  CHAR_TO_KEY[c] = c
+  CHAR_TO_KEY[c.toUpperCase()] = c
+}
+Object.assign(CHAR_TO_KEY, {
+  ' ': 'space',
+  '~': '`', '!': '1', '@': '2', '#': '3', '$': '4', '%': '5',
+  '^': '6', '&': '7', '*': '8', '(': '9', ')': '0', '_': '-', '+': '=',
+  '{': '[', '}': ']', '|': '\\', ':': ';', '"': "'", '<': ',', '>': '.', '?': '/',
+})
+for (const c of "`1234567890-=[]\\;',./ ") {
+  if (!CHAR_TO_KEY[c]) CHAR_TO_KEY[c] = c === ' ' ? 'space' : c
+}
+
+const NEEDS_SHIFT = new Set('ABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+{}|:"<>?')
+
+// [label, id, zone, widthPx?]  — zone: lp/lr/lm/li/ri/rm/rr/rp/th
+const KB_ROWS = [
+  [
+    ['`','`','lp'],['1','1','lp'],['2','2','lr'],['3','3','lm'],
+    ['4','4','li'],['5','5','li'],['6','6','ri'],['7','7','ri'],
+    ['8','8','rm'],['9','9','rr'],['0','0','rp'],['-','-','rp'],
+    ['=','=','rp'],['⌫','bksp','rp',72],
+  ],
+  [
+    ['Tab','tab','lp',52],['q','q','lp'],['w','w','lr'],['e','e','lm'],
+    ['r','r','li'],['t','t','li'],['y','y','ri'],['u','u','ri'],
+    ['i','i','rm'],['o','o','rr'],['p','p','rp'],['[','[','rp'],
+    [']',']','rp'],['\\','\\','rp'],
+  ],
+  [
+    ['Caps','caps','lp',62],['a','a','lp'],['s','s','lr'],['d','d','lm'],
+    ['f','f','li'],['g','g','li'],['h','h','ri'],['j','j','ri'],
+    ['k','k','rm'],['l','l','rr'],[';',';','rp'],["'","'","rp"],
+    ['↵','enter','rp',78],
+  ],
+  [
+    ['⇧','shiftl','lp',80],['z','z','lp'],['x','x','lr'],['c','c','lm'],
+    ['v','v','li'],['b','b','li'],['n','n','ri'],['m','m','ri'],
+    [',',',','rm'],['.','.','rr'],['/','/','rp'],
+    ['⇧','shiftr','rp',96],
+  ],
+  [
+    ['space','space','th',224],
+  ],
+]
+
+function Keyboard({ nextChar }) {
+  const targetKey = nextChar != null ? (CHAR_TO_KEY[nextChar] ?? null) : null
+  const shiftNeeded = nextChar != null && NEEDS_SHIFT.has(nextChar)
+
+  return (
+    <div className="ts__keyboard">
+      {KB_ROWS.map((row, ri) => (
+        <div key={ri} className="ts__kb-row">
+          {row.map(([label, id, zone, w]) => {
+            const isTarget = targetKey === id
+            const isShift = shiftNeeded && (id === 'shiftl' || id === 'shiftr')
+            const cls = `ts__key ts__key--${zone}${isTarget ? ' ts__key--active' : isShift ? ' ts__key--shift' : ''}`
+            return (
+              <span
+                key={id}
+                className={cls}
+                style={w != null ? { width: `${w}px`, flexShrink: 0 } : undefined}
+              >
+                {label}
+              </span>
+            )
+          })}
+        </div>
+      ))}
+      {shiftNeeded && <div className="ts__kb-hint">Shift + key</div>}
+    </div>
+  )
+}
+
+// ── Main component ───────────────────────────────────────────────────────────
+
 export default function TypingSim({ onClose, onAthenaEvent }) {
   const [sentenceIdx, setSentenceIdx] = useState(0)
   const [typed, setTyped]             = useState('')
@@ -32,11 +113,11 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
   const inputRef       = useRef(null)
   const firedRef       = useRef(new Set())
   const startTimeRef   = useRef(null)
-  const mistakesRef    = useRef(false) // any mistake in current sentence
-  const streakRef      = useRef(0)     // consecutive correct chars
-  const sentIdxRef     = useRef(0)     // mirrors sentenceIdx for use in timeouts
-  const completedRef   = useRef(0)     // mirrors completedCount
-  const wpmHistRef     = useRef([])    // mirrors wpmHistory
+  const mistakesRef    = useRef(false)
+  const streakRef      = useRef(0)
+  const sentIdxRef     = useRef(0)
+  const completedRef   = useRef(0)
+  const wpmHistRef     = useRef([])
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
@@ -65,8 +146,8 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
 
     const added = val.length > typed.length
     if (added) {
-      const i         = val.length - 1
-      const correct   = val[i] === sent[i]
+      const i       = val.length - 1
+      const correct = val[i] === sent[i]
       setTotalKeypresses(k => k + 1)
       if (correct) {
         setTotalCorrect(c => c + 1)
@@ -80,17 +161,16 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
     }
 
     setTyped(val)
-
     if (val === sent) completeSentence(val, sent)
   }
 
   function completeSentence(val, sent) {
-    const elapsed    = startTimeRef.current
+    const elapsed = startTimeRef.current
       ? Math.max((Date.now() - startTimeRef.current) / 60000, 0.001)
       : 0.001
     const sentenceWpm = Math.round((sent.length / 5) / elapsed)
 
-    const newWpmHist  = [...wpmHistRef.current, sentenceWpm]
+    const newWpmHist = [...wpmHistRef.current, sentenceWpm]
     wpmHistRef.current = newWpmHist
     setWpmHistory(newWpmHist)
 
@@ -100,10 +180,10 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
 
     const newAvg = Math.round(newWpmHist.reduce((a, b) => a + b, 0) / newWpmHist.length)
 
-    if (newCompleted === 1)              fire('first-sentence-complete')
-    if (newCompleted === 3)              fire('used-enter')
-    if (newAvg >= 10)                    fire('reached-10-wpm')
-    if (!mistakesRef.current)            fire('clean-run')
+    if (newCompleted === 1)   fire('first-sentence-complete')
+    if (newCompleted === 3)   fire('used-enter')
+    if (newAvg >= 10)         fire('reached-10-wpm')
+    if (!mistakesRef.current) fire('clean-run')
 
     setFlash(true)
     setTimeout(() => {
@@ -137,9 +217,9 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
     setCompletedCount(0)
     setAllDone(false)
     setFlash(false)
-    startTimeRef.current  = null
-    mistakesRef.current   = false
-    streakRef.current     = 0
+    startTimeRef.current = null
+    mistakesRef.current  = false
+    streakRef.current    = 0
     setTimeout(() => inputRef.current?.focus(), 30)
   }
 
@@ -153,13 +233,11 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
       } else {
         cls += ' ts__char--pending'
       }
-      return (
-        <span key={i} className={cls}>
-          {ch === ' ' ? ' ' : ch}
-        </span>
-      )
+      return <span key={i} className={cls}>{ch}</span>
     })
   }
+
+  const nextChar = allDone ? null : sentence[typed.length]
 
   return (
     <div className="ts">
@@ -228,6 +306,8 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
               autoCapitalize="off"
             />
           </div>
+
+          <Keyboard nextChar={nextChar} />
         </>
       )}
     </div>
