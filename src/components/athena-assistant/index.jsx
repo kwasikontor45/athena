@@ -145,7 +145,7 @@ export default function AthenaAssistant({ currentEvent, currentLesson, onEventHa
     <div className="aa">
       <div className="aa__header">
         <div className="aa__brand">
-          <span className="aa__owl">🦉</span>
+          <span className={`aa__owl${isTyping ? ' aa__owl--talking' : ''}`}>🦉</span>
           <span className="aa__name">ATHENA</span>
         </div>
         <div className="aa__status">
