@@ -95,6 +95,15 @@ export default function Desktop({
 
   return (
     <div className="desktop">
+      <aside className="desktop__athena-panel">
+        <AthenaAssistant
+          currentEvent={currentEvent}
+          currentLesson={currentLesson}
+          onEventHandled={onEventHandled}
+          badges={earnedBadges}
+        />
+      </aside>
+
       <div className="desktop__grid-area">
         <div className="desktop__icon-grid">
           {APP_ICONS.map(({ id, emoji, label }) => (
@@ -110,13 +119,7 @@ export default function Desktop({
         </div>
       </div>
 
-      <aside className="desktop__sidebar">
-        <AthenaAssistant
-          currentEvent={currentEvent}
-          currentLesson={currentLesson}
-          onEventHandled={onEventHandled}
-          badges={earnedBadges}
-        />
+      <aside className="desktop__lesson-panel">
         <LessonPanel
           getLessonStatus={getLessonStatus}
           getEventProgress={getEventProgress}

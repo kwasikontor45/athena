@@ -8,7 +8,7 @@
 
 .desktop__grid-area {
   flex: 1;
-  padding: 40px 48px;
+  padding: 32px 40px;
   overflow-y: auto;
 }
 
@@ -62,8 +62,19 @@
   white-space: nowrap;
 }
 
-.desktop__sidebar {
-  width: 280px;
+.desktop__athena-panel {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--athena-gold-border);
+  background: var(--athena-bg-panel);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  order: -1;
+}
+
+.desktop__lesson-panel {
+  width: 220px;
   flex-shrink: 0;
   border-left: 1px solid var(--athena-gold-border);
   background: var(--athena-bg-panel);
