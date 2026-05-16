@@ -218,6 +218,11 @@ export const athenaResponses = {
       "Excellent! Searching is one of the most powerful things you can do online.",
       "Perfect! Type what you're looking for and the internet brings it to you."
     ],
+    'hint-sketchy': [
+      "Nice work! One more important skill — spotting dangerous sites. Try typing `free-prizez.net` in the address bar. I'll tell you what to look for.",
+      "Great job so far! Before we finish — not every site on the internet is safe. Type `free-prizez.net` and see what you find.",
+      "You're doing really well! Last exercise: type `free-prizez.net` in the bar. Can you spot what makes it suspicious?",
+    ],
     'spotted-sketchy-site': [
       "Good instinct to pause here — that site has all the warning signs. Urgent language and big promises are red flags.",
       "Excellent! Bad spelling, pressure tactics, 'claim your prize' — those are the exact clues to look for.",
