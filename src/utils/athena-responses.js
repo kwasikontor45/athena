@@ -48,6 +48,21 @@ export const athenaResponses = {
       "Excellent! Enter is how you confirm and continue. Well done.",
       "That's exactly right. Enter says 'yes, let's go' to the computer."
     ],
+    'first-sentence-complete': [
+      "You typed your first full sentence — that's a real milestone. Keep going.",
+      "Excellent! One sentence down. You're building the rhythm already.",
+      "Perfect! That's one complete sentence. Your fingers are learning the keys."
+    ],
+    'reached-10-wpm': [
+      "10 words per minute! That's a real typing speed — you're doing great.",
+      "Excellent! 10 WPM and climbing. Practice is already paying off.",
+      "You hit 10 WPM — that's a genuine skill. Keep the momentum going."
+    ],
+    'clean-run': [
+      "A perfect sentence — zero mistakes! That's accuracy under pressure.",
+      "Excellent! Every character correct. Your focus is really showing.",
+      "That was flawless. Clean runs build the muscle memory that sticks."
+    ],
     'lesson-complete': [
       "Keyboard Basics — complete! You can type, correct, and navigate. That's everything.",
       "Excellent work today. Every email and document you'll write starts with what you just learned.",
