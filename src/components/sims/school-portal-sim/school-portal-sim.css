@@ -470,3 +470,17 @@
 .sp__success-detail strong {
   color: var(--athena-gold);
 }
+
+.sp__grades-link {
+  background: var(--athena-gold-dim);
+  border: 1px solid var(--athena-gold-border);
+  border-radius: var(--athena-radius-sm);
+  color: var(--athena-gold);
+  font-size: 13px;
+  font-family: inherit;
+  padding: 9px 24px;
+  cursor: pointer;
+  transition: background .15s;
+  margin-top: 4px;
+}
+.sp__grades-link:hover { background: rgba(201,168,76,.25); }

@@ -105,6 +105,7 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
     }
 
     if (screen === 'grades') {
+      const submitted = fired.has('submitted-assignment')
       return (
         <div className="sp__assignment">
           <button className="sp__back-btn" onClick={() => setScreen('dashboard')}>← Back to Dashboard</button>
@@ -120,11 +121,13 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr className={submitted ? '' : 'sp__grade-pending'}>
                   <td>BUS 101</td>
                   <td>Week 1 Reflection</td>
-                  <td className="sp__grade-score">10 / 10</td>
-                  <td className="sp__grade-status">✓ Submitted</td>
+                  <td className="sp__grade-score">{submitted ? '10 / 10' : '—'}</td>
+                  <td className={`sp__grade-status${submitted ? '' : ' sp__grade-status--pending'}`}>
+                    {submitted ? '✓ Graded' : 'Not submitted'}
+                  </td>
                 </tr>
                 <tr className="sp__grade-pending">
                   <td>BUS 101</td>
@@ -247,6 +250,9 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
             <strong>{chosenFile?.name}</strong><br />
             Submitted to BUS 101 · 10 points possible
           </div>
+          <button className="sp__grades-link" onClick={() => setScreen('grades')}>
+            View My Grades →
+          </button>
         </div>
       )
     }
