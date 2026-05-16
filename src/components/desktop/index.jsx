@@ -81,12 +81,11 @@ export default function Desktop({
 
   return (
     <div className="desktop">
-      <aside className="desktop__athena-panel">
-        <AthenaAssistant
-          currentEvent={currentEvent}
-          currentLesson={currentLesson}
-          onEventHandled={onEventHandled}
-          badges={earnedBadges}
+      <aside className="desktop__lesson-panel">
+        <LessonPanel
+          getLessonStatus={getLessonStatus}
+          getEventProgress={getEventProgress}
+          onSelectLesson={onSelectLesson}
         />
       </aside>
 
@@ -105,11 +104,12 @@ export default function Desktop({
         </div>
       </div>
 
-      <aside className="desktop__lesson-panel">
-        <LessonPanel
-          getLessonStatus={getLessonStatus}
-          getEventProgress={getEventProgress}
-          onSelectLesson={onSelectLesson}
+      <aside className="desktop__athena-panel">
+        <AthenaAssistant
+          currentEvent={currentEvent}
+          currentLesson={currentLesson}
+          onEventHandled={onEventHandled}
+          badges={earnedBadges}
         />
       </aside>
     </div>

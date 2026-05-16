@@ -80,7 +80,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  order: -1;
 }
 
 /* ── Full-view (Lessons / Progress) ─────────────────────────────────────── */
