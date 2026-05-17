@@ -112,11 +112,6 @@ export default function App() {
     r.style.setProperty('--athena-bg-panel',    palette.bgPanel)
   }, [palette])
 
-  useEffect(() => {
-    const event = isReEntry ? 'circadian-reentry' : `circadian-${phase}`
-    const id = setTimeout(() => setCurrentEvent({ lesson: 'circadian', event }), 1400)
-    return () => clearTimeout(id)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const ActiveSim = openApp ? (SIM_MAP[openApp] ?? null) : null
   const currentLesson = LESSON_MAP[openApp] ?? 'desktop-navigation'
