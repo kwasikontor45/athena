@@ -120,6 +120,10 @@ export default function useProgress() {
     return { total: lesson.requiredEvents.length, completed }
   }, [state.completedEvents])
 
+  const isEventDone = useCallback((lessonId, event) => {
+    return state.completedEvents[lessonId]?.has(event) ?? false
+  }, [state.completedEvents])
+
   const currentWeek = deriveCurrentWeek(state.completedLessons)
   const { total: weekTotal, completed: weekCompleted } = getWeekProgress(currentWeek)
 
@@ -134,5 +138,6 @@ export default function useProgress() {
     getLessonStatus,
     getWeekProgress,
     getEventProgress,
+    isEventDone,
   }
 }

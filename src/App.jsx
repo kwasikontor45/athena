@@ -11,6 +11,7 @@ import PlaygroundSim   from './components/sims/playground-sim'
 import VideoCallSim   from './components/sims/video-call-sim'
 import ShortcutsSim   from './components/sims/shortcuts-sim'
 import PasswordSim    from './components/sims/password-sim'
+import MousePracticeSim from './components/sims/mouse-practice-sim'
 import useProgress from './utils/use-progress'
 import { useCircadian } from './utils/use-circadian'
 import './app.css'
@@ -52,16 +53,17 @@ function SimWindow({ children, simKey }) {
 }
 
 const SIM_MAP = {
-  'my-files':      FileExplorerSim,
-  email:           EmailSim,
-  browser:         BrowserSim,
-  documents:       DocEditorSim,
-  'school-portal': SchoolPortalSim,
-  typing:          TypingSim,
-  playground:      PlaygroundSim,
-  'video-call':    VideoCallSim,
-  shortcuts:       ShortcutsSim,
-  password:        PasswordSim,
+  'my-files':       FileExplorerSim,
+  email:            EmailSim,
+  browser:          BrowserSim,
+  documents:        DocEditorSim,
+  'school-portal':  SchoolPortalSim,
+  typing:           TypingSim,
+  playground:       PlaygroundSim,
+  'video-call':     VideoCallSim,
+  shortcuts:        ShortcutsSim,
+  password:         PasswordSim,
+  'mouse-practice': MousePracticeSim,
 }
 
 const LESSON_MAP = {
@@ -76,13 +78,15 @@ const LESSON_MAP = {
 }
 
 const LESSON_TO_APP = {
-  'file-explorer': 'my-files',
-  email:           'email',
-  browser:         'browser',
-  'doc-editor':    'documents',
-  'school-portal':    'school-portal',
-  'video-call':       'video-call',
-  shortcuts:          'shortcuts',
+  'mouse-basics':      'mouse-practice',
+  'keyboard-basics':   'typing',
+  'file-explorer':     'my-files',
+  email:               'email',
+  browser:             'browser',
+  'doc-editor':        'documents',
+  'school-portal':     'school-portal',
+  'video-call':        'video-call',
+  shortcuts:           'shortcuts',
   'password-security': 'password',
 }
 
@@ -93,7 +97,7 @@ export default function App() {
 
   const {
     earnedBadges, completedLessons, totalXP, currentWeek, weekTotal, weekCompleted,
-    recordEvent, getLessonStatus, getEventProgress,
+    recordEvent, getLessonStatus, getEventProgress, isEventDone,
   } = useProgress()
 
   const { phase, palette, isReEntry } = useCircadian()
@@ -122,19 +126,35 @@ export default function App() {
     recordEvent(ev.lesson, ev.event)
   }, [recordEvent])
 
+  // Fire desktop-navigation events with Athena response, but only the first time each
+  const fireDesktopNavOnce = useCallback((event) => {
+    if (isEventDone('desktop-navigation', event)) return
+    handleAthenaEvent({ lesson: 'desktop-navigation', event })
+  }, [isEventDone, handleAthenaEvent])
+
+  const handleCloseApp = useCallback(() => {
+    setOpenApp(null)
+    fireDesktopNavOnce('closed-window')
+  }, [fireDesktopNavOnce])
+
   const handleSelectLesson = useCallback((lessonId) => {
+    if (lessonId === 'desktop-navigation') {
+      setCurrentEvent({ lesson: 'desktop-navigation', event: 'lesson-selected' })
+      return
+    }
     const appId = LESSON_TO_APP[lessonId]
     if (appId) { setOpenApp(appId); setCurrentView('desktop') }
   }, [])
 
   const handleNavigate = useCallback((view) => {
+    fireDesktopNavOnce('found-taskbar')
     if (view === 'practice') {
       setOpenApp('playground')
       setCurrentView('desktop')
     } else {
       setCurrentView(view)
     }
-  }, [])
+  }, [fireDesktopNavOnce])
 
   const handleOpenApp = useCallback((id) => {
     if (id === 'kontor-studio') {
@@ -144,8 +164,9 @@ export default function App() {
     } else {
       setOpenApp(id)
       setCurrentView('desktop')
+      fireDesktopNavOnce('opened-app')
     }
-  }, [])
+  }, [fireDesktopNavOnce])
 
   return (
     <div className="app">
@@ -178,11 +199,11 @@ export default function App() {
 
       {ActiveSim && (
         <>
-          <div className="app__sim-backdrop" onClick={() => setOpenApp(null)} />
+          <div className="app__sim-backdrop" onClick={handleCloseApp} />
           <div className="app__sim-stage">
             <SimWindow key={openApp}>
               <ActiveSim
-                onClose={() => setOpenApp(null)}
+                onClose={handleCloseApp}
                 onAthenaEvent={handleAthenaEvent}
               />
             </SimWindow>

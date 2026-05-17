@@ -33,7 +33,8 @@
 .app__sim-stage .pg,
 .app__sim-stage .vc,
 .app__sim-stage .sc,
-.app__sim-stage .ps {
+.app__sim-stage .ps,
+.app__sim-stage .mp {
   position: relative;
   top: auto;
   left: auto;

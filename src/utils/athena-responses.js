@@ -99,6 +99,11 @@ export const athenaResponses = {
   },
 
   'desktop-navigation': {
+    'lesson-selected': [
+      "Let's explore! Try clicking any app icon in the grid to open it — then close it and try the nav buttons at the top.",
+      "Finding your way around starts right here. Click an icon to open an app, then close it when you're done. The bar at the top is your control centre.",
+      "This lesson is about the desktop itself. Click any app icon to open it, close it with the X, and try the buttons in the taskbar up top.",
+    ],
     'opened-app': [
       "Perfect! You opened an app — that's desktop navigation in action.",
       "Look at you go! Opening programs is the foundation of working on a computer.",
