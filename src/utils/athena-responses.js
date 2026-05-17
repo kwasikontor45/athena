@@ -394,6 +394,11 @@ export const athenaResponses = {
   },
 
   _global: {
+    'direct-question': [
+      "Hi! I'm Athena — pick any lesson from the panel on the left and I'll guide you through it step by step.",
+      "Great question! Start with any lesson on the left panel and I'll walk you through everything. What would you like to work on?",
+      "Hello! Choose a lesson from the left side whenever you're ready — I'll explain each step as you go.",
+    ],
     'idle-30s': [
       "Take your time — there's no rush here. When you're ready, give it a try.",
       "You've got this. If you're not sure what to do next, try clicking what looks interesting.",

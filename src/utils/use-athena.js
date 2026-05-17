@@ -59,7 +59,9 @@ export default function useAthena() {
           messages: [
             {
               role: 'user',
-              content: `Lesson: ${lesson}. Event: ${event}. Context: ${context}`,
+              content: event === 'direct-question'
+                ? `The learner says: "${context}". Respond conversationally. If they seem unsure what to do, guide them to pick a lesson from the left panel.`
+                : `Lesson: ${lesson}. Event: ${event}. Context: ${context}`,
             },
           ],
         }),
