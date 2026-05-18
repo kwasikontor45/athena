@@ -16,9 +16,29 @@ function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
-function getFallback(lesson, event) {
+const DIRECT_KEYWORDS = [
+  { match: /\b(close|exit|quit|back|leave|stop)\b/i,
+    reply: "Click the red dot in the top-left corner of the window to close it, or press the red button on the sim's title bar." },
+  { match: /\b(hi|hello|hey|good\s*(morning|afternoon|evening|night))\b/i,
+    reply: "Hi! I'm Athena — choose any lesson from the left panel and I'll guide you through it step by step." },
+  { match: /\b(thank|thanks|cheers)\b/i,
+    reply: "You're welcome! Keep going — you're doing great." },
+  { match: /\b(help|lost|stuck|confused|what\s*do|how\s*do|what\s*now)\b/i,
+    reply: "Pick any lesson from the panel on the left — click it and a practice window will open. I'll explain each step as you go." },
+  { match: /\b(next|done|finish|complete|completed)\b/i,
+    reply: "Nice work! Check the lesson panel on the left — completed lessons show a tick, and the next one will be ready for you." },
+]
+
+function getFallback(lesson, event, context) {
   const lessonBank = athenaResponses[lesson]
   if (lessonBank?.[event]) return pickRandom(lessonBank[event])
+
+  if (event === 'direct-question' && context) {
+    for (const { match, reply } of DIRECT_KEYWORDS) {
+      if (match.test(context)) return reply
+    }
+  }
+
   const globalBank = athenaResponses._global
   if (globalBank?.[event]) return pickRandom(globalBank[event])
   return "You're doing great — keep going, one step at a time."
@@ -40,7 +60,7 @@ export default function useAthena() {
   }, [])
 
   const ask = useCallback(async ({ lesson, event, context = '' }) => {
-    if (!isOnline) return getFallback(lesson, event)
+    if (!isOnline) return getFallback(lesson, event, context)
 
     setIsLoading(true)
     try {
@@ -69,9 +89,9 @@ export default function useAthena() {
 
       if (!res.ok) throw new Error('api-error')
       const data = await res.json()
-      return data.content?.[0]?.text ?? getFallback(lesson, event)
+      return data.content?.[0]?.text ?? getFallback(lesson, event, context)
     } catch {
-      return getFallback(lesson, event)
+      return getFallback(lesson, event, context)
     } finally {
       setIsLoading(false)
     }
