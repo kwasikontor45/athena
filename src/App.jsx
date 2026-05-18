@@ -22,7 +22,7 @@ function SimWindow({ children, simKey }) {
   const dragRef = useRef(null)
 
   function handleMouseDown(e) {
-    if (e.target.closest('button, input, textarea, select, a')) return
+    if (e.target.closest('input, textarea, select')) return
     const rect = wrapRef.current.getBoundingClientRect()
     if (e.clientY - rect.top > 40) return // titlebar zone only
     e.preventDefault()
