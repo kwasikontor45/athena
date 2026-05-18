@@ -194,7 +194,7 @@ export default function App() {
 
       {ActiveSim && (
         <>
-          <div className="app__sim-backdrop" onClick={handleCloseApp} />
+          <div className="app__sim-backdrop" />
           <div className="app__sim-stage">
             <SimWindow key={openApp}>
               <ActiveSim
