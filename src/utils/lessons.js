@@ -87,6 +87,14 @@ export const LESSONS = [
     description: 'Create a strong password and understand what makes one safe.',
     requiredEvents: ['typed-password', 'reached-strong', 'created-account'],
   },
+  {
+    id: 'code-bootcamp',
+    title: 'code bootcamp',
+    week: 5,
+    icon: '🧪',
+    description: 'Build a drag-and-drop kanban board from scratch using React and Dragula.',
+    requiredEvents: ['bootcamp-opened', 'step-advanced', 'lesson-complete'],
+  },
 ]
 
 export const WEEKS = [...new Set(LESSONS.map(l => l.week))].sort()

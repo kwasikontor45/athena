@@ -1,6 +1,7 @@
 import AthenaAssistant from '../athena-assistant'
 import LessonPanel from '../lesson-panel'
-import { LESSONS } from '../../utils/lessons'
+import { LESSONS, WEEKS } from '../../utils/lessons'
+import { exportProgress, importProgress } from '../../utils/use-progress'
 import './desktop.css'
 
 const BADGE_LABELS = {
@@ -24,6 +25,7 @@ const APP_ICONS = [
   { id: 'password',      emoji: '🔐',  label: 'Passwords'     },
   { id: 'kontor-studio', emoji: '🏠',  label: 'kontor.studio' },
   { id: 'dev-site',      emoji: '💻',  label: 'kwasikontor.dev'},
+  { id: 'code-bootcamp', emoji: '🧪',  label: 'Code Bootcamp' },
 ]
 
 export default function Desktop({
@@ -36,7 +38,7 @@ export default function Desktop({
   if (currentView === 'progress') {
     const completedIds = Array.from(completedLessons ?? [])
     const earned = earnedBadges ?? []
-    const weeks = [1, 2, 3, 4]
+    const weeks = WEEKS
 
     return (
       <div className="desktop">
@@ -82,6 +84,40 @@ export default function Desktop({
                   </span>
                 ))}
               </div>
+            </div>
+
+            <div className="desktop__progress-actions">
+              <button className="desktop__progress-action" onClick={() => {
+                const data = exportProgress()
+                if (!data) return
+                const blob = new Blob([data], { type: 'application/json' })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = `athena-memory-${new Date().toISOString().slice(0, 10)}.json`
+                a.click()
+                URL.revokeObjectURL(url)
+              }}>export memory</button>
+              <button className="desktop__progress-action" onClick={() => {
+                const input = document.createElement('input')
+                input.type = 'file'
+                input.accept = '.json'
+                input.onchange = (e) => {
+                  const file = e.target.files[0]
+                  if (!file) return
+                  const reader = new FileReader()
+                  reader.onload = (ev) => {
+                    try {
+                      importProgress(ev.target.result)
+                      window.location.reload()
+                    } catch {
+                      alert('invalid memory file')
+                    }
+                  }
+                  reader.readAsText(file)
+                }
+                input.click()
+              }}>import memory</button>
             </div>
           </div>
         </div>

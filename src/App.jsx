@@ -12,19 +12,25 @@ import VideoCallSim   from './components/sims/video-call-sim'
 import ShortcutsSim   from './components/sims/shortcuts-sim'
 import PasswordSim    from './components/sims/password-sim'
 import MousePracticeSim from './components/sims/mouse-practice-sim'
+import CodeBootcampSim from './components/sims/code-bootcamp-sim'
 import useProgress from './utils/use-progress'
 import { useCircadian } from './utils/use-circadian'
 import './app.css'
 
 function SimWindow({ children, simKey }) {
   const [pos, setPos] = useState({ x: 100, y: 60 })
+  const [maximized, setMaximized] = useState(false)
   const wrapRef = useRef(null)
-  const dragRef = useRef(null)
+
+  function toggleMaximize() {
+    setMaximized(m => !m)
+  }
 
   function handleMouseDown(e) {
-    if (e.target.closest('input, textarea, select')) return
+    if (maximized) return
+    if (e.target.closest('input, textarea, select, button')) return
     const rect = wrapRef.current.getBoundingClientRect()
-    if (e.clientY - rect.top > 40) return // titlebar zone only
+    if (e.clientY - rect.top > 40) return
     e.preventDefault()
     const startMX = e.clientX
     const startMY = e.clientY
@@ -44,9 +50,18 @@ function SimWindow({ children, simKey }) {
   return (
     <div
       ref={wrapRef}
-      style={{ position: 'fixed', left: pos.x, top: pos.y }}
+      className={`sim-window${maximized ? ' sim-window--maximized' : ''}`}
+      style={maximized ? {} : { position: 'fixed', left: pos.x, top: pos.y }}
       onMouseDown={handleMouseDown}
     >
+      <button
+        className="sim-window__maximize"
+        onClick={toggleMaximize}
+        aria-label={maximized ? 'restore' : 'maximize'}
+        title={maximized ? 'restore' : 'maximize'}
+      >
+        {maximized ? '⛶' : '□'}
+      </button>
       {children}
     </div>
   )
@@ -64,6 +79,7 @@ const SIM_MAP = {
   shortcuts:        ShortcutsSim,
   password:         PasswordSim,
   'mouse-practice': MousePracticeSim,
+  'code-bootcamp':  CodeBootcampSim,
 }
 
 const LESSON_MAP = {
@@ -75,6 +91,7 @@ const LESSON_MAP = {
   'video-call':    'video-call',
   shortcuts:       'shortcuts',
   password:        'password-security',
+  'code-bootcamp': 'code-bootcamp',
 }
 
 const LESSON_TO_APP = {
@@ -88,6 +105,7 @@ const LESSON_TO_APP = {
   'video-call':        'video-call',
   shortcuts:           'shortcuts',
   'password-security': 'password',
+  'code-bootcamp':     'code-bootcamp',
 }
 
 export default function App() {
@@ -115,6 +133,7 @@ export default function App() {
 
   const ActiveSim = openApp ? (SIM_MAP[openApp] ?? null) : null
   const currentLesson = LESSON_MAP[openApp] ?? 'desktop-navigation'
+  const urlApp = new URLSearchParams(window.location.search).get('app')
 
   const handleAthenaEvent = useCallback((ev) => {
     setCurrentEvent(ev)
@@ -156,12 +175,30 @@ export default function App() {
       window.open('https://kontor.studio', '_blank', 'noopener,noreferrer')
     } else if (id === 'dev-site') {
       window.open('https://kwasikontor.dev', '_blank', 'noopener,noreferrer')
+    } else if (id === 'code-bootcamp') {
+      window.open('https://athena.kontor.studio/?app=code-bootcamp', '_blank', 'noopener,noreferrer')
     } else {
       setOpenApp(id)
       setCurrentView('desktop')
       fireDesktopNavOnce('opened-app')
     }
   }, [fireDesktopNavOnce])
+
+  if (urlApp === 'code-bootcamp') {
+    return (
+      <div className="app app--standalone-bootcamp">
+        <div className="app__standalone-bar">
+          <a className="app__standalone-back" href="/">← back to athena</a>
+        </div>
+        <div className="app__standalone-body">
+          <CodeBootcampSim
+            onClose={() => window.location.href = '/'}
+            onAthenaEvent={handleAthenaEvent}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="app">

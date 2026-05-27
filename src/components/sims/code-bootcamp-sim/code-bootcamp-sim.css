@@ -1,0 +1,468 @@
+/* ─── Root ─── */
+.cb-sim {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--athena-bg-surface, #141414);
+  color: var(--athena-text, #e8e6e3);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ─── Top bar ─── */
+.cb-sim__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--athena-bg-panel, #1e1e1e);
+  border-bottom: 1px solid var(--athena-gold-border, rgba(212, 175, 55, 0.2));
+  flex-shrink: 0;
+}
+
+.cb-sim__brand {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--athena-gold, #d4af37);
+  letter-spacing: 0.3px;
+}
+
+.cb-sim__step-track {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.cb-sim__step-pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #444;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.cb-sim__step-pip:hover {
+  transform: scale(1.2);
+}
+
+.cb-sim__step-pip--active {
+  background: var(--athena-gold, #d4af37);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+}
+
+.cb-sim__step-pip--done {
+  background: #6b8e6b;
+}
+
+.cb-sim__close {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #c44;
+  color: white;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cb-sim__close:hover {
+  background: #d55;
+}
+
+/* ─── Workspace ─── */
+.cb-sim__workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ─── File panel ─── */
+.cb-sim__file-panel {
+  width: 150px;
+  background: #181818;
+  border-right: 1px solid #2a2a2a;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.cb-sim__panel-label {
+  padding: 0 12px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #666;
+}
+
+.cb-sim__file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'SF Mono', Monaco, monospace;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+
+.cb-sim__file:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ddd;
+}
+
+.cb-sim__file--active {
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--athena-gold, #d4af37);
+}
+
+.cb-sim__file--readonly {
+  color: #666;
+}
+
+.cb-sim__file-badge {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #555;
+  background: #222;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ─── Editor panel ─── */
+.cb-sim__editor-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #121212;
+}
+
+.cb-sim__editor-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #252525;
+  flex-shrink: 0;
+}
+
+.cb-sim__editor-name {
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.cb-sim__editor-badge {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #666;
+  background: #222;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* ─── Editor component ─── */
+.cb-editor {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.cb-editor__gutter {
+  width: 40px;
+  background: #141414;
+  border-right: 1px solid #1e1e1e;
+  overflow: hidden;
+  flex-shrink: 0;
+  padding-top: 6px;
+}
+
+.cb-editor__line-num {
+  height: 20px;
+  line-height: 20px;
+  text-align: right;
+  padding-right: 10px;
+  font-size: 11px;
+  color: #444;
+  user-select: none;
+}
+
+.cb-editor__textarea {
+  flex: 1;
+  background: #121212;
+  color: #c5c5c5;
+  border: none;
+  outline: none;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  resize: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  overflow-y: auto;
+  tab-size: 2;
+}
+
+.cb-editor__textarea::selection {
+  background: rgba(212, 175, 55, 0.25);
+}
+
+/* ─── Guide panel ─── */
+.cb-sim__guide-panel {
+  width: 340px;
+  background: var(--athena-bg-panel, #1e1e1e);
+  border-left: 1px solid #2a2a2a;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.cb-sim__step-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--athena-gold, #d4af37);
+  margin: 0;
+}
+
+.cb-sim__step-instruction {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: #c0bbb5;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.cb-sim__hint {
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--athena-gold-border, rgba(212, 175, 55, 0.2));
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #d0c8a0;
+}
+
+.cb-sim__hint strong {
+  color: var(--athena-gold, #d4af37);
+}
+
+.cb-sim__link-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+  text-align: left;
+}
+
+.cb-sim__link-btn:hover {
+  color: #aaa;
+}
+
+.cb-sim__solution-box {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.cb-sim__solution-box p {
+  margin: 0 0 10px;
+}
+
+.cb-sim__validation {
+  min-height: 20px;
+}
+
+.cb-sim__status {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cb-sim__status--checking {
+  color: #888;
+}
+
+.cb-sim__status--pass {
+  color: #7db87d;
+}
+
+.cb-sim__status--fail {
+  color: #c47777;
+}
+
+.cb-sim__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cb-sim__btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #3a3a3a;
+  background: #2a2a2a;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.cb-sim__btn:hover:not(:disabled) {
+  background: #333;
+  border-color: #4a4a4a;
+}
+
+.cb-sim__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.cb-sim__btn--primary {
+  background: var(--athena-gold, #d4af37);
+  color: #1a1a1a;
+  border-color: var(--athena-gold, #d4af37);
+}
+
+.cb-sim__btn--primary:hover:not(:disabled) {
+  background: #e5c04a;
+  border-color: #e5c04a;
+}
+
+/* ─── Preview (compact, inside guide panel) ─── */
+.cb-sim__preview-wrap {
+  margin-top: auto;
+  border-top: 1px solid #2a2a2a;
+  padding-top: 12px;
+}
+
+.cb-sim__preview-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.cb-demo__board {
+  display: flex;
+  gap: 8px;
+}
+
+.cb-lane {
+  flex: 1;
+  background: #181818;
+  border: 1px solid #252525;
+  border-radius: 5px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cb-lane__title {
+  padding: 6px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+  border-bottom: 1px solid #222;
+}
+
+.cb-lane__dropzone {
+  flex: 1;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 60px;
+}
+
+.cb-card {
+  padding: 7px 9px;
+  border-radius: 4px;
+  background: #242424;
+  border: 1px solid #333;
+  cursor: grab;
+  font-size: 11px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.cb-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.cb-card:active {
+  cursor: grabbing;
+}
+
+.cb-card--grey {
+  background: rgba(167, 158, 158, 0.18);
+  border-color: rgba(167, 158, 158, 0.35);
+  color: #c8c8c8;
+}
+
+.cb-card--blue {
+  background: rgba(100, 149, 237, 0.18);
+  border-color: rgba(100, 149, 237, 0.35);
+  color: #a8c8e8;
+}
+
+.cb-card--green {
+  background: rgba(100, 170, 100, 0.18);
+  border-color: rgba(100, 170, 100, 0.35);
+  color: #a8d8a8;
+}
+
+.cb-card__title {
+  font-weight: 600;
+}
+
+.cb-demo__snap-hint {
+  font-size: 10px;
+  color: #c47777;
+  text-align: center;
+  padding: 4px;
+  animation: fadeOut 0.6s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}

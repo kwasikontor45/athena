@@ -429,5 +429,23 @@ export const athenaResponses = {
       "You showed up and put in the work. That's what it takes. See you next time!",
       "Great work today. Every skill you practiced is one you'll carry with you. See you soon."
     ]
+  },
+
+  'code-bootcamp': {
+    'bootcamp-opened': [
+      "Welcome to the Code Bootcamp! Today you're building a real kanban board — drag, drop, and all.",
+      "Bootcamp time. No theory, just building. You'll touch React state, DOM events, and a library called Dragula.",
+      "Ready to write code that moves? Literally. Let's build a board where cards fly between columns."
+    ],
+    'step-advanced': [
+      "Step complete. Each one is a brick — by the end you'll have a wall.",
+      "Nice. You're seeing how the pieces connect. Keep stepping through.",
+      "Good pace. The best developers read before they write, and you're doing exactly that."
+    ],
+    'lesson-complete': [
+      "You just built a drag-and-drop kanban board. That's a real frontend feature — ship it.",
+      "Bootcamp complete. You handled React state, DOM sync, and user interaction. That's the trinity.",
+      "Look at what you built. Cards move, colors change, state stays true. You earned this one."
+    ]
   }
 }

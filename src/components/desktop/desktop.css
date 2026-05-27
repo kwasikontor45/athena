@@ -245,3 +245,26 @@
   color: var(--athena-text-secondary);
   opacity: 0.5;
 }
+
+.desktop__progress-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.desktop__progress-action {
+  padding: 8px 14px;
+  border-radius: var(--athena-radius-sm);
+  border: 1px solid var(--athena-gold-border);
+  background: var(--athena-bg-surface);
+  color: var(--athena-text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.desktop__progress-action:hover {
+  border-color: var(--athena-gold);
+  color: var(--athena-gold);
+}

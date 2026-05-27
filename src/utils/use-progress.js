@@ -41,6 +41,18 @@ function blank() {
   return { completedLessons: new Set(), completedEvents: {}, earnedBadges: [], totalXP: 0 }
 }
 
+export function exportProgress() {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if (!raw) return null
+  return raw
+}
+
+export function importProgress(json) {
+  const parsed = deserialize(json)
+  localStorage.setItem(STORAGE_KEY, serialize(parsed))
+  return parsed
+}
+
 function deriveCurrentWeek(completedLessons) {
   for (const week of WEEKS) {
     const weekLessons = LESSONS.filter(l => l.week === week)
@@ -139,5 +151,7 @@ export default function useProgress() {
     getWeekProgress,
     getEventProgress,
     isEventDone,
+    exportProgress,
+    importProgress,
   }
 }
