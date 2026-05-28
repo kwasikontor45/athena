@@ -5,7 +5,7 @@ import './athena-assistant.css'
 const WELCOME = {
   id: crypto.randomUUID(),
   type: 'athena',
-  text: "Perfect — you're here! I'm Athena, and I'll be with you every step of the way. Click anything to get started.",
+  text: "Perfect — you're here! I'm Athena, and I'll be with you every step of the way. Click anything to get started!",
   timestamp: Date.now(),
 }
 
