@@ -6,10 +6,10 @@ const MAX_MESSAGES   = 20
 const FAIL_THRESHOLD = 3
 
 // Dashboard access — hash only, phrase lives nowhere in code
-const DASHBOARD_HASH = '796e324a0e020f1a84470985804cc0446a7fcc895a990660e554966c873416c8'
+const DASHBOARD_HASH = '0b7e80cfaccb6214ca7089cd1f4f38f32c2d26c7e0a5038307d14eb055f8a06c'
 
 async function matchesPhrase(input) {
-  const encoded = new TextEncoder().encode(input.trim().toLowerCase())
+  const encoded = new TextEncoder().encode(input.trim()) // exact match — case and punctuation matter
   const buf = await crypto.subtle.digest('SHA-256', encoded)
   const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
   return hex === DASHBOARD_HASH
