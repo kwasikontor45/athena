@@ -83,22 +83,48 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 18px;
-  height: 18px;
+  width: 36px;
+  height: 36px;
   cursor: se-resize;
   z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 6px;
+  transition: opacity 0.2s;
+  opacity: 0.35;
 }
 
+.sim-window__resize-handle:hover {
+  opacity: 1;
+}
+
+/* Three-dot grip pattern — standard resize indicator */
+.sim-window__resize-handle::before,
 .sim-window__resize-handle::after {
   content: '';
   position: absolute;
-  bottom: 4px;
-  right: 4px;
+  pointer-events: none;
+}
+
+.sim-window__resize-handle::after {
+  bottom: 5px;
+  right: 5px;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid rgba(201, 168, 76, 0.6);
+  border-bottom: 2px solid rgba(201, 168, 76, 0.6);
+  border-radius: 0 0 2px 0;
+}
+
+.sim-window__resize-handle::before {
+  bottom: 10px;
+  right: 5px;
   width: 8px;
   height: 8px;
-  border-right: 2px solid rgba(255, 255, 255, 0.18);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.18);
-  pointer-events: none;
+  border-right: 2px solid rgba(201, 168, 76, 0.3);
+  border-bottom: 2px solid rgba(201, 168, 76, 0.3);
+  border-radius: 0 0 1px 0;
 }
 
 /* Restore banner */
