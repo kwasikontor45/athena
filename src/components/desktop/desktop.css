@@ -244,6 +244,32 @@
 
 .desktop__progress-owl { font-size: 40px; line-height: 1; }
 
+.desktop__progress-card-btn {
+  background: var(--athena-gold-dim);
+  border: 1px solid var(--athena-gold-border);
+  border-radius: 8px;
+  color: var(--athena-gold);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.desktop__progress-card-btn:hover {
+  background: rgba(201, 168, 76, 0.2);
+  border-color: var(--athena-gold);
+}
+
+.desktop__progress-card-btn--done {
+  color: #6b8e6b;
+  border-color: rgba(107, 142, 107, 0.5);
+  background: rgba(107, 142, 107, 0.08);
+}
+
 .desktop__progress-xp {
   font-size: 32px;
   font-weight: 700;

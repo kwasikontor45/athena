@@ -3,7 +3,7 @@ import AthenaAssistant from '../athena-assistant'
 import LessonPanel from '../lesson-panel'
 import { LESSONS, WEEKS } from '../../utils/lessons'
 import { progressToCode, codeToProgress, resetProgress } from '../../utils/use-progress'
-import { joinCohort, getPassphrase } from '../../utils/use-sync'
+import { joinCohort, getPassphrase, getLearnerId } from '../../utils/use-sync'
 import './desktop.css'
 
 const MISSION_POOL = LESSONS.filter(l => l.id !== 'desktop-navigation')
@@ -73,12 +73,23 @@ export default function Desktop({
   const [resetStep,        setResetStep]        = useState('idle')
   const [cohortCode,       setCohortCode]       = useState('')
   const [cohortStatus,     setCohortStatus]     = useState('idle') // idle | joining | done | error
+  const [cardCopied,       setCardCopied]       = useState(false)
   const [lessonPanelOpen, setLessonPanelOpen] = useState(() => {
     try { return localStorage.getItem('athena_lesson_panel') !== 'closed' } catch { return true }
   })
 
   const savedCode  = progressToCode()
   const restoreUrl = savedCode ? `${window.location.origin}/?restore=${savedCode}` : null
+
+  function handleCopyCard() {
+    const id = getLearnerId()
+    if (!id) return
+    const url = `${window.location.origin}/card.html?id=${id}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCardCopied(true)
+      setTimeout(() => setCardCopied(false), 2500)
+    })
+  }
 
   async function handleCohortJoin() {
     if (!cohortCode.trim()) return
@@ -132,10 +143,19 @@ export default function Desktop({
 
             <div className="desktop__progress-header">
               <span className="desktop__progress-owl">🦉</span>
-              <div>
+              <div style={{ flex: 1 }}>
                 <div className="desktop__progress-xp">{totalXP} <span>XP earned</span></div>
                 <div className="desktop__progress-week">Week {currentWeek} of 4 — {completedIds.length} of {LESSONS.length} lessons complete</div>
               </div>
+              {earned.includes('graduate') && (
+                <button
+                  className={`desktop__progress-card-btn${cardCopied ? ' desktop__progress-card-btn--done' : ''}`}
+                  onClick={handleCopyCard}
+                  title="copy your shareable card link"
+                >
+                  {cardCopied ? '✓ copied' : '🔗 share card'}
+                </button>
+              )}
             </div>
 
             <div className="desktop__progress-weeks">

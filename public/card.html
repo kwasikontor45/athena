@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athena — Completion Card</title>
+  <meta property="og:title" content="I completed Athena Digital Foundations" />
+  <meta property="og:description" content="5 weeks · 13 lessons · real skills" />
+  <meta property="og:image" content="https://athena.kontor.studio/pwa-512x512.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:   #c9a84c;
+      --gold-d: rgba(201,168,76,0.12);
+      --gold-b: rgba(201,168,76,0.3);
+      --bg:     #0a0e1a;
+      --surface:#0d1221;
+      --text:   rgba(255,255,255,0.88);
+      --dim:    rgba(255,255,255,0.45);
+      --green:  #1d9e75;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border: 1px solid var(--gold-b);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(201,168,76,0.08);
+    }
+
+    /* Top strip */
+    .card__header {
+      background: linear-gradient(135deg, #0d1525 0%, #111827 100%);
+      border-bottom: 1px solid var(--gold-b);
+      padding: 32px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .card__owl { font-size: 48px; line-height: 1; }
+
+    .card__course {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.8;
+    }
+
+    .card__title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .card__name {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1.2;
+      margin-top: 4px;
+    }
+
+    .card__date {
+      font-size: 13px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    /* Stats row */
+    .card__stats {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card__stat {
+      flex: 1;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card__stat:last-child { border-right: none; }
+
+    .card__stat-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .card__stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+
+    /* Badges */
+    .card__badges {
+      padding: 20px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card__badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--gold-d);
+      border: 1px solid var(--gold-b);
+      color: var(--gold);
+    }
+
+    /* Footer */
+    .card__footer {
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card__verified {
+      font-size: 11px;
+      color: var(--dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card__verified-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .card__link {
+      font-size: 11px;
+      color: var(--gold);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+
+    .card__link:hover { opacity: 1; }
+
+    /* Loading / error states */
+    .state {
+      color: var(--dim);
+      font-size: 14px;
+      text-align: center;
+      padding: 60px 24px;
+    }
+
+    .state__owl { font-size: 40px; margin-bottom: 14px; }
+    .state__msg { margin-bottom: 8px; }
+    .state__sub { font-size: 12px; opacity: 0.6; }
+
+    /* Share button below card */
+    .share-row {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .share-btn {
+      background: var(--gold-d);
+      border: 1px solid var(--gold-b);
+      border-radius: 8px;
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .share-btn:hover { background: rgba(201,168,76,0.2); }
+
+    .share-btn--dim {
+      background: transparent;
+      color: var(--dim);
+      border-color: rgba(255,255,255,0.1);
+      font-weight: 400;
+    }
+
+    .share-btn--dim:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+    /* Print */
+    @media print {
+      body { background: #fff; padding: 0; justify-content: flex-start; }
+      .card { max-width: 100%; box-shadow: none; border-color: #ddd; }
+      .card__header { background: #f8f6f0; }
+      .card__course, .card__title, .card__name { color: #1a1a1a; }
+      .card__stat-val, .card__badge, .card__link { color: #8a6f2e; }
+      .card__stat-label, .card__dim, .card__date { color: #777; }
+      .card__verified-dot { background: #1d9e75; }
+      .share-row { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    const WORKER   = 'https://athena-sync.kwasikontor45-995.workers.dev'
+    const TOTAL_LX = 13
+
+    const BADGE_LABELS = {
+      'first-click': '🖱️ First Click',
+      explorer:      '🗂️ Explorer',
+      emailer:       '✉️ Emailer',
+      scholar:       '🎓 Scholar',
+      graduate:      '🏆 Graduate',
+    }
+
+    function formatDate(ts) {
+      if (!ts) return '—'
+      return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+
+    function renderLoading() {
+      document.getElementById('root').innerHTML = `
+        <div class="state">
+          <div class="state__owl">🦉</div>
+          <div class="state__msg">loading…</div>
+        </div>
+      `
+    }
+
+    function renderError() {
+      document.getElementById('root').innerHTML = `
+        <div class="state">
+          <div class="state__owl">🦉</div>
+          <div class="state__msg">card not found</div>
+          <div class="state__sub">this link may be invalid or the learner's data isn't available.</div>
+        </div>
+      `
+    }
+
+    function renderCard(data) {
+      const { learner, events } = data
+
+      // Derive stats from events
+      const completedLessons = new Set(
+        events.filter(e => e.event === 'lesson-complete').map(e => e.lesson)
+      )
+      const lessonsCount = completedLessons.size
+
+      // XP: 50 per lesson complete
+      const xp = events.filter(e => e.event === 'lesson-complete').length * 50
+
+      // Badges
+      const badges = []
+      if (events.some(e => e.event === 'first-click' || e.lesson === 'desktop-navigation')) badges.push('first-click')
+      if (completedLessons.has('my-files'))      badges.push('explorer')
+      if (completedLessons.has('email'))         badges.push('emailer')
+      if (completedLessons.has('school-portal')) badges.push('scholar')
+      if (lessonsCount >= TOTAL_LX)              badges.push('graduate')
+
+      // Completion date = timestamp of last lesson-complete event
+      const completionEvents = events.filter(e => e.event === 'lesson-complete')
+      const completedAt = completionEvents.length
+        ? Math.max(...completionEvents.map(e => e.timestamp))
+        : null
+
+      const displayName = learner.display_name || 'Athena Learner'
+      const cardUrl     = window.location.href
+
+      document.getElementById('root').innerHTML = `
+        <div class="card" id="card">
+          <div class="card__header">
+            <div class="card__owl">🦉</div>
+            <div class="card__course">Digital Foundations · kontor.studio</div>
+            <div class="card__title">course complete</div>
+            <div class="card__name">${displayName}</div>
+            ${completedAt ? `<div class="card__date">completed ${formatDate(completedAt)}</div>` : ''}
+          </div>
+
+          <div class="card__stats">
+            <div class="card__stat">
+              <div class="card__stat-val">${lessonsCount}</div>
+              <div class="card__stat-label">lessons</div>
+            </div>
+            <div class="card__stat">
+              <div class="card__stat-val">${xp}</div>
+              <div class="card__stat-label">XP</div>
+            </div>
+            <div class="card__stat">
+              <div class="card__stat-val">${badges.length}</div>
+              <div class="card__stat-label">badges</div>
+            </div>
+          </div>
+
+          ${badges.length ? `
+          <div class="card__badges">
+            ${badges.map(b => `<span class="card__badge">${BADGE_LABELS[b] || b}</span>`).join('')}
+          </div>` : ''}
+
+          <div class="card__footer">
+            <div class="card__verified">
+              <div class="card__verified-dot"></div>
+              verified by Athena
+            </div>
+            <a class="card__link" href="https://athena.kontor.studio" target="_blank">athena.kontor.studio</a>
+          </div>
+        </div>
+
+        <div class="share-row">
+          <button class="share-btn" id="copy-btn" onclick="copyLink()">copy link</button>
+          <button class="share-btn share-btn--dim" onclick="window.print()">save as PDF</button>
+        </div>
+      `
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.getElementById('copy-btn')
+        btn.textContent = 'copied ✓'
+        setTimeout(() => { btn.textContent = 'copy link' }, 2000)
+      })
+    }
+
+    async function init() {
+      const params   = new URLSearchParams(window.location.search)
+      const learnerId = params.get('id')
+
+      if (!learnerId) {
+        renderError()
+        return
+      }
+
+      renderLoading()
+
+      try {
+        const res = await fetch(`${WORKER}/progress/${learnerId}`)
+        if (!res.ok) { renderError(); return }
+        const data = await res.json()
+
+        // Only show card if graduate badge earned (all lessons complete)
+        const completedLessons = new Set(
+          data.events.filter(e => e.event === 'lesson-complete').map(e => e.lesson)
+        )
+        if (completedLessons.size < TOTAL_LX) {
+          document.getElementById('root').innerHTML = `
+            <div class="state">
+              <div class="state__owl">🦉</div>
+              <div class="state__msg">still in progress</div>
+              <div class="state__sub">this learner hasn't completed all lessons yet.</div>
+            </div>
+          `
+          return
+        }
+
+        renderCard(data)
+      } catch {
+        renderError()
+      }
+    }
+
+    init()
+  </script>
+</body>
+</html>
