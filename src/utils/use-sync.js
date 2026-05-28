@@ -1,8 +1,11 @@
-const WORKER_URL = 'https://athena-sync.kwasikontor45-995.workers.dev'
+const WORKER_URL     = 'https://athena-sync.kwasikontor45-995.workers.dev'
 const PASSPHRASE_KEY = 'athena_passphrase'
 const LEARNER_ID_KEY = 'athena_learner_id'
 const QUEUE_KEY      = 'athena_event_queue'
 const FLUSH_INTERVAL = 30_000
+
+// One session ID per page load — threads through all events so dashboard can count sessions
+const SESSION_ID = crypto.randomUUID()
 
 // ── Passphrase generation ──────────────────────────────────────────────────
 const WORDS = [
@@ -52,7 +55,7 @@ async function flush(learnerId) {
     const res = await fetch(`${WORKER_URL}/events`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ learner_id: learnerId, events }),
+      body:    JSON.stringify({ learner_id: learnerId, session_id: SESSION_ID, events }),
     })
     if (!res.ok) {
       // Re-enqueue on failure so events aren't lost
@@ -116,6 +119,19 @@ export function getPassphrase() {
 
 export function getLearnerId() {
   return learnerId || localStorage.getItem(LEARNER_ID_KEY) || null
+}
+
+export async function joinCohort(cohortCode) {
+  const id = getLearnerId()
+  if (!id || !cohortCode) return false
+  try {
+    const res = await fetch(`${WORKER_URL}/cohort/join`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ learner_id: id, cohort_code: cohortCode }),
+    })
+    return res.ok
+  } catch { return false }
 }
 
 export async function restoreFromPassphrase(passphrase) {

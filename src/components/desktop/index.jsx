@@ -3,6 +3,7 @@ import AthenaAssistant from '../athena-assistant'
 import LessonPanel from '../lesson-panel'
 import { LESSONS, WEEKS } from '../../utils/lessons'
 import { progressToCode, codeToProgress, resetProgress } from '../../utils/use-progress'
+import { joinCohort, getPassphrase } from '../../utils/use-sync'
 import './desktop.css'
 
 const MISSION_POOL = LESSONS.filter(l => l.id !== 'desktop-navigation')
@@ -66,16 +67,26 @@ export default function Desktop({
   getLessonStatus, getEventProgress, onSelectLesson,
   earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
-  const [cpCopied,      setCpCopied]      = useState(false)
-  const [pasteCode,     setPasteCode]     = useState('')
-  const [pasteError,    setPasteError]    = useState('')
-  const [resetStep,     setResetStep]     = useState('idle')
+  const [cpCopied,         setCpCopied]         = useState(false)
+  const [pasteCode,        setPasteCode]        = useState('')
+  const [pasteError,       setPasteError]       = useState('')
+  const [resetStep,        setResetStep]        = useState('idle')
+  const [cohortCode,       setCohortCode]       = useState('')
+  const [cohortStatus,     setCohortStatus]     = useState('idle') // idle | joining | done | error
   const [lessonPanelOpen, setLessonPanelOpen] = useState(() => {
     try { return localStorage.getItem('athena_lesson_panel') !== 'closed' } catch { return true }
   })
 
   const savedCode  = progressToCode()
   const restoreUrl = savedCode ? `${window.location.origin}/?restore=${savedCode}` : null
+
+  async function handleCohortJoin() {
+    if (!cohortCode.trim()) return
+    setCohortStatus('joining')
+    const ok = await joinCohort(cohortCode.trim())
+    setCohortStatus(ok ? 'done' : 'error')
+    if (ok) setTimeout(() => setCohortStatus('idle'), 3000)
+  }
 
   function toggleLessonPanel() {
     const next = !lessonPanelOpen
@@ -202,6 +213,27 @@ export default function Desktop({
                 </button>
               </div>
               {pasteError && <p className="desktop__progress-cp-error">{pasteError}</p>}
+
+              <div className="desktop__progress-cp-divider">join a cohort</div>
+              <div className="desktop__progress-cp-row">
+                <input
+                  className="desktop__progress-cp-input"
+                  placeholder="enter cohort code e.g. BATCH1"
+                  value={cohortCode}
+                  onChange={e => setCohortCode(e.target.value.toUpperCase())}
+                  maxLength={12}
+                />
+                <button
+                  className="desktop__progress-cp-btn"
+                  onClick={handleCohortJoin}
+                  disabled={!cohortCode.trim() || cohortStatus === 'joining' || cohortStatus === 'done'}
+                >
+                  {cohortStatus === 'joining' ? '…' : cohortStatus === 'done' ? 'joined ✓' : 'join'}
+                </button>
+              </div>
+              {cohortStatus === 'error' && (
+                <p className="desktop__progress-cp-error">couldn't join — check the code and try again.</p>
+              )}
 
               <div className="desktop__progress-cp-reset">
                 {resetStep === 'idle' ? (
