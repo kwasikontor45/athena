@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { playClick } from '../../../utils/sound'
 import './typing-sim.css'
 
 const SENTENCES = [
@@ -100,6 +101,8 @@ function Keyboard({ nextChar }) {
 
 // ── Main component ───────────────────────────────────────────────────────────
 
+const PB_KEY = 'athena_typing_best'
+
 export default function TypingSim({ onClose, onAthenaEvent }) {
   const [sentenceIdx, setSentenceIdx] = useState(0)
   const [typed, setTyped]             = useState('')
@@ -107,8 +110,11 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
   const [totalCorrect, setTotalCorrect]       = useState(0)
   const [totalKeypresses, setTotalKeypresses] = useState(0)
   const [completedCount, setCompletedCount]   = useState(0)
-  const [allDone, setAllDone] = useState(false)
-  const [flash, setFlash]     = useState(false)
+  const [allDone, setAllDone]   = useState(false)
+  const [flash, setFlash]       = useState(false)
+  const [personalBest, setPersonalBest] = useState(() => parseInt(localStorage.getItem(PB_KEY) || '0', 10))
+  const [isNewBest, setIsNewBest]       = useState(false)
+  const prevBestRef = useRef(0)
 
   const inputRef       = useRef(null)
   const firedRef       = useRef(new Set())
@@ -120,6 +126,20 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
   const wpmHistRef     = useRef([])
 
   useEffect(() => { inputRef.current?.focus() }, [])
+
+  useEffect(() => {
+    if (!allDone || avgWpm === 0) return
+    const prev = parseInt(localStorage.getItem(PB_KEY) || '0', 10)
+    prevBestRef.current = prev
+    if (avgWpm > prev) {
+      localStorage.setItem(PB_KEY, String(avgWpm))
+      setPersonalBest(avgWpm)
+      setIsNewBest(true)
+    } else {
+      setPersonalBest(prev)
+      setIsNewBest(false)
+    }
+  }, [allDone])
 
   const sentence = SENTENCES[sentenceIdx]
   const avgWpm   = wpmHistRef.current.length > 0
@@ -146,6 +166,7 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
 
     const added = val.length > typed.length
     if (added) {
+      playClick()
       const i       = val.length - 1
       const correct = val[i] === sent[i]
       setTotalKeypresses(k => k + 1)
@@ -217,6 +238,7 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
     setCompletedCount(0)
     setAllDone(false)
     setFlash(false)
+    setIsNewBest(false)
     startTimeRef.current = null
     mistakesRef.current  = false
     streakRef.current    = 0
@@ -257,6 +279,10 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
           <span className="ts__stat-value">{avgWpm}</span>
         </div>
         <div className="ts__stat">
+          <span className="ts__stat-label">Best</span>
+          <span className="ts__stat-value ts__stat-value--best">{personalBest > 0 ? personalBest : '—'}</span>
+        </div>
+        <div className="ts__stat">
           <span className="ts__stat-label">Accuracy</span>
           <span className="ts__stat-value">{accuracy}%</span>
         </div>
@@ -268,11 +294,25 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
 
       {allDone ? (
         <div className="ts__done">
-          <span className="ts__done-icon">✓</span>
-          <p className="ts__done-heading">You finished all 15 sentences!</p>
+          {isNewBest ? (
+            <span className="ts__done-icon ts__done-icon--best">🏆</span>
+          ) : (
+            <span className="ts__done-icon">✓</span>
+          )}
+          <p className="ts__done-heading">
+            {isNewBest ? 'New personal best!' : 'All 15 sentences done!'}
+          </p>
           <div className="ts__done-stats">
-            <span>Average WPM: <strong>{avgWpm}</strong></span>
-            <span>Overall Accuracy: <strong>{accuracy}%</strong></span>
+            <span>This run: <strong>{avgWpm} WPM</strong></span>
+            {personalBest > 0 && !isNewBest && (
+              <span className={`ts__done-delta${avgWpm >= personalBest ? ' ts__done-delta--up' : ' ts__done-delta--down'}`}>
+                {avgWpm >= personalBest ? '+' : ''}{avgWpm - personalBest} vs your best ({personalBest} WPM)
+              </span>
+            )}
+            {isNewBest && prevBestRef.current > 0 && (
+              <span className="ts__done-delta ts__done-delta--up">↑ previous best: {prevBestRef.current} WPM</span>
+            )}
+            <span>Accuracy: <strong>{accuracy}%</strong></span>
           </div>
           <button className="ts__retry-btn" onClick={reset}>Try again</button>
         </div>

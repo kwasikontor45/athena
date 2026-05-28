@@ -1,8 +1,38 @@
+import { useState } from 'react'
 import AthenaAssistant from '../athena-assistant'
 import LessonPanel from '../lesson-panel'
 import { LESSONS, WEEKS } from '../../utils/lessons'
-import { exportProgress, importProgress } from '../../utils/use-progress'
+import { progressToCode, codeToProgress, resetProgress } from '../../utils/use-progress'
 import './desktop.css'
+
+const MISSION_POOL = LESSONS.filter(l => l.id !== 'desktop-navigation')
+
+function getDailyMission() {
+  const d = new Date()
+  const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate()
+  return MISSION_POOL[seed % MISSION_POOL.length]
+}
+
+function DailyMission({ completedLessons, onOpenApp }) {
+  const mission = getDailyMission()
+  const done = completedLessons?.has(mission.id)
+
+  return (
+    <div
+      className={`desktop__mission${done ? ' desktop__mission--done' : ''}`}
+      onClick={() => !done && onOpenApp(mission.id)}
+      role={done ? 'status' : 'button'}
+      title={done ? 'Mission complete!' : `Open ${mission.title}`}
+    >
+      <span className="desktop__mission-icon">{mission.icon}</span>
+      <div className="desktop__mission-body">
+        <span className="desktop__mission-label">today's focus</span>
+        <span className="desktop__mission-title">{mission.title}</span>
+      </div>
+      <span className="desktop__mission-status">{done ? '✓' : '→'}</span>
+    </div>
+  )
+}
 
 const BADGE_LABELS = {
   'first-click': '🖱️ First Click',
@@ -26,6 +56,7 @@ const APP_ICONS = [
   { id: 'kontor-studio', emoji: '🏠',  label: 'kontor.studio' },
   { id: 'dev-site',      emoji: '💻',  label: 'kwasikontor.dev'},
   { id: 'code-bootcamp', emoji: '🧪',  label: 'Code Bootcamp' },
+  { id: 'git-basics',   emoji: '🔧',  label: 'Git Basics'    },
 ]
 
 export default function Desktop({
@@ -35,6 +66,39 @@ export default function Desktop({
   getLessonStatus, getEventProgress, onSelectLesson,
   earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
+  const [cpCopied, setCpCopied]   = useState(false)
+  const [pasteCode, setPasteCode] = useState('')
+  const [pasteError, setPasteError] = useState('')
+  const [resetStep, setResetStep] = useState('idle')
+
+  const savedCode  = progressToCode()
+  const restoreUrl = savedCode ? `${window.location.origin}/?restore=${savedCode}` : null
+
+  function handleCopyLink() {
+    if (!restoreUrl) return
+    navigator.clipboard.writeText(restoreUrl).then(() => {
+      setCpCopied(true)
+      setTimeout(() => setCpCopied(false), 2000)
+    })
+  }
+
+  function handleRestoreCode() {
+    const raw   = pasteCode.trim()
+    const match = raw.match(/[?&]restore=([^&\s]+)/)
+    const target = match ? match[1] : raw
+    if (codeToProgress(target)) {
+      window.location.reload()
+    } else {
+      setPasteError("That code didn't work — double-check and try again.")
+      setTimeout(() => setPasteError(''), 3000)
+    }
+  }
+
+  function handleReset() {
+    resetProgress()
+    window.location.reload()
+  }
+
   if (currentView === 'progress') {
     const completedIds = Array.from(completedLessons ?? [])
     const earned = earnedBadges ?? []
@@ -86,38 +150,64 @@ export default function Desktop({
               </div>
             </div>
 
-            <div className="desktop__progress-actions">
-              <button className="desktop__progress-action" onClick={() => {
-                const data = exportProgress()
-                if (!data) return
-                const blob = new Blob([data], { type: 'application/json' })
-                const url = URL.createObjectURL(blob)
-                const a = document.createElement('a')
-                a.href = url
-                a.download = `athena-memory-${new Date().toISOString().slice(0, 10)}.json`
-                a.click()
-                URL.revokeObjectURL(url)
-              }}>export memory</button>
-              <button className="desktop__progress-action" onClick={() => {
-                const input = document.createElement('input')
-                input.type = 'file'
-                input.accept = '.json'
-                input.onchange = (e) => {
-                  const file = e.target.files[0]
-                  if (!file) return
-                  const reader = new FileReader()
-                  reader.onload = (ev) => {
-                    try {
-                      importProgress(ev.target.result)
-                      window.location.reload()
-                    } catch {
-                      alert('invalid memory file')
-                    }
-                  }
-                  reader.readAsText(file)
-                }
-                input.click()
-              }}>import memory</button>
+            <div className="desktop__progress-checkpoint">
+              <div className="desktop__progress-cp-heading">continue on any device or browser</div>
+              <p className="desktop__progress-cp-desc">
+                Copy this link and open it anywhere — your progress restores instantly. No account needed.
+              </p>
+
+              {restoreUrl ? (
+                <div className="desktop__progress-cp-row">
+                  <input
+                    readOnly
+                    className="desktop__progress-cp-input"
+                    value={restoreUrl}
+                    onFocus={e => e.target.select()}
+                    onClick={e => e.target.select()}
+                  />
+                  <button
+                    className={`desktop__progress-cp-btn${cpCopied ? ' desktop__progress-cp-btn--done' : ''}`}
+                    onClick={handleCopyLink}
+                  >
+                    {cpCopied ? 'copied ✓' : 'copy link'}
+                  </button>
+                </div>
+              ) : (
+                <p className="desktop__progress-cp-empty">Complete a lesson to generate your checkpoint link.</p>
+              )}
+
+              <div className="desktop__progress-cp-divider">restore from a saved link</div>
+              <div className="desktop__progress-cp-row">
+                <input
+                  className="desktop__progress-cp-input"
+                  placeholder="paste your link or code here"
+                  value={pasteCode}
+                  onChange={e => setPasteCode(e.target.value)}
+                />
+                <button
+                  className="desktop__progress-cp-btn"
+                  onClick={handleRestoreCode}
+                  disabled={!pasteCode.trim()}
+                >
+                  restore
+                </button>
+              </div>
+              {pasteError && <p className="desktop__progress-cp-error">{pasteError}</p>}
+
+              <div className="desktop__progress-cp-reset">
+                {resetStep === 'idle' ? (
+                  <button className="desktop__progress-cp-reset-btn" onClick={() => setResetStep('confirm')}>
+                    start fresh
+                  </button>
+                ) : (
+                  <span className="desktop__progress-cp-reset-confirm">
+                    this will erase all progress —&nbsp;
+                    <button onClick={handleReset}>yes, reset</button>
+                    &nbsp;·&nbsp;
+                    <button onClick={() => setResetStep('idle')}>cancel</button>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -136,6 +226,7 @@ export default function Desktop({
       </aside>
 
       <div className="desktop__grid-area">
+        <DailyMission completedLessons={completedLessons} onOpenApp={onSelectLesson} />
         <div className="desktop__icon-grid">
           {APP_ICONS.map(({ id, emoji, label }) => (
             <button

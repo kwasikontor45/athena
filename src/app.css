@@ -36,7 +36,8 @@
 .app__sim-stage .sc,
 .app__sim-stage .ps,
 .app__sim-stage .mp,
-.app__sim-stage .cb-sim {
+.app__sim-stage .cb-sim,
+.app__sim-stage .gs-sim {
   position: relative;
   top: auto;
   left: auto;
@@ -76,6 +77,79 @@
 .sim-window__maximize:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
+}
+
+.sim-window__resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  cursor: se-resize;
+  z-index: 10;
+}
+
+.sim-window__resize-handle::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+
+/* Restore banner */
+.app__restore-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: var(--athena-bg-panel, #1e1e1e);
+  border-bottom: 1px solid var(--athena-gold-border, rgba(212, 175, 55, 0.3));
+  font-size: 13px;
+}
+
+.app__restore-banner-text {
+  flex: 1;
+  color: var(--athena-gold, #d4af37);
+  font-weight: 600;
+}
+
+.app__restore-banner-btn {
+  padding: 6px 14px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ccc;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.app__restore-banner-btn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.app__restore-banner-btn--primary {
+  background: var(--athena-gold, #d4af37);
+  border-color: var(--athena-gold, #d4af37);
+  color: #111;
+  font-weight: 700;
+}
+
+.app__restore-banner-btn--primary:hover {
+  background: #e5c04a;
+  border-color: #e5c04a;
 }
 
 /* Standalone bootcamp view */

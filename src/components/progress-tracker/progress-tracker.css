@@ -26,6 +26,12 @@
   transition: width 0.4s ease;
 }
 
+.pt__xp-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .pt__xp {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.3);
@@ -35,6 +41,24 @@
 
 .pt__xp--flash {
   color: var(--athena-gold);
+}
+
+.pt__xp-floater {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: var(--athena-gold);
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: pt-float 0.95s ease-out forwards;
+}
+
+@keyframes pt-float {
+  0%   { opacity: 1;   transform: translateY(0); }
+  20%  { opacity: 1;   transform: translateY(-6px); }
+  100% { opacity: 0;   transform: translateY(-30px); }
 }
 
 .pt__share {

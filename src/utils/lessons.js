@@ -95,6 +95,14 @@ export const LESSONS = [
     description: 'Build a drag-and-drop kanban board from scratch using React and Dragula.',
     requiredEvents: ['bootcamp-opened', 'step-advanced', 'lesson-complete'],
   },
+  {
+    id: 'git-basics',
+    title: 'your first git repo',
+    week: 5,
+    icon: '🔧',
+    description: 'Learn the core Git workflow: init, status, add, commit, log.',
+    requiredEvents: ['git-opened', 'step-advanced', 'lesson-complete'],
+  },
 ]
 
 export const WEEKS = [...new Set(LESSONS.map(l => l.week))].sort()

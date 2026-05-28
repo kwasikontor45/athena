@@ -187,7 +187,7 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
   font-size: 12px;
   line-height: 20px;
 }
@@ -211,10 +211,53 @@
   user-select: none;
 }
 
-.cb-editor__textarea {
+/* Overlay wrapper — pre sits behind textarea */
+.cb-editor__code-wrap {
+  position: relative;
   flex: 1;
+  overflow: hidden;
   background: #121212;
+}
+
+/* Highlighted pre — same geometry as textarea, no visible scrollbar */
+.cb-editor__highlight {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre;
+  overflow: auto;
+  overflow-wrap: normal;
+  tab-size: 2;
+  word-break: normal;
   color: #c5c5c5;
+  background: transparent;
+  pointer-events: none;
+  box-sizing: border-box;
+  scrollbar-width: none;
+}
+
+.cb-editor__highlight::-webkit-scrollbar {
+  display: none;
+}
+
+/* Syntax token colors — VS Code Dark+ palette */
+.hl-c   { color: #6a9955; }
+.hl-s   { color: #ce9178; }
+.hl-k   { color: #569cd6; }
+.hl-cls { color: #4ec9b0; }
+.hl-n   { color: #b5cea8; }
+
+/* Textarea — transparent text, visible caret, handles all input + scrollbars */
+.cb-editor__textarea {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: #d4d4d4;
   border: none;
   outline: none;
   padding: 6px 14px;
@@ -227,10 +270,12 @@
   overflow-x: auto;
   overflow-y: auto;
   tab-size: 2;
+  z-index: 1;
+  box-sizing: border-box;
 }
 
 .cb-editor__textarea::selection {
-  background: rgba(212, 175, 55, 0.25);
+  background: rgba(212, 175, 55, 0.3);
 }
 
 /* ─── Guide panel ─── */

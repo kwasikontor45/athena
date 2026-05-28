@@ -1,5 +1,4 @@
 import { athenaResponses } from './athena-responses'
-import codebaseSummary from '../data/codebase-summary.json'
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
@@ -23,32 +22,36 @@ const DIRECT_KEYWORDS = [
     reply: 'You can drag any window by clicking and holding its title bar, then moving your mouse.' },
 ]
 
-function formatRepoContext() {
-  if (!codebaseSummary?.repos) return ''
-  const repos = Object.entries(codebaseSummary.repos)
-  if (repos.length === 0) return ''
-  const lines = repos.map(([name, info]) => {
-    const stack = info.stack?.join(', ') || 'unknown'
-    const naming = info.patterns?.fileNaming || 'unknown'
-    return `- ${name}: ${stack}. file naming: ${naming}. key files: ${info.keyFiles?.slice(0, 3).join(', ')}`
-  })
-  return `\n\nThe learner\'s projects:\n${lines.join('\n')}`
-}
-
 function buildSystemPrompt(lesson, event, context) {
-  const repoContext = formatRepoContext()
-  const base = `You are Athena, a patient, encouraging, and concise coding mentor. You help a learner build real projects using web technologies. You speak in plain English, never use jargon without explaining it, and keep responses to 1–3 sentences. You celebrate small wins. You reference the learner\'s own projects and patterns when giving advice.${repoContext}`
+  const generalBase = `You are Athena, a patient, encouraging, and concise learning companion. You help beginners get comfortable with computers and everyday software. You speak in plain English, never use jargon without explaining it, and keep responses to 1–3 sentences. You celebrate small wins.`
+  const codingBase  = `You are Athena, a patient, encouraging, and concise coding mentor. You help a learner build real projects using web technologies. You speak in plain English, never use jargon without explaining it, and keep responses to 1–3 sentences. You celebrate small wins.`
 
   if (event === 'direct-question') {
-    return `${base}\n\nThe learner asks: "${context}". Respond helpfully and briefly. If relevant, reference their project patterns above.`
+    return `${generalBase}\n\nThe learner asks: "${context}". Respond helpfully and briefly.`
   }
 
-  return `${base}\n\nThe learner is in the "${lesson}" lesson. They just triggered: "${event}". ${context ? `Context: ${context}` : ''} Respond briefly and encouragingly.`
+  if (lesson === 'code-bootcamp') {
+    const stepInfo = context ? `They are on the step: "${context}".` : ''
+    if (event === 'step-failed') {
+      return `${codingBase}\n\nThe learner is building a drag-and-drop kanban board. ${stepInfo} Their code check just failed. Give one short, encouraging nudge — don't give the answer away, just help them think about where to look.`
+    }
+    if (event === 'step-advanced') {
+      return `${codingBase}\n\nThe learner is building a drag-and-drop kanban board. They just completed the step: "${context}". Celebrate briefly and set up excitement for what comes next.`
+    }
+    if (event === 'lesson-complete') {
+      return `${codingBase}\n\nThe learner just finished building a full drag-and-drop kanban board from scratch. This is a real frontend feature. Celebrate genuinely — they earned it.`
+    }
+  }
+
+  return `${generalBase}\n\nThe learner is in the "${lesson}" lesson. They just triggered: "${event}". ${context ? `Context: ${context}` : ''} Respond briefly and encouragingly.`
 }
 
 function getOfflineResponse(lesson, event, context) {
   const lessonBank = athenaResponses[lesson]
-  if (lessonBank?.[event]) return pickRandom(lessonBank[event])
+  if (lessonBank?.[event]) {
+    const raw = pickRandom(lessonBank[event])
+    return raw.replace(/\{streak\}/g, context || '')
+  }
 
   if (event === 'direct-question' && context) {
     for (const { match, reply } of DIRECT_KEYWORDS) {

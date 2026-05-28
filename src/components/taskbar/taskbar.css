@@ -30,6 +30,14 @@
   line-height: 1;
 }
 
+.taskbar__streak {
+  font-size: 12px;
+  font-weight: 700;
+  color: #e8874a;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+}
+
 .taskbar__nav {
   display: flex;
   align-items: center;
@@ -73,6 +81,21 @@
   transition: opacity 0.15s;
 }
 .taskbar__contact:hover { opacity: 1; color: var(--athena-gold); }
+
+.taskbar__sound {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 0 2px;
+  line-height: 1;
+  transition: opacity 0.15s;
+}
+
+.taskbar__sound:hover {
+  opacity: 1;
+}
 
 .taskbar__time {
   color: var(--athena-text-secondary);

@@ -39,15 +39,21 @@ function buildSummary({ completedLessons, earnedBadges, totalXP, currentWeek }) 
 export default function ProgressTracker({ currentWeek, totalXP, weekCompleted, weekTotal, completedLessons, earnedBadges }) {
   const pct = weekTotal > 0 ? Math.round((weekCompleted / weekTotal) * 100) : 0
   const prevXP = useRef(totalXP)
+  const floaterKey = useRef(0)
   const [flash, setFlash] = useState(false)
+  const [floater, setFloater] = useState(null)
   const [shareState, setShareState] = useState('idle') // idle | copied | failed
 
   useEffect(() => {
     if (totalXP > prevXP.current) {
+      const delta = totalXP - prevXP.current
+      floaterKey.current += 1
       setFlash(true)
-      const t = setTimeout(() => setFlash(false), 800)
+      setFloater({ delta, key: floaterKey.current })
+      const t1 = setTimeout(() => setFlash(false), 800)
+      const t2 = setTimeout(() => setFloater(null), 950)
       prevXP.current = totalXP
-      return () => clearTimeout(t)
+      return () => { clearTimeout(t1); clearTimeout(t2) }
     }
     prevXP.current = totalXP
   }, [totalXP])
@@ -71,7 +77,12 @@ export default function ProgressTracker({ currentWeek, totalXP, weekCompleted, w
       <div className="pt__bar" title={`${weekCompleted} of ${weekTotal} lessons complete`}>
         <div className="pt__fill" style={{ width: `${pct}%` }} />
       </div>
-      <span className={`pt__xp${flash ? ' pt__xp--flash' : ''}`}>{totalXP} xp</span>
+      <span className="pt__xp-wrap">
+        <span className={`pt__xp${flash ? ' pt__xp--flash' : ''}`}>{totalXP} xp</span>
+        {floater && (
+          <span key={floater.key} className="pt__xp-floater">+{floater.delta}</span>
+        )}
+      </span>
       <button
         className={`pt__share${shareState === 'copied' ? ' pt__share--copied' : shareState === 'failed' ? ' pt__share--failed' : ''}`}
         onClick={handleShare}

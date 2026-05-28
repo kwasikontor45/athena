@@ -13,12 +13,32 @@ import ShortcutsSim   from './components/sims/shortcuts-sim'
 import PasswordSim    from './components/sims/password-sim'
 import MousePracticeSim from './components/sims/mouse-practice-sim'
 import CodeBootcampSim from './components/sims/code-bootcamp-sim'
-import useProgress from './utils/use-progress'
+import GitSim from './components/sims/git-sim'
+import useProgress, { codeToProgress } from './utils/use-progress'
 import { useCircadian } from './utils/use-circadian'
+import { useStreak } from './utils/use-streak'
+import { playFanfare } from './utils/sound'
+import { LESSONS } from './utils/lessons'
+import CelebrationOverlay from './components/celebration'
 import './app.css'
 
+function RestoreBanner({ onRestore, onDismiss }) {
+  return (
+    <div className="app__restore-banner">
+      <span className="app__restore-banner-text">checkpoint found — restore your progress?</span>
+      <button className="app__restore-banner-btn app__restore-banner-btn--primary" onClick={onRestore}>
+        restore
+      </button>
+      <button className="app__restore-banner-btn" onClick={onDismiss}>
+        dismiss
+      </button>
+    </div>
+  )
+}
+
 function SimWindow({ children, simKey }) {
-  const [pos, setPos] = useState({ x: 100, y: 60 })
+  const [pos, setPos] = useState({ x: 80, y: 50 })
+  const [size, setSize] = useState({ w: 920, h: 640 })
   const [maximized, setMaximized] = useState(false)
   const wrapRef = useRef(null)
 
@@ -28,7 +48,7 @@ function SimWindow({ children, simKey }) {
 
   function handleMouseDown(e) {
     if (maximized) return
-    if (e.target.closest('input, textarea, select, button')) return
+    if (e.target.closest('input, textarea, select, button, .sim-window__resize-handle')) return
     const rect = wrapRef.current.getBoundingClientRect()
     if (e.clientY - rect.top > 40) return
     e.preventDefault()
@@ -47,11 +67,33 @@ function SimWindow({ children, simKey }) {
     window.addEventListener('mouseup',   onUp)
   }
 
+  function handleResizeDown(e) {
+    if (maximized) return
+    e.preventDefault()
+    e.stopPropagation()
+    const startMX = e.clientX
+    const startMY = e.clientY
+    const startW  = size.w
+    const startH  = size.h
+    function onMove(e) {
+      setSize({
+        w: Math.max(600, startW + (e.clientX - startMX)),
+        h: Math.max(420, startH + (e.clientY - startMY)),
+      })
+    }
+    function onUp() {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup',  onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup',   onUp)
+  }
+
   return (
     <div
       ref={wrapRef}
       className={`sim-window${maximized ? ' sim-window--maximized' : ''}`}
-      style={maximized ? {} : { position: 'fixed', left: pos.x, top: pos.y }}
+      style={maximized ? {} : { position: 'fixed', left: pos.x, top: pos.y, width: size.w, height: size.h }}
       onMouseDown={handleMouseDown}
     >
       <button
@@ -63,6 +105,9 @@ function SimWindow({ children, simKey }) {
         {maximized ? '⛶' : '□'}
       </button>
       {children}
+      {!maximized && (
+        <div className="sim-window__resize-handle" onMouseDown={handleResizeDown} />
+      )}
     </div>
   )
 }
@@ -80,6 +125,7 @@ const SIM_MAP = {
   password:         PasswordSim,
   'mouse-practice': MousePracticeSim,
   'code-bootcamp':  CodeBootcampSim,
+  'git-basics':     GitSim,
 }
 
 const LESSON_MAP = {
@@ -92,6 +138,7 @@ const LESSON_MAP = {
   shortcuts:       'shortcuts',
   password:        'password-security',
   'code-bootcamp': 'code-bootcamp',
+  'git-basics':    'git-basics',
 }
 
 const LESSON_TO_APP = {
@@ -106,12 +153,23 @@ const LESSON_TO_APP = {
   shortcuts:           'shortcuts',
   'password-security': 'password',
   'code-bootcamp':     'code-bootcamp',
+  'git-basics':        'git-basics',
 }
 
 export default function App() {
   const [currentView, setCurrentView] = useState('desktop')
   const [openApp, setOpenApp] = useState(null)
   const [currentEvent, setCurrentEvent] = useState(null)
+  const [pendingRestore, setPendingRestore] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('restore')
+    if (code) {
+      const clean = new URL(window.location.href)
+      clean.searchParams.delete('restore')
+      window.history.replaceState({}, '', clean.toString())
+    }
+    return code || null
+  })
 
   const {
     earnedBadges, completedLessons, totalXP, currentWeek, weekTotal, weekCompleted,
@@ -119,6 +177,10 @@ export default function App() {
   } = useProgress()
 
   const { phase, palette, isReEntry } = useCircadian()
+  const streak = useStreak()
+  const [celebration, setCelebration] = useState(null)
+  const prevCompletedRef = useRef(null)
+  if (prevCompletedRef.current === null) prevCompletedRef.current = new Set(completedLessons)
 
   useEffect(() => {
     const r = document.documentElement
@@ -129,6 +191,36 @@ export default function App() {
     r.style.setProperty('--athena-bg-surface',  palette.bgSurface)
     r.style.setProperty('--athena-bg-panel',    palette.bgPanel)
   }, [palette])
+
+  useEffect(() => {
+    const prev = prevCompletedRef.current
+    if (completedLessons.size > prev.size) {
+      const newId = [...completedLessons].find(id => !prev.has(id))
+      const lesson = newId ? LESSONS.find(l => l.id === newId) : null
+      if (lesson) {
+        playFanfare()
+        setCelebration(lesson)
+      }
+    }
+    prevCompletedRef.current = new Set(completedLessons)
+  }, [completedLessons])
+
+  useEffect(() => {
+    let lesson, event, context = ''
+    if (streak > 1) {
+      lesson  = 'desktop-navigation'
+      event   = 'streak-greeting'
+      context = String(streak)
+    } else if (isReEntry) {
+      lesson = 'circadian'
+      event  = 'circadian-reentry'
+    } else {
+      lesson = 'circadian'
+      event  = `circadian-${phase}`
+    }
+    const t = setTimeout(() => setCurrentEvent({ lesson, event, context }), 900)
+    return () => clearTimeout(t)
+  }, [])
 
 
   const ActiveSim = openApp ? (SIM_MAP[openApp] ?? null) : null
@@ -175,14 +267,20 @@ export default function App() {
       window.open('https://kontor.studio', '_blank', 'noopener,noreferrer')
     } else if (id === 'dev-site') {
       window.open('https://kwasikontor.dev', '_blank', 'noopener,noreferrer')
-    } else if (id === 'code-bootcamp') {
-      window.open('https://athena.kontor.studio/?app=code-bootcamp', '_blank', 'noopener,noreferrer')
     } else {
       setOpenApp(id)
       setCurrentView('desktop')
       fireDesktopNavOnce('opened-app')
     }
   }, [fireDesktopNavOnce])
+
+  function handleRestore() {
+    if (codeToProgress(pendingRestore)) {
+      window.location.reload()
+    } else {
+      setPendingRestore(null)
+    }
+  }
 
   if (urlApp === 'code-bootcamp') {
     return (
@@ -202,6 +300,12 @@ export default function App() {
 
   return (
     <div className="app">
+      {pendingRestore && (
+        <RestoreBanner
+          onRestore={handleRestore}
+          onDismiss={() => setPendingRestore(null)}
+        />
+      )}
       <Taskbar
         currentView={currentView}
         onNavigate={handleNavigate}
@@ -211,6 +315,7 @@ export default function App() {
         weekTotal={weekTotal}
         completedLessons={completedLessons}
         earnedBadges={earnedBadges}
+        streak={streak}
       />
       <Desktop
         currentView={currentView}
@@ -241,6 +346,13 @@ export default function App() {
             </SimWindow>
           </div>
         </>
+      )}
+
+      {celebration && (
+        <CelebrationOverlay
+          lesson={celebration}
+          onDismiss={() => setCelebration(null)}
+        />
       )}
     </div>
   )

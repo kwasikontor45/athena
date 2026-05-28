@@ -53,6 +53,25 @@ export function importProgress(json) {
   return parsed
 }
 
+export function progressToCode() {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if (!raw) return null
+  return btoa(raw)
+}
+
+export function codeToProgress(code) {
+  try {
+    const json = atob(code.trim())
+    return importProgress(json)
+  } catch {
+    return null
+  }
+}
+
+export function resetProgress() {
+  localStorage.removeItem(STORAGE_KEY)
+}
+
 function deriveCurrentWeek(completedLessons) {
   for (const week of WEEKS) {
     const weekLessons = LESSONS.filter(l => l.week === week)

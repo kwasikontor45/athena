@@ -99,6 +99,11 @@ export const athenaResponses = {
   },
 
   'desktop-navigation': {
+    'streak-greeting': [
+      "Day {streak} in a row — you keep showing up. That's the whole game.",
+      "{streak} days straight. Consistency is the most underrated skill in tech.",
+      "Back again — {streak} days running. Keep that momentum.",
+    ],
     'lesson-selected': [
       "Let's explore! Try clicking any app icon in the grid to open it — then close it and try the nav buttons at the top.",
       "Finding your way around starts right here. Click an icon to open an app, then close it when you're done. The bar at the top is your control centre.",
@@ -431,6 +436,31 @@ export const athenaResponses = {
     ]
   },
 
+  'git-basics': {
+    'git-opened': [
+      "Git is the tool that makes your work retrievable. Let's learn it properly — one command at a time.",
+      "Welcome to Git. By the end of this you'll have two real commits and understand exactly what happened.",
+      "This is the one tool every developer uses every day. Let's build the habit from scratch.",
+    ],
+    'step-advanced': [
+      "That's it. Each command you learn here is one you'll use for the rest of your career.",
+      "Good. Git rewards repetition — the more you do this loop, the more automatic it becomes.",
+      "Exactly right. You're building muscle memory, not just knowledge.",
+      "Clean. That's professional Git practice right there.",
+      "Yes. Notice how the state changed — that's the whole point of git status.",
+    ],
+    'step-failed': [
+      "Not quite — Git is case-sensitive and space-sensitive. Check the hint.",
+      "Close. Read the expected command carefully — even one missing character matters.",
+      "Git won't guess what you meant. The hint shows exactly what it expects.",
+    ],
+    'lesson-complete': [
+      "You just ran a real Git workflow — twice. That second loop is where the habit forms.",
+      "Two commits. A real history. You now know what 90% of developers do every day.",
+      "init → status → add → commit → log. That's Git. You've got it.",
+    ],
+  },
+
   'code-bootcamp': {
     'bootcamp-opened': [
       "Welcome to the Code Bootcamp! Today you're building a real kanban board — drag, drop, and all.",
@@ -438,9 +468,18 @@ export const athenaResponses = {
       "Ready to write code that moves? Literally. Let's build a board where cards fly between columns."
     ],
     'step-advanced': [
-      "Step complete. Each one is a brick — by the end you'll have a wall.",
-      "Nice. You're seeing how the pieces connect. Keep stepping through.",
-      "Good pace. The best developers read before they write, and you're doing exactly that."
+      "Step done. Each one is a brick — by the end you'll have a wall.",
+      "Nice. You're seeing how the pieces connect.",
+      "Good pace. The best developers read before they write, and you're doing exactly that.",
+      "Exactly right. Keep that momentum going.",
+      "That's it. On to the next piece."
+    ],
+    'step-failed': [
+      "Not quite — re-read the instruction carefully. The hint is there when you need it.",
+      "The validator caught something. Compare what you wrote against what the step asks for.",
+      "Close. Take another look — sometimes it's one character or one missing line.",
+      "Check the hint. It points to the exact thing the validator is looking for.",
+      "Read it once more slowly. The answer is in the instruction."
     ],
     'lesson-complete': [
       "You just built a drag-and-drop kanban board. That's a real frontend feature — ship it.",

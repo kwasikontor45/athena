@@ -1,0 +1,103 @@
+.cel {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  animation: cel-in 0.25s ease;
+}
+
+@keyframes cel-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cel__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cel__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 44px 56px;
+  background: var(--athena-bg-panel, #1e1e1e);
+  border: 1px solid var(--athena-gold-border, rgba(212,175,55,0.35));
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(212, 175, 55, 0.12), 0 24px 48px rgba(0,0,0,0.5);
+  animation: cel-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cel-pop {
+  from { transform: scale(0.65); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.cel__icon {
+  font-size: 52px;
+  line-height: 1;
+  animation: cel-icon-drop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+@keyframes cel-icon-drop {
+  from { transform: translateY(-20px) scale(0.6); opacity: 0; }
+  to   { transform: translateY(0)      scale(1);   opacity: 1; }
+}
+
+.cel__badge-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--athena-gold, #d4af37);
+  opacity: 0.75;
+  margin-top: 4px;
+}
+
+.cel__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--athena-text-primary, #e8e6e3);
+  line-height: 1.2;
+}
+
+.cel__xp {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--athena-gold, #d4af37);
+  animation: cel-xp-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both;
+}
+
+@keyframes cel-xp-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.cel__continue {
+  margin-top: 10px;
+  padding: 9px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--athena-gold-border, rgba(212,175,55,0.3));
+  background: var(--athena-gold, #d4af37);
+  color: #111;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  animation: cel-xp-pop 0.3s ease 0.55s both;
+}
+
+.cel__continue:hover {
+  background: #e5c04a;
+}

@@ -75,6 +75,10 @@
   line-height: 1;
 }
 
+.ts__stat-value--best {
+  color: var(--athena-gold);
+}
+
 /* Sentence display */
 .ts__sentence-area {
   flex: 1;
@@ -281,11 +285,22 @@
 
 .ts__done-stats {
   display: flex;
-  gap: 28px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
   color: var(--athena-text-secondary);
 }
 .ts__done-stats strong { color: var(--athena-gold); }
+
+.ts__done-icon--best { color: var(--athena-gold); }
+
+.ts__done-delta {
+  font-size: 12px;
+  font-weight: 600;
+}
+.ts__done-delta--up   { color: #3fb950; }
+.ts__done-delta--down { color: rgba(255,255,255,0.35); }
 
 .ts__retry-btn {
   background: var(--athena-gold-dim);

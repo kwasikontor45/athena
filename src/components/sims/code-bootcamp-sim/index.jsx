@@ -1,41 +1,69 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { shiptivitasLesson } from '../../../utils/code-lessons'
+import { highlight } from '../../../utils/highlight'
+import { playChime } from '../../../utils/sound'
 import './code-bootcamp-sim.css'
 
-/* ─── Editor: textarea + line numbers ─── */
+/* ─── Editor: syntax-highlighted overlay ─── */
 function Editor({ value, onChange, readOnly }) {
   const textareaRef = useRef(null)
+  const highlightRef = useRef(null)
+  const gutterRef    = useRef(null)
   const lines = value.split('\n')
 
   function handleKeyDown(e) {
     if (e.key === 'Tab') {
       e.preventDefault()
       const start = e.target.selectionStart
-      const end = e.target.selectionEnd
-      const newValue = value.substring(0, start) + '  ' + value.substring(end)
-      onChange(newValue)
+      const end   = e.target.selectionEnd
+      const next  = value.substring(0, start) + '  ' + value.substring(end)
+      onChange(next)
       requestAnimationFrame(() => {
         textareaRef.current?.setSelectionRange(start + 2, start + 2)
       })
     }
   }
 
+  function handleScroll() {
+    const ta = textareaRef.current
+    if (!ta) return
+    if (highlightRef.current) {
+      highlightRef.current.scrollTop  = ta.scrollTop
+      highlightRef.current.scrollLeft = ta.scrollLeft
+    }
+    if (gutterRef.current) {
+      gutterRef.current.scrollTop = ta.scrollTop
+    }
+  }
+
   return (
     <div className="cb-editor">
-      <div className="cb-editor__gutter">
+      <div ref={gutterRef} className="cb-editor__gutter">
         {lines.map((_, i) => (
           <div key={i} className="cb-editor__line-num">{i + 1}</div>
         ))}
       </div>
-      <textarea
-        ref={textareaRef}
-        className="cb-editor__textarea"
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        readOnly={readOnly}
-        spellCheck={false}
-      />
+      <div className="cb-editor__code-wrap">
+        <pre
+          ref={highlightRef}
+          className="cb-editor__highlight"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: highlight(value) + '\n' }}
+        />
+        <textarea
+          ref={textareaRef}
+          className="cb-editor__textarea"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onScroll={handleScroll}
+          readOnly={readOnly}
+          spellCheck={false}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+        />
+      </div>
     </div>
   )
 }
@@ -172,10 +200,11 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
   const isFirst = stepIndex === 0
   const isLast = stepIndex === lesson.steps.length - 1
 
-  function fire(event) {
-    if (firedRef.current.has(event)) return
-    firedRef.current.add(event)
-    onAthenaEvent?.({ lesson: 'code-bootcamp', event })
+  function fire(event, context = '') {
+    const key = `${event}:${stepIndex}`
+    if (firedRef.current.has(key)) return
+    firedRef.current.add(key)
+    onAthenaEvent?.({ lesson: 'code-bootcamp', event, context })
   }
 
   function handleCheck() {
@@ -187,12 +216,15 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
         const passed = step.validate(files)
         if (passed) {
           setValidation('pass')
-          fire(step.id === 'ship-it' ? 'lesson-complete' : 'step-advanced')
+          if (step.id !== 'ship-it') playChime()
+          fire(step.id === 'ship-it' ? 'lesson-complete' : 'step-advanced', step.title)
         } else {
           setValidation('fail')
+          fire('step-failed', step.title)
         }
       } catch {
         setValidation('fail')
+        fire('step-failed', step.title)
       }
     }, 400)
   }
@@ -226,7 +258,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
     setFiles(prev => ({ ...prev, [target]: lesson.files[target].solution }))
     setShowSolution(false)
     setValidation('pass')
-    fire('step-advanced')
+    fire('step-advanced', step.title)
   }
 
   useEffect(() => {
@@ -352,7 +384,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
           </div>
 
           <div className="cb-sim__preview-wrap">
-            <div className="cb-sim__preview-label">live preview — {step.previewMode}</div>
+            <div className="cb-sim__preview-label">live preview</div>
             <KanbanDemo mode={step.previewMode} />
           </div>
         </aside>

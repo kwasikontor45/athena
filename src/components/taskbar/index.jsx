@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ProgressTracker from '../progress-tracker'
+import { isSoundEnabled, setSoundEnabled } from '../../utils/sound'
 import './taskbar.css'
 
 const NAV_ITEMS = [
@@ -12,19 +13,29 @@ function formatTime(date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
-export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP, weekCompleted, weekTotal, completedLessons, earnedBadges }) {
+export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP, weekCompleted, weekTotal, completedLessons, earnedBadges, streak }) {
   const [time, setTime] = useState(formatTime(new Date()))
+  const [sound, setSound] = useState(isSoundEnabled())
 
   useEffect(() => {
     const id = setInterval(() => setTime(formatTime(new Date())), 60_000)
     return () => clearInterval(id)
   }, [])
 
+  function toggleSound() {
+    const next = !sound
+    setSoundEnabled(next)
+    setSound(next)
+  }
+
   return (
     <header className="taskbar">
       <div className="taskbar__brand">
         <span className="taskbar__brand-owl">🦉</span>
         <span>athena</span>
+        {streak > 1 && (
+          <span className="taskbar__streak" title={`${streak}-day streak`}>🔥 {streak}</span>
+        )}
       </div>
 
       <nav className="taskbar__nav">
@@ -45,6 +56,14 @@ export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP,
           href="mailto:autopsy@protonmail.com"
           title="Contact instructor"
         >autopsy@protonmail.com</a>
+        <button
+          className="taskbar__sound"
+          onClick={toggleSound}
+          title={sound ? 'Sound on — click to mute' : 'Sound off — click to enable'}
+          aria-label={sound ? 'Mute sound' : 'Enable sound'}
+        >
+          {sound ? '🔊' : '🔇'}
+        </button>
         <span className="taskbar__time">{time}</span>
         <ProgressTracker
           currentWeek={currentWeek}

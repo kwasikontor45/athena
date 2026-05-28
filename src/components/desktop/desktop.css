@@ -62,6 +62,86 @@
   white-space: nowrap;
 }
 
+/* ─── Daily Mission ─── */
+.desktop__mission {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--athena-gold-border);
+  background: var(--athena-gold-dim);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  max-width: 420px;
+  user-select: none;
+}
+
+.desktop__mission:hover {
+  border-color: var(--athena-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.desktop__mission--done {
+  cursor: default;
+  border-color: rgba(107, 142, 107, 0.5);
+  background: rgba(107, 142, 107, 0.08);
+}
+
+.desktop__mission--done:hover {
+  border-color: rgba(107, 142, 107, 0.5);
+  background: rgba(107, 142, 107, 0.08);
+}
+
+.desktop__mission-icon {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.desktop__mission-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.desktop__mission-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--athena-gold);
+  opacity: 0.7;
+}
+
+.desktop__mission--done .desktop__mission-label {
+  color: #6b8e6b;
+}
+
+.desktop__mission-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--athena-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desktop__mission-status {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--athena-gold);
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.desktop__mission--done .desktop__mission-status {
+  color: #6b8e6b;
+}
+
 .desktop__athena-panel {
   width: 240px;
   flex-shrink: 0;
@@ -246,25 +326,147 @@
   opacity: 0.5;
 }
 
-.desktop__progress-actions {
+/* ─── Checkpoint / restore section ─── */
+.desktop__progress-checkpoint {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  padding-top: 8px;
+  padding: 18px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--athena-gold-border);
+  background: var(--athena-gold-dim);
 }
 
-.desktop__progress-action {
-  padding: 8px 14px;
-  border-radius: var(--athena-radius-sm);
+.desktop__progress-cp-heading {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--athena-gold);
+  letter-spacing: 0.01em;
+}
+
+.desktop__progress-cp-desc {
+  font-size: 12px;
+  color: var(--athena-text-secondary);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.desktop__progress-cp-empty {
+  font-size: 12px;
+  color: var(--athena-text-secondary);
+  opacity: 0.6;
+  margin: 0;
+  font-style: italic;
+}
+
+.desktop__progress-cp-row {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop__progress-cp-input {
+  flex: 1;
+  background: var(--athena-bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--athena-text-primary);
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 11px;
+  padding: 7px 10px;
+  outline: none;
+  min-width: 0;
+  transition: border-color 0.15s;
+}
+
+.desktop__progress-cp-input:focus {
+  border-color: var(--athena-gold-border);
+}
+
+.desktop__progress-cp-input::placeholder {
+  color: #555;
+}
+
+.desktop__progress-cp-btn {
+  padding: 7px 14px;
+  border-radius: 6px;
   border: 1px solid var(--athena-gold-border);
   background: var(--athena-bg-surface);
-  color: var(--athena-text-secondary);
-  font-family: inherit;
+  color: var(--athena-gold);
   font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
 
-.desktop__progress-action:hover {
-  border-color: var(--athena-gold);
-  color: var(--athena-gold);
+.desktop__progress-cp-btn:hover:not(:disabled) {
+  background: var(--athena-gold);
+  color: #111;
+}
+
+.desktop__progress-cp-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.desktop__progress-cp-btn--done {
+  color: #6b8e6b;
+  border-color: #6b8e6b;
+}
+
+.desktop__progress-cp-divider {
+  font-size: 11px;
+  color: #555;
+  padding: 2px 0;
+  letter-spacing: 0.02em;
+}
+
+.desktop__progress-cp-error {
+  font-size: 12px;
+  color: #c47777;
+  margin: 0;
+}
+
+.desktop__progress-cp-reset {
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.desktop__progress-cp-reset-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+
+.desktop__progress-cp-reset-btn:hover {
+  color: #c47777;
+}
+
+.desktop__progress-cp-reset-confirm {
+  font-size: 12px;
+  color: #888;
+}
+
+.desktop__progress-cp-reset-confirm button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  color: #c47777;
+}
+
+.desktop__progress-cp-reset-confirm button:last-child {
+  color: #888;
 }
