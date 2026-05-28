@@ -330,3 +330,627 @@
   background: #e5c04a;
   border-color: #e5c04a;
 }
+
+/* ─── Step counter ─── */
+.gs-sim__step-num {
+  font-size: 10px;
+  color: #484f58;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ─── Branch label in file tree ─── */
+.gs-tree__branch {
+  font-size: 10px;
+  color: #8b949e;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* ─── File Viewer ─── */
+.gs-file-viewer {
+  border-bottom: 1px solid #21262d;
+  flex-shrink: 0;
+  max-height: 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.gs-file-viewer__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: #161b22;
+  border-bottom: 1px solid #21262d;
+  font-size: 11px;
+  color: #8b949e;
+  flex-shrink: 0;
+}
+
+.gs-file-viewer__icon { font-size: 11px; }
+.gs-file-viewer__name { color: #c9d1d9; font-weight: 600; }
+
+.gs-file-viewer__content {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #8b949e;
+  white-space: pre-wrap;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  background: #0d1117;
+}
+
+/* ─── Remote Diagram ─── */
+.gs-remote-diag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+
+.gs-remote-diag__box {
+  flex: 1;
+  min-width: 80px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.gs-remote-diag__box--local { border-color: #3fb950; }
+.gs-remote-diag__box--remote { border-color: #58a6ff; }
+
+.gs-remote-diag__label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #484f58;
+  margin-bottom: 4px;
+}
+
+.gs-remote-diag__inner { font-size: 11px; color: #c9d1d9; }
+
+.gs-remote-diag__arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--athena-gold, #d4af37);
+  flex-shrink: 0;
+}
+
+.gs-remote-diag__arrow-sub { color: #484f58; }
+
+/* ─── Branch Diagram ─── */
+.gs-branch-diag {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gs-branch-diag__track,
+.gs-branch-diag__feature {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.gs-branch-diag__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #3fb950;
+  background: #0d1117;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.gs-branch-diag__dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 28px;
+  height: 2px;
+  background: #21262d;
+  transform: translateY(-50%);
+}
+
+.gs-branch-diag__dot:last-of-type::after { display: none; }
+
+.gs-branch-diag__dot--fork {
+  border-color: #d29922;
+}
+
+.gs-branch-diag__dot--feature {
+  border-color: #58a6ff;
+  margin-left: 30px;
+}
+
+.gs-branch-diag__dot--merge {
+  border-color: #3fb950;
+  margin-left: 30px;
+  background: rgba(63,185,80,0.2);
+}
+
+.gs-branch-diag__label-main,
+.gs-branch-diag__label-feature {
+  font-size: 10px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+
+.gs-branch-diag__label-main    { color: #3fb950; }
+.gs-branch-diag__label-feature { color: #58a6ff; }
+
+/* ─── GitHub View ─── */
+.gs-github {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.gs-github__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #161b22;
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-github__logo { color: #c9d1d9; font-size: 13px; font-weight: 700; }
+.gs-github__repo { color: #58a6ff; font-size: 12px; font-weight: 600; }
+.gs-github__badge {
+  font-size: 10px;
+  border: 1px solid #30363d;
+  border-radius: 20px;
+  padding: 1px 6px;
+  color: #8b949e;
+}
+
+.gs-github__meta {
+  display: flex;
+  gap: 12px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #21262d;
+  font-size: 11px;
+  color: #8b949e;
+}
+
+.gs-github__branch { color: #58a6ff; }
+
+.gs-github__files { padding: 4px 0; }
+
+.gs-github__file-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: 11px;
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-github__file-icon { font-size: 12px; }
+.gs-github__file-name { color: #58a6ff; min-width: 80px; }
+.gs-github__file-msg  { color: #8b949e; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gs-github__file-age  { color: #484f58; flex-shrink: 0; }
+
+.gs-github__readme { border-top: 1px solid #21262d; }
+
+.gs-github__readme-bar {
+  padding: 6px 12px;
+  background: #161b22;
+  font-size: 11px;
+  color: #8b949e;
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-github__readme-body {
+  padding: 10px 12px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: #c9d1d9;
+}
+
+.gs-github__readme-body strong { display: block; margin-top: 6px; font-size: 13px; color: #e6edf3; }
+.gs-github__readme-body p { color: #8b949e; margin: 4px 0; }
+
+/* ─── PR View ─── */
+.gs-pr {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.gs-pr__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-pr__badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.gs-pr__badge--open { background: rgba(63,185,80,0.15); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+
+.gs-pr__title { font-size: 13px; font-weight: 600; color: #e6edf3; }
+
+.gs-pr__meta {
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #8b949e;
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-pr__branch {
+  font-family: monospace;
+  background: rgba(88,166,255,0.1);
+  color: #58a6ff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.gs-pr__files {
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-pr__file-header {
+  padding: 6px 12px;
+  font-size: 11px;
+  color: #8b949e;
+  background: #161b22;
+  border-bottom: 1px solid #21262d;
+}
+
+.gs-pr__diff { max-height: 80px; overflow-y: auto; }
+
+.gs-pr__diff-name {
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #58a6ff;
+  background: rgba(88,166,255,0.05);
+}
+
+.gs-pr__diff-line {
+  padding: 1px 12px;
+  font-size: 10.5px;
+  font-family: monospace;
+  white-space: pre;
+}
+
+.gs-pr__diff-line--add { color: #3fb950; background: rgba(63,185,80,0.04); }
+
+.gs-pr__actions {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gs-pr__btn {
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  cursor: default;
+}
+
+.gs-pr__btn--merge {
+  background: rgba(63,185,80,0.15);
+  color: #3fb950;
+  border: 1px solid rgba(63,185,80,0.3);
+}
+
+.gs-pr__btn-sub { font-size: 10.5px; color: #484f58; text-align: center; }
+
+/* ─── Sandbox wrap ─── */
+.gs-sim__sandbox-wrap {
+  height: 220px;
+  flex-shrink: 0;
+  border-top: 2px solid var(--athena-gold, #d4af37);
+}
+
+/* ─── Sandbox Terminal ─── */
+.gs-sandbox {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #090d13;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+}
+
+.gs-sandbox__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px;
+  background: #0d1117;
+  border-bottom: 1px solid var(--athena-gold, #d4af37);
+  flex-shrink: 0;
+}
+
+.gs-sandbox__badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(212,175,55,0.15);
+  color: var(--athena-gold, #d4af37);
+  border: 1px solid rgba(212,175,55,0.3);
+}
+
+.gs-sandbox__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--athena-gold, #d4af37);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.gs-sandbox__hint {
+  font-size: 11px;
+  color: #484f58;
+  margin-left: auto;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.gs-sandbox__terminal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.gs-sandbox__history {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gs-sandbox__welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.gs-sandbox__welcome-line {
+  font-size: 11px;
+  color: #3fb950;
+}
+
+.gs-sandbox__welcome-dim { color: #484f58; }
+
+.gs-sandbox__entry {
+  display: flex;
+  flex-direction: column;
+}
+
+.gs-sandbox__cmd-row {
+  display: flex;
+  align-items: baseline;
+  padding-top: 4px;
+}
+
+.gs-sandbox__prompt {
+  color: #3fb950;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 12px;
+  user-select: none;
+}
+
+.gs-sandbox__cmd { color: #e6edf3; font-size: 12px; }
+
+.gs-sandbox__loading {
+  font-size: 11px;
+  color: #484f58;
+  padding: 4px 0;
+  animation: gs-blink 1s step-end infinite;
+}
+
+@keyframes gs-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.gs-sandbox__input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-top: 1px solid #21262d;
+  flex-shrink: 0;
+}
+
+.gs-sandbox__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e6edf3;
+  font-family: inherit;
+  font-size: 12px;
+  caret-color: #3fb950;
+}
+
+.gs-sandbox__input::placeholder { color: #21262d; }
+.gs-sandbox__input:disabled { opacity: 0.3; }
+
+/* ─── Editor Modal ─── */
+.gs-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #0d1117;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+  outline: none;
+}
+
+.gs-editor--nano .gs-editor__bar { background: #1c4470; }
+.gs-editor--vim  .gs-editor__bar { background: #1a3a1a; }
+
+.gs-editor__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.gs-editor__nano-label {
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+}
+
+.gs-editor__filename {
+  color: #fff;
+  font-weight: 600;
+  flex: 1;
+}
+
+.gs-editor__modified {
+  font-size: 10px;
+  color: #fbbf24;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.3);
+}
+
+.gs-editor__mode {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+}
+
+.gs-editor__mode--insert { background: rgba(63,185,80,0.2);  color: #3fb950; border: 1px solid rgba(63,185,80,0.4); }
+.gs-editor__mode--normal { background: rgba(88,166,255,0.15); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+
+.gs-editor__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.gs-editor__gutter {
+  width: 36px;
+  flex-shrink: 0;
+  background: #090d13;
+  border-right: 1px solid #21262d;
+  overflow: hidden;
+  padding-top: 8px;
+}
+
+.gs-editor__line-num {
+  height: 20px;
+  line-height: 20px;
+  text-align: right;
+  padding-right: 8px;
+  font-size: 11px;
+  color: #30363d;
+  user-select: none;
+}
+
+.gs-editor__textarea {
+  flex: 1;
+  background: #0d1117;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #c9d1d9;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 8px 14px;
+  caret-color: #3fb950;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+}
+
+.gs-editor__textarea[readonly] {
+  cursor: default;
+  color: #8b949e;
+}
+
+.gs-editor__statusbar {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  background: #161b22;
+  border-top: 1px solid #21262d;
+  font-size: 11px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.gs-editor__nano-shortcuts {
+  display: flex;
+  gap: 18px;
+  color: #8b949e;
+}
+
+.gs-editor__nano-shortcuts kbd {
+  font-family: inherit;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid #30363d;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-size: 10px;
+  color: #c9d1d9;
+  margin-right: 3px;
+}
+
+.gs-editor__cmdline {
+  color: #e6edf3;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.gs-editor__cursor {
+  animation: gs-blink 1s step-end infinite;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.gs-editor__vim-hint {
+  color: #484f58;
+  font-size: 11px;
+}

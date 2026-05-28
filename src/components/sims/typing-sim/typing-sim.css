@@ -1,9 +1,6 @@
 .ts {
-  position: absolute;
-  top: 60px;
-  left: 100px;
-  width: 600px;
-  height: 480px;
+  width: 100%;
+  height: 100%;
   background: var(--athena-bg-panel);
   border: 1px solid var(--athena-gold-border);
   border-radius: var(--athena-radius-lg);
@@ -244,19 +241,37 @@
 
 /* Shift key when uppercase/symbol needed */
 .ts__key--shift {
-  background: rgba(201,168,76,0.15) !important;
+  background: rgba(201,168,76,0.22) !important;
   border-color: var(--athena-gold) !important;
   color: var(--athena-gold) !important;
-  font-weight: 600;
+  font-weight: 700;
+  animation: ts-shift-breathe 1.1s ease-in-out infinite;
+}
+
+@keyframes ts-shift-breathe {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.18) !important;
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(201,168,76,0.72), 0 0 4px rgba(201,168,76,0.5) inset;
+    background: rgba(201,168,76,0.38) !important;
+  }
 }
 
 .ts__kb-hint {
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--athena-gold);
-  opacity: 0.65;
-  margin-top: 4px;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+  animation: ts-hint-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes ts-hint-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
 }
 
 /* Done screen */

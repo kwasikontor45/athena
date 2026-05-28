@@ -4,10 +4,27 @@ const DIM = text => L(text, 'dim')
 const RED = text => L(text, 'red')
 const GRN = text => L(text, 'green')
 const YLW = text => L(text, 'yellow')
-const BLD = text => L(text, 'bold')
 const BL  = ()   => L('')
 
-// Realistic git output generators keyed to git state
+// File contents at each lesson stage
+export const README_V1 = `# My Project
+
+Hello, world! This is my first project.`
+
+export const README_V2 = `# My Project
+
+Hello, world! This is my first project.
+
+## Getting Started
+
+Clone this repo and open index.html in your browser.`
+
+export const ABOUT_FILE = `# About
+
+This project was built to learn Git workflows.
+Author: Learner`
+
+// Realistic git output generators
 export function gitStatusOutput(gs) {
   if (!gs.initialized) return [L('fatal: not a git repository (or any of the parent directories): .git', 'red')]
 
@@ -16,7 +33,11 @@ export function gitStatusOutput(gs) {
   const hasModified   = gs.modified.length > 0
   const hasCommits    = gs.commits.length > 0
 
-  const out = [L(`On branch ${gs.branch}`), BL()]
+  const branchLine = gs.remote?.pushed
+    ? `On branch ${gs.currentBranch || gs.branch}\nYour branch is up to date with 'origin/${gs.currentBranch || gs.branch}'.`
+    : `On branch ${gs.currentBranch || gs.branch}`
+
+  const out = [L(branchLine), BL()]
 
   if (!hasCommits) out.push(L('No commits yet'), BL())
 
@@ -50,7 +71,7 @@ export function gitLogOutput(gs) {
   if (!gs.commits.length) return [L("fatal: your current branch 'main' does not have any commits yet", 'red')]
   const out = []
   ;[...gs.commits].reverse().forEach((c, i) => {
-    out.push(YLW(`commit ${c.hash}${i === 0 ? ' (HEAD -> main)' : ''}`))
+    out.push(YLW(`commit ${c.hash}${i === 0 ? ` (HEAD -> ${gs.currentBranch || gs.branch}${gs.remote?.pushed ? ', origin/main' : ''})` : ''}`))
     out.push(L('Author: Learner <learner@athena.study>'))
     out.push(L(`Date:   ${c.date}`))
     out.push(BL())
@@ -63,14 +84,14 @@ export function gitLogOutput(gs) {
 export function gitLogOneline(gs) {
   if (!gs.commits.length) return [L("fatal: your current branch 'main' does not have any commits yet", 'red')]
   return [...gs.commits].reverse().map((c, i) =>
-    YLW(`${c.short}${i === 0 ? ' (HEAD -> main)' : ''} ${c.message}`)
+    YLW(`${c.short}${i === 0 ? ` (HEAD -> ${gs.currentBranch || gs.branch}${gs.remote?.pushed ? ', origin/main' : ''})` : ''} ${c.message}`)
   )
 }
 
-// Command accepts helpers
-const addAccepts   = cmd => /^git add (README\.md|\.|--all|-A)$/.test(cmd.trim())
+// Accept helpers
+const addAccepts    = cmd => /^git add (README\.md|ABOUT\.md|\.|--all|-A)$/.test(cmd.trim())
 const commitAccepts = cmd => /^git commit -m (["']).+\1$/.test(cmd.trim())
-const logAccepts   = cmd => /^git log(?: --oneline)?$/.test(cmd.trim())
+const logAccepts    = cmd => /^git log(?: --oneline)?$/.test(cmd.trim())
 
 function extractMessage(cmd) {
   const m = cmd.match(/^git commit -m ["'](.+)["']$/)
@@ -80,7 +101,7 @@ function extractMessage(cmd) {
 function addNote(cmd) {
   const c = cmd.trim()
   if (c === 'git add .' || c === 'git add --all' || c === 'git add -A')
-    return 'Accepted — though naming the file (git add README.md) is clearer when working with others or reviewing changes.'
+    return 'Accepted — though naming the file (git add README.md) is clearer when working with others.'
   return null
 }
 
@@ -91,14 +112,19 @@ function logNote(cmd) {
 }
 
 function commitNote(msg) {
-  const bad = ['update', 'fix', 'changes', 'stuff', 'commit', 'done', 'ok', 'test', 'wip']
+  const bad = ['update', 'fix', 'changes', 'stuff', 'commit', 'done', 'ok', 'test', 'wip', 'initial']
   if (bad.includes(msg.toLowerCase()))
-    return `Accepted — but "${msg}" doesn't tell you much later. Try "add README" or "update intro section" instead.`
+    return `Accepted — but "${msg}" doesn't tell you much later. Try something specific like "add README with project description".`
   return null
 }
 
 function fakeHash() {
-  return Math.random().toString(16).slice(2, 9)
+  return Array.from({ length: 7 }, () => Math.floor(Math.random() * 16).toString(16)).join('') +
+    Array.from({ length: 33 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
+}
+
+function fakeShortHash() {
+  return Array.from({ length: 7 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
 }
 
 function fakeDate() {
@@ -109,19 +135,25 @@ function fakeDate() {
 
 export const gitBasicsLesson = {
   id: 'git-basics',
-  title: 'your first git repo',
+  title: 'git: zero to ship',
 
-  // Initial git state
   initialState: {
     initialized: false,
     branch: 'main',
+    currentBranch: 'main',
+    branches: ['main'],
     untracked:  ['README.md'],
     staged:     [],
     modified:   [],
     commits:    [],
+    remote:     null,
+    fileContents: { 'README.md': README_V1 },
+    activeFile: 'README.md',
   },
 
   steps: [
+    // ── Part 1: Local basics ───────────────────────────────────────────────
+
     {
       id: 'explainer',
       type: 'explainer',
@@ -139,10 +171,9 @@ export const gitBasicsLesson = {
       instruction:
         'Every Git project starts with one command. It creates a hidden .git folder that tracks everything from here on.\n\nType: git init',
       hint: 'git init — you only ever run this once per project.',
+      viewFile: 'README.md',
       accepts: cmd => cmd.trim() === 'git init',
-      getOutput: () => [
-        L('Initialized empty Git repository in ~/my-project/.git/')
-      ],
+      getOutput: () => [L('Initialized empty Git repository in ~/my-project/.git/')],
       getSideEffect: () => ({ initialized: true }),
     },
     {
@@ -152,8 +183,9 @@ export const gitBasicsLesson = {
       instruction:
         'A file called README.md already exists in your project — but Git doesn\'t know about it yet.\n\nAlways check the state before doing anything.\n\nType: git status',
       hint: 'git status — run this constantly. It tells you exactly where you are.',
+      viewFile: 'README.md',
       accepts: cmd => cmd.trim() === 'git status',
-      getOutput: (gs) => gitStatusOutput(gs),
+      getOutput: gs => gitStatusOutput(gs),
       getSideEffect: () => null,
     },
     {
@@ -162,21 +194,23 @@ export const gitBasicsLesson = {
       title: 'stage the file',
       instruction:
         'Git sees README.md but isn\'t tracking it. Staging means telling Git: "include this in my next snapshot."\n\nName the file specifically — it\'s the professional habit.\n\nType: git add README.md',
-      hint: 'git add README.md — name the file. Using git add . works too but stages everything, which can include files you didn\'t intend.',
+      hint: 'git add README.md — name the file. Using git add . stages everything, which can include files you didn\'t intend.',
+      viewFile: 'README.md',
       accepts: addAccepts,
       getOutput: () => [],
-      getNote: (cmd) => addNote(cmd),
+      getNote: cmd => addNote(cmd),
       getSideEffect: () => ({ staged: ['README.md'], untracked: [] }),
     },
     {
       id: 'staged-status',
       type: 'command',
-      title: 'verify what\'s staged',
+      title: "verify what's staged",
       instruction:
         'Before committing, always verify what\'s staged. This catches mistakes before they\'re permanent.\n\nType: git status',
       hint: 'git status shows staged files in green.',
+      viewFile: 'README.md',
       accepts: cmd => cmd.trim() === 'git status',
-      getOutput: (gs) => gitStatusOutput(gs),
+      getOutput: gs => gitStatusOutput(gs),
       getSideEffect: () => null,
     },
     {
@@ -186,19 +220,20 @@ export const gitBasicsLesson = {
       instruction:
         'A commit is a permanent snapshot with a message describing what changed. Write something your future self will understand.\n\nType: git commit -m "add README"',
       hint: 'The message goes in quotes after -m. Make it specific — "add README" is better than "stuff".',
+      viewFile: 'README.md',
       accepts: commitAccepts,
       getOutput: (gs, cmd) => {
-        const msg = extractMessage(cmd)
-        const hash = fakeHash()
+        const msg  = extractMessage(cmd)
+        const hash = fakeShortHash()
         return [
           L(`[main (root-commit) ${hash}] ${msg}`),
-          L(' 1 file changed, 1 insertion(+)'),
+          L(' 1 file changed, 3 insertions(+)'),
           L(' create mode 100644 README.md'),
         ]
       },
-      getNote: (cmd) => commitNote(extractMessage(cmd)),
+      getNote: cmd => commitNote(extractMessage(cmd)),
       getSideEffect: (gs, cmd) => {
-        const msg = extractMessage(cmd)
+        const msg  = extractMessage(cmd)
         const hash = fakeHash()
         return {
           staged: [],
@@ -212,13 +247,14 @@ export const gitBasicsLesson = {
       title: 'view your history',
       instruction:
         'Your first commit is saved. Now see it in the project history.\n\nType: git log\n\nTip: try git log --oneline for a compact view.',
-      hint: 'git log shows every commit, newest first. git log --oneline is faster to scan.',
+      hint: 'git log shows every commit. git log --oneline is faster to scan.',
+      viewFile: 'README.md',
       accepts: logAccepts,
       getOutput: (gs, cmd) => cmd.includes('--oneline') ? gitLogOneline(gs) : gitLogOutput(gs),
-      getNote: (cmd) => logNote(cmd),
+      getNote: cmd => logNote(cmd),
       getSideEffect: () => null,
       transitionNote: 'README.md has been updated. Time to commit the change.',
-      onAdvance: () => ({ modified: ['README.md'] }),
+      onAdvance: () => ({ modified: ['README.md'], fileContents: { 'README.md': README_V2 }, activeFile: 'README.md' }),
     },
     {
       id: 'modified-status',
@@ -227,8 +263,9 @@ export const gitBasicsLesson = {
       instruction:
         'README.md was just modified. Git noticed — but hasn\'t staged it yet.\n\nCheck the state first. Always.\n\nType: git status',
       hint: 'Modified files show in red. Staged files show in green.',
+      viewFile: 'README.md',
       accepts: cmd => cmd.trim() === 'git status',
-      getOutput: (gs) => gitStatusOutput(gs),
+      getOutput: gs => gitStatusOutput(gs),
       getSideEffect: () => null,
     },
     {
@@ -238,30 +275,32 @@ export const gitBasicsLesson = {
       instruction:
         'Same command — different context. This is the cycle: every change you want to keep goes through staging first.\n\nType: git add README.md',
       hint: 'git add README.md — stage only what you intend to commit.',
+      viewFile: 'README.md',
       accepts: addAccepts,
       getOutput: () => [],
-      getNote: (cmd) => addNote(cmd),
-      getSideEffect: (gs) => ({ staged: ['README.md'], modified: [] }),
+      getNote: cmd => addNote(cmd),
+      getSideEffect: gs => ({ staged: ['README.md'], modified: [] }),
     },
     {
       id: 'second-commit',
       type: 'command',
       title: 'commit the change',
       instruction:
-        'Write a message that describes what actually changed in README.md — not just "update".\n\nType: git commit -m "update README intro"',
+        'Write a message that describes what actually changed — not just "update".\n\nType: git commit -m "update README intro"',
       hint: 'Specific messages pay off when you\'re reading history six months from now.',
+      viewFile: 'README.md',
       accepts: commitAccepts,
       getOutput: (gs, cmd) => {
-        const msg = extractMessage(cmd)
-        const hash = fakeHash()
+        const msg  = extractMessage(cmd)
+        const hash = fakeShortHash()
         return [
           L(`[main ${hash}] ${msg}`),
-          L(' 1 file changed, 2 insertions(+), 1 deletion(-)'),
+          L(' 1 file changed, 4 insertions(+), 1 deletion(-)'),
         ]
       },
-      getNote: (cmd) => commitNote(extractMessage(cmd)),
+      getNote: cmd => commitNote(extractMessage(cmd)),
       getSideEffect: (gs, cmd) => {
-        const msg = extractMessage(cmd)
+        const msg  = extractMessage(cmd)
         const hash = fakeHash()
         return {
           staged: [],
@@ -276,17 +315,193 @@ export const gitBasicsLesson = {
       instruction:
         'Two commits. Two moments in time — both retrievable forever.\n\nType: git log --oneline',
       hint: '--oneline is the compact format. Most developers use it daily.',
+      viewFile: 'README.md',
       accepts: logAccepts,
       getOutput: (gs, cmd) => cmd.includes('--oneline') ? gitLogOneline(gs) : gitLogOutput(gs),
-      getNote: (cmd) => logNote(cmd),
+      getNote: cmd => logNote(cmd),
       getSideEffect: () => null,
     },
+
+    // ── Part 2: Remotes & GitHub ───────────────────────────────────────────
+
     {
-      id: 'ship-it',
-      type: 'ship-it',
-      title: 'you know git',
+      id: 'remote-intro',
+      type: 'explainer',
+      title: 'connect to the world',
       instruction:
-        'You just ran the complete Git workflow twice:\n\ninit → status → add → status → commit → log\n\nThat\'s the loop. Every professional developer runs it dozens of times a day. The only difference between a beginner and a senior developer is how often they check git status.',
+        'Your commits live locally — only on this machine.\n\n' +
+        'A remote is a copy of your repo hosted in the cloud. GitHub is the most popular host — it\'s where billions of lines of code live.\n\n' +
+        'When you push, your commits travel from your machine → to GitHub → accessible anywhere.\n\n' +
+        'Next: you\'ll add a remote and push.',
+      remoteDiagram: true,
+    },
+    {
+      id: 'git-remote-add',
+      type: 'command',
+      title: 'point to github',
+      instruction:
+        'Tell Git where the remote lives. "origin" is the conventional nickname for your main remote — you could call it anything, but everyone uses "origin".\n\nType: git remote add origin https://github.com/learner/my-project.git',
+      hint: 'git remote add origin <url> — in a real project, GitHub gives you this URL when you create a new repo.',
+      viewFile: 'README.md',
+      accepts: cmd => /^git remote add origin .+/.test(cmd.trim()),
+      getOutput: () => [],
+      getSideEffect: (gs, cmd) => {
+        const parts = cmd.trim().split(/\s+/)
+        const url   = parts[4] || 'https://github.com/learner/my-project.git'
+        return { remote: { name: 'origin', url, pushed: false } }
+      },
+      transitionNote: 'Remote configured. Now push.',
+    },
+    {
+      id: 'git-push',
+      type: 'command',
+      title: 'push to origin',
+      instruction:
+        '-u sets the upstream so future git push and git pull don\'t need the full name.\n\nType: git push -u origin main',
+      hint: 'git push -u origin main — the -u flag links your local branch to the remote one.',
+      viewFile: 'README.md',
+      accepts: cmd => /^git push( -u| --set-upstream)? origin main$/.test(cmd.trim()),
+      getOutput: gs => [
+        L('Enumerating objects: 6, done.'),
+        L('Counting objects: 100% (6/6), done.'),
+        L('Delta compression using up to 8 threads'),
+        L('Compressing objects: 100% (4/4), done.'),
+        L('Writing objects: 100% (6/6), 548 bytes | 548.00 KiB/s, done.'),
+        L('Total 6 (delta 0), reused 0 (delta 0), pack-reused 0'),
+        DIM('remote:'),
+        DIM(`remote: Create a pull request for 'main' on GitHub by visiting:`),
+        DIM(`remote:      ${gs.remote?.url || 'https://github.com/learner/my-project.git'}/pull/new/main`),
+        DIM('remote:'),
+        GRN(`To ${gs.remote?.url || 'https://github.com/learner/my-project.git'}`),
+        GRN(' * [new branch]      main -> main'),
+        L("branch 'main' set up to track 'origin/main'."),
+      ],
+      getSideEffect: gs => ({ remote: { ...gs.remote, pushed: true } }),
+      transitionNote: 'Your project is now live on GitHub.',
+    },
+    {
+      id: 'github-view',
+      type: 'explainer',
+      title: 'your repo on github',
+      instruction:
+        'This is what your repo looks like on GitHub right now. Anyone with the link can see it.\n\nEvery file shows the last commit message that touched it. The README.md is automatically rendered at the bottom.\n\nNext: you\'ll create a branch to work on a new feature.',
+      githubView: true,
+    },
+
+    // ── Part 3: Branching ──────────────────────────────────────────────────
+
+    {
+      id: 'branch-intro',
+      type: 'explainer',
+      title: 'branches',
+      instruction:
+        'Branches let you work on something new without touching main.\n\n' +
+        'Think of main as the stable, working version. A branch is your scratch pad — commit freely, and only merge when it\'s ready.\n\n' +
+        'The most common workflow: branch → commit → push → pull request → merge.\n\n' +
+        'Next: you\'ll create a feature-about branch and add a new file.',
+      branchDiagram: true,
+      onAdvance: () => ({ untracked: ['ABOUT.md'], fileContents: { 'ABOUT.md': ABOUT_FILE }, activeFile: 'ABOUT.md' }),
+    },
+    {
+      id: 'git-checkout-branch',
+      type: 'command',
+      title: 'create a branch',
+      instruction:
+        'checkout -b creates a new branch AND switches to it in one step. Name it after what you\'re building.\n\nType: git checkout -b feature-about',
+      hint: 'git checkout -b feature-about — the -b flag means "create". Always branch from main.',
+      viewFile: 'ABOUT.md',
+      accepts: cmd => /^git (checkout -b|switch -c) feature-about$/.test(cmd.trim()),
+      getOutput: () => [L("Switched to a new branch 'feature-about'")],
+      getSideEffect: gs => ({
+        currentBranch: 'feature-about',
+        branches: [...(gs.branches || ['main']), 'feature-about'],
+      }),
+      transitionNote: "You're now on feature-about. ABOUT.md is waiting to be tracked.",
+    },
+    {
+      id: 'feature-add',
+      type: 'command',
+      title: 'stage the new file',
+      instruction:
+        'ABOUT.md was created on this branch. Stage it.\n\nType: git add ABOUT.md',
+      hint: 'git add ABOUT.md — or git add . to stage everything in the directory.',
+      viewFile: 'ABOUT.md',
+      accepts: cmd => /^git add (ABOUT\.md|\.|--all|-A)$/.test(cmd.trim()),
+      getOutput: () => [],
+      getNote: cmd => addNote(cmd),
+      getSideEffect: () => ({ staged: ['ABOUT.md'], untracked: [] }),
+    },
+    {
+      id: 'feature-commit',
+      type: 'command',
+      title: 'commit on the branch',
+      instruction:
+        'Your commit will live on feature-about — not main. That\'s the whole point of branching: isolated, safe work.\n\nType: git commit -m "add about section"',
+      hint: 'Same git commit -m syntax. The commit just lands on a different branch.',
+      viewFile: 'ABOUT.md',
+      accepts: commitAccepts,
+      getOutput: (gs, cmd) => {
+        const msg  = extractMessage(cmd)
+        const hash = fakeShortHash()
+        return [
+          L(`[feature-about ${hash}] ${msg}`),
+          L(' 1 file changed, 4 insertions(+)'),
+          L(' create mode 100644 ABOUT.md'),
+        ]
+      },
+      getNote: cmd => commitNote(extractMessage(cmd)),
+      getSideEffect: (gs, cmd) => {
+        const msg  = extractMessage(cmd)
+        const hash = fakeHash()
+        return {
+          staged: [],
+          commits: [...gs.commits, { hash, short: hash.slice(0, 7), message: msg, date: fakeDate(), branch: 'feature-about' }],
+        }
+      },
+    },
+    {
+      id: 'push-feature',
+      type: 'command',
+      title: 'push the branch',
+      instruction:
+        'Push feature-about to GitHub. This makes the branch visible to your team — without touching main.\n\nType: git push origin feature-about',
+      hint: 'git push origin feature-about — no -u needed here, unless you want to track it.',
+      viewFile: 'ABOUT.md',
+      accepts: cmd => /^git push( origin feature-about)?$/.test(cmd.trim()),
+      getOutput: gs => [
+        L('Enumerating objects: 4, done.'),
+        L('Counting objects: 100% (4/4), done.'),
+        L('Writing objects: 100% (3/3), 312 bytes | 312.00 KiB/s, done.'),
+        DIM('remote:'),
+        DIM(`remote: Create a pull request for 'feature-about' on GitHub by visiting:`),
+        DIM(`remote:      ${gs.remote?.url || 'https://github.com/learner/my-project.git'}/pull/new/feature-about`),
+        DIM('remote:'),
+        GRN(`To ${gs.remote?.url || 'https://github.com/learner/my-project.git'}`),
+        GRN(' * [new branch]      feature-about -> feature-about'),
+      ],
+      getSideEffect: () => null,
+      transitionNote: 'Branch pushed. In a real team, you\'d now open a pull request.',
+    },
+
+    // ── Part 4: Pull Requests & Wrap-up ───────────────────────────────────
+
+    {
+      id: 'pr-intro',
+      type: 'explainer',
+      title: 'pull requests',
+      prView: true,
+      instruction:
+        'A pull request (PR) is a proposal to merge your branch into main.\n\n' +
+        'Teammates can review your code, leave comments, request changes — and when everyone\'s happy, merge with one click.\n\n' +
+        'You\'ve just run the full modern dev workflow:\n\ninit → commit → push → branch → commit → push → PR → merge\n\n' +
+        'The sandbox below is now unlocked. Clone any public GitHub repo and explore.',
+    },
+    {
+      id: 'sandbox-unlock',
+      type: 'ship-it',
+      title: 'sandbox unlocked',
+      instruction:
+        'You know git.\n\nThe cycle — status · add · commit · push — repeats hundreds of times per project. Every professional developer runs it daily. The only difference between a beginner and a senior developer is how often they check git status.\n\nThe sandbox terminal below is yours. Type git clone https://github.com/any/public-repo and it will fetch the real file tree from GitHub.',
     },
   ],
 }

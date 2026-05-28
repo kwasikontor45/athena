@@ -25,7 +25,7 @@
 }
 
 /* Reset sim's own position so SimWindow controls placement */
-.app__sim-stage .fe,
+.app__sim-stage .fes,
 .app__sim-stage .es,
 .app__sim-stage .bs,
 .app__sim-stage .de,

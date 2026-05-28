@@ -255,7 +255,7 @@ export default function TypingSim({ onClose, onAthenaEvent }) {
       } else {
         cls += ' ts__char--pending'
       }
-      return <span key={i} className={cls}>{ch}</span>
+      return <span key={i} className={cls}>{ch === ' ' ? ' ' : ch}</span>
     })
   }
 
