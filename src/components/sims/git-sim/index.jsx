@@ -583,6 +583,49 @@ function SandboxTerminal({ lessonGitState }) {
       return
     }
 
+    // ── python / python3 ─────────────────────────────────────────────────────
+    if (prog === 'python' || prog === 'python3') {
+      const filename = rest[0]
+      if (!filename) { push(prompt_str(), cmd, [RED('usage: python <script.py>')]); return }
+      const content = gs.fileContents?.[filename]
+      if (content === undefined || content === null) {
+        push(prompt_str(), cmd, [RED(`python: can't open file '${filename}': No such file or directory`)]); return
+      }
+      if (!content.trim()) { push(prompt_str(), cmd, [DIM('(empty file — nothing to run)')]); return }
+      push(prompt_str(), cmd, [DIM('loading Python runtime…')])
+      setLoading(true)
+      try {
+        const { runPython } = await import('../../../utils/pyodide-runner')
+        const { output, error } = await runPython(content, status => {
+          if (status === 'running') {
+            setHistory(prev => {
+              const n = [...prev]
+              n[n.length - 1].lines = [DIM(`running ${filename}…`)]
+              return n
+            })
+          }
+        })
+        setLoading(false)
+        setHistory(prev => {
+          const n = [...prev]
+          const lines = []
+          if (output) output.split('\n').forEach(l => lines.push(L(l)))
+          if (error)  error.split('\n').forEach(l  => lines.push(RED(l)))
+          if (!output && !error) lines.push(DIM('(no output)'))
+          n[n.length - 1].lines = lines
+          return n
+        })
+      } catch {
+        setLoading(false)
+        setHistory(prev => {
+          const n = [...prev]
+          n[n.length - 1].lines = [RED('python: failed to load runtime — check your connection')]
+          return n
+        })
+      }
+      return
+    }
+
     // ── mkdir ─────────────────────────────────────────────────────────────────
     if (prog === 'mkdir') {
       const dirname = rest[0]
@@ -812,10 +855,13 @@ function SandboxTerminal({ lessonGitState }) {
         L('  status · add · commit · log · diff · branch · checkout · merge'),
         L('  push · pull · remote · clone <github-url>'),
         L('── shell ─────────────────────────────────────────────────────'),
-        L('  ls · cat <file> · cd <dir> · pwd · touch <file>'),
+        L('  ls · cat <file> · cd <dir> · pwd · touch <file> · rm <file>'),
+        L('  mkdir <dir> · clear · echo <text>'),
         L('── editors ───────────────────────────────────────────────────'),
         L('  nano <file>   Ctrl+S save · Ctrl+X exit'),
         L('  vim <file>    i = insert · Esc = normal · :wq = save & quit · :q! = discard'),
+        L('── run ───────────────────────────────────────────────────────'),
+        L('  python <file.py>   run a Python script (real execution)'),
       ])
       return
     }
@@ -863,7 +909,7 @@ function SandboxTerminal({ lessonGitState }) {
             <div className="gs-sandbox__welcome">
               <span className="gs-sandbox__welcome-line">✓ lesson complete — sandbox unlocked</span>
               <span className="gs-sandbox__welcome-line gs-sandbox__welcome-dim">
-                nano README.md · touch newfile.js · git add · git commit · git clone any/public-repo · ↑↓ history
+                touch script.py · nano script.py · python script.py · git add · git commit · git clone any/public-repo
               </span>
             </div>
             {history.map((entry, i) => (

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { shiptivitasLesson } from '../../../utils/code-lessons'
 import { highlight } from '../../../utils/highlight'
 import { playChime } from '../../../utils/sound'
+import { runPython, isPyodideReady } from '../../../utils/pyodide-runner'
 import './code-bootcamp-sim.css'
 
 const STORAGE_KEY = id => `athena_cb_${id}`
@@ -213,7 +214,11 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
   const [attempts,     setAttempts]     = useState(0)
   const [showHint,     setShowHint]     = useState(false)
   const [showSolution, setShowSolution] = useState(false)
-  const [confirmReset, setConfirmReset] = useState(false)
+  const [confirmReset,  setConfirmReset]  = useState(false)
+  const [pyOpen,        setPyOpen]        = useState(false)
+  const [pyCode,        setPyCode]        = useState('# write Python here\nprint("hello, world!")\n')
+  const [pyOutput,      setPyOutput]      = useState(null)
+  const [pyStatus,      setPyStatus]      = useState('idle') // idle | loading | running | done | error
   const firedRef       = useRef(new Set())
   const resetTimerRef  = useRef(null)
 
@@ -317,6 +322,16 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
     firedRef.current = new Set()
   }
 
+  async function handleRunPython() {
+    if (pyStatus === 'loading' || pyStatus === 'running') return
+    setPyOutput(null)
+    setPyStatus(isPyodideReady() ? 'running' : 'loading')
+    const { output, error } = await runPython(pyCode, s => setPyStatus(s === 'ready' ? 'running' : 'loading'))
+    setPyOutput({ output, error })
+    setPyStatus(error ? 'error' : 'done')
+    onAthenaEvent?.({ lesson: 'code-bootcamp', event: 'python-run', context: error ? 'error' : 'success' })
+  }
+
   const canAdvance = validation === 'pass'
   const hintVisible = showHint || (validation === 'fail' && attempts >= 2 && !showSolution)
 
@@ -341,6 +356,11 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
           ))}
         </div>
         <div className="cb-sim__top-actions">
+          <button
+            className={`cb-sim__py-toggle${pyOpen ? ' cb-sim__py-toggle--on' : ''}`}
+            onClick={() => setPyOpen(o => !o)}
+            title="Python playground"
+          >🐍 python</button>
           {confirmReset ? (
             <>
               <span className="cb-sim__reset-prompt">restart?</span>
@@ -448,6 +468,59 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent }) {
           </div>
         </aside>
       </div>
+
+      {/* Python playground panel */}
+      {pyOpen && (
+        <div className="cb-py">
+          <div className="cb-py__header">
+            <span className="cb-py__label">🐍 Python</span>
+            <span className="cb-py__status">
+              {pyStatus === 'loading' && 'booting Python…'}
+              {pyStatus === 'running' && 'running…'}
+            </span>
+            <button
+              className="cb-py__run"
+              onClick={handleRunPython}
+              disabled={pyStatus === 'loading' || pyStatus === 'running'}
+            >
+              {pyStatus === 'loading' || pyStatus === 'running' ? '…' : '▶ run'}
+            </button>
+          </div>
+          <div className="cb-py__body">
+            <textarea
+              className="cb-py__editor"
+              value={pyCode}
+              onChange={e => setPyCode(e.target.value)}
+              spellCheck={false}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              onKeyDown={e => {
+                if (e.key === 'Tab') {
+                  e.preventDefault()
+                  const s = e.target.selectionStart
+                  const n = pyCode.substring(0, s) + '  ' + pyCode.substring(e.target.selectionEnd)
+                  setPyCode(n)
+                  requestAnimationFrame(() => e.target.setSelectionRange(s + 2, s + 2))
+                }
+              }}
+            />
+            {pyOutput !== null && (
+              <div className="cb-py__output">
+                {pyOutput.output && (
+                  <pre className="cb-py__out-text">{pyOutput.output}</pre>
+                )}
+                {pyOutput.error && (
+                  <pre className="cb-py__out-error">{pyOutput.error}</pre>
+                )}
+                {!pyOutput.output && !pyOutput.error && (
+                  <span className="cb-py__out-empty">(no output)</span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
