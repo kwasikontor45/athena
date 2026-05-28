@@ -1080,15 +1080,13 @@ export default function GitSim({ onClose, onAthenaEvent }) {
     <div className="gs-sim">
       <div className="gs-sim__top">
         <div className="gs-sim__brand">🔧 {lesson.title}</div>
-        <div className="gs-sim__pips">
-          {lesson.steps.map((s, i) => (
-            <div
-              key={s.id}
-              className={`gs-sim__pip${i === stepIndex ? ' gs-sim__pip--active' : ''}${i < stepIndex ? ' gs-sim__pip--done' : ''}`}
-              title={s.title}
-            />
-          ))}
+        <div className="gs-sim__progress-wrap">
+          <div
+            className="gs-sim__progress-bar"
+            style={{ width: `${(stepIndex / (lesson.steps.length - 1)) * 100}%` }}
+          />
         </div>
+        <span className="gs-sim__step-counter">{stepIndex + 1} / {lesson.steps.length}</span>
         <div className="gs-sim__top-actions">
           {confirmReset ? (
             <>
