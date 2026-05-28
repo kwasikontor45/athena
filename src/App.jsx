@@ -20,6 +20,7 @@ import { useStreak } from './utils/use-streak'
 import { playFanfare } from './utils/sound'
 import { LESSONS } from './utils/lessons'
 import CelebrationOverlay from './components/celebration'
+import AthenaWidget from './components/athena-widget'
 import { trackEvent } from './utils/use-sync'
 import './app.css'
 
@@ -334,9 +335,6 @@ export default function App() {
         onBack={() => setCurrentView('desktop')}
         openApp={openApp}
         onOpenApp={handleOpenApp}
-        currentEvent={currentEvent}
-        currentLesson={currentLesson}
-        onEventHandled={() => setCurrentEvent(null)}
         getLessonStatus={getLessonStatus}
         getEventProgress={getEventProgress}
         onSelectLesson={handleSelectLesson}
@@ -366,6 +364,14 @@ export default function App() {
           onDismiss={() => setCelebration(null)}
         />
       )}
+
+      <AthenaWidget
+        currentEvent={currentEvent}
+        currentLesson={currentLesson}
+        onEventHandled={() => setCurrentEvent(null)}
+        badges={earnedBadges}
+        currentApp={openApp}
+      />
     </div>
   )
 }

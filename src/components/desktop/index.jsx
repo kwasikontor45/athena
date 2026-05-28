@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import AthenaAssistant from '../athena-assistant'
 import LessonPanel from '../lesson-panel'
 import { LESSONS, WEEKS } from '../../utils/lessons'
 import { progressToCode, codeToProgress, resetProgress } from '../../utils/use-progress'
@@ -63,7 +62,6 @@ const APP_ICONS = [
 export default function Desktop({
   currentView, onBack,
   openApp, onOpenApp,
-  currentEvent, currentLesson, onEventHandled,
   getLessonStatus, getEventProgress, onSelectLesson,
   earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
@@ -332,14 +330,6 @@ export default function Desktop({
         </div>
       </div>
 
-      <aside className="desktop__athena-panel">
-        <AthenaAssistant
-          currentEvent={currentEvent}
-          currentLesson={currentLesson}
-          onEventHandled={onEventHandled}
-          badges={earnedBadges}
-        />
-      </aside>
     </div>
   )
 }
