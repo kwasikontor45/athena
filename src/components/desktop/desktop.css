@@ -358,6 +358,61 @@
   opacity: 0.5;
 }
 
+/* ─── What's next ─── */
+.desktop__progress-next {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.desktop__progress-next-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--athena-text-secondary);
+}
+
+.desktop__progress-next-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--athena-gold-border);
+  background: var(--athena-gold-dim);
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.desktop__progress-next-card:hover {
+  border-color: var(--athena-gold);
+  background: rgba(201, 168, 76, 0.12);
+}
+
+.desktop__progress-next-icon { font-size: 24px; line-height: 1; flex-shrink: 0; }
+
+.desktop__progress-next-body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+
+.desktop__progress-next-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--athena-gold);
+}
+
+.desktop__progress-next-desc {
+  font-size: 12px;
+  color: var(--athena-text-secondary);
+  line-height: 1.45;
+}
+
+.desktop__progress-next-arrow {
+  font-size: 16px;
+  color: var(--athena-gold);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
 /* ─── Checkpoint / restore section ─── */
 .desktop__progress-checkpoint {
   display: flex;

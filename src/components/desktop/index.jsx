@@ -170,6 +170,25 @@ export default function Desktop({
               </div>
             </div>
 
+            {completedIds.includes('code-bootcamp') && completedIds.includes('git-basics') && (
+              <div className="desktop__progress-next">
+                <div className="desktop__progress-next-label">what's next</div>
+                <a
+                  className="desktop__progress-next-card"
+                  href="https://py-bite.kontor.studio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="desktop__progress-next-icon">🐍</span>
+                  <div className="desktop__progress-next-body">
+                    <div className="desktop__progress-next-title">py-bite</div>
+                    <div className="desktop__progress-next-desc">18 Python lessons — basics to advanced. The natural next step.</div>
+                  </div>
+                  <span className="desktop__progress-next-arrow">→</span>
+                </a>
+              </div>
+            )}
+
             <div className="desktop__progress-checkpoint">
               <div className="desktop__progress-cp-heading">continue on any device or browser</div>
               <p className="desktop__progress-cp-desc">
