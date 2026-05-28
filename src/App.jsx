@@ -36,9 +36,14 @@ function RestoreBanner({ onRestore, onDismiss }) {
   )
 }
 
-function SimWindow({ children, simKey }) {
-  const [pos, setPos] = useState({ x: 80, y: 50 })
-  const [size, setSize] = useState({ w: 920, h: 640 })
+function SimWindow({ children, defaultW, defaultH }) {
+  const W = defaultW || 920
+  const H = defaultH || 640
+  const [pos, setPos] = useState(() => ({
+    x: Math.max(20, Math.round((window.innerWidth  - W) / 2)),
+    y: Math.max(50, Math.round((window.innerHeight - 44 - H) / 2) + 44),
+  }))
+  const [size, setSize] = useState({ w: W, h: H })
   const [maximized, setMaximized] = useState(false)
   const wrapRef = useRef(null)
 
@@ -110,6 +115,11 @@ function SimWindow({ children, simKey }) {
       )}
     </div>
   )
+}
+
+const SIM_SIZES = {
+  'code-bootcamp': { w: 960, h: 660 },
+  'git-basics':    { w: 960, h: 700 },
 }
 
 const SIM_MAP = {
@@ -338,7 +348,7 @@ export default function App() {
         <>
           <div className="app__sim-backdrop" />
           <div className="app__sim-stage">
-            <SimWindow key={openApp}>
+            <SimWindow key={openApp} defaultW={SIM_SIZES[openApp]?.w} defaultH={SIM_SIZES[openApp]?.h}>
               <ActiveSim
                 onClose={handleCloseApp}
                 onAthenaEvent={handleAthenaEvent}
