@@ -3,157 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athena — Completion Card</title>
-  <meta property="og:title" content="I completed Athena Digital Foundations" />
-  <meta property="og:description" content="5 weeks · 13 lessons · real skills" />
-  <meta property="og:image" content="https://athena.kontor.studio/pwa-512x512.png" />
+  <title>Athena — You Did It</title>
+  <meta property="og:title"       content="I completed Athena Digital Foundations 🦉" />
+  <meta property="og:description" content="5 weeks · 13 lessons · real skills. Built from zero." />
+  <meta property="og:image"       content="https://athena.kontor.studio/pwa-512x512.png" />
+  <meta name="theme-color"        content="#0a0e1a" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --gold:   #c9a84c;
-      --gold-d: rgba(201,168,76,0.12);
-      --gold-b: rgba(201,168,76,0.3);
-      --bg:     #0a0e1a;
-      --surface:#0d1221;
-      --text:   rgba(255,255,255,0.88);
-      --dim:    rgba(255,255,255,0.45);
-      --green:  #1d9e75;
+      --gold:    #c9a84c;
+      --gold-2:  #e5c46a;
+      --gold-d:  rgba(201,168,76,0.12);
+      --gold-b:  rgba(201,168,76,0.28);
+      --bg:      #080c16;
+      --surface: #0c1120;
+      --panel:   #0e1428;
+      --text:    rgba(255,255,255,0.90);
+      --dim:     rgba(255,255,255,0.42);
+      --green:   #2db87a;
+      --radius:  14px;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
     }
 
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 32px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    /* ── Card ── */
+    /* ── Confetti canvas ── */
+    #confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── Card entrance ── */
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
     .card {
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       background: var(--surface);
       border: 1px solid var(--gold-b);
-      border-radius: 16px;
+      border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: 0 0 60px rgba(201,168,76,0.08);
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.06),
+        0 0 80px rgba(201,168,76,0.07),
+        0 24px 64px rgba(0,0,0,0.5);
+      animation: riseIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
     }
 
-    /* Top strip */
-    .card__header {
-      background: linear-gradient(135deg, #0d1525 0%, #111827 100%);
+    /* ── Header ── */
+    .card__hero {
+      background: linear-gradient(160deg, #0f1830 0%, #0c1020 60%, #0e1428 100%);
       border-bottom: 1px solid var(--gold-b);
-      padding: 32px 32px 28px;
+      padding: 40px 32px 36px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
       text-align: center;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    .card__owl { font-size: 48px; line-height: 1; }
+    /* Soft glow behind owl */
+    .card__hero::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 200px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-    .card__course {
-      font-size: 11px;
+    .card__owl {
+      font-size: 52px;
+      line-height: 1;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .card__eyebrow {
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--gold);
-      opacity: 0.8;
+      opacity: 0.75;
+      margin-bottom: 14px;
     }
 
-    .card__title {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.2;
+    .card__headline {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dim);
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
     }
 
     .card__name {
-      font-size: 28px;
+      font-size: 34px;
       font-weight: 800;
-      color: var(--gold);
-      line-height: 1.2;
-      margin-top: 4px;
+      color: var(--gold-2);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      word-break: break-word;
     }
 
-    .card__date {
-      font-size: 13px;
-      color: var(--dim);
+    /* Athena's personal note */
+    .card__note {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.72);
+      max-width: 400px;
+      font-style: italic;
+      border-top: 1px solid rgba(201,168,76,0.15);
+      padding-top: 18px;
       margin-top: 2px;
     }
 
-    /* Stats row */
+    .card__note-sig {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-style: normal;
+      color: var(--gold);
+      opacity: 0.7;
+      font-weight: 600;
+    }
+
+    /* ── Stats row ── */
     .card__stats {
       display: flex;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
     .card__stat {
       flex: 1;
-      padding: 16px 20px;
+      padding: 18px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
-      border-right: 1px solid rgba(255,255,255,0.06);
+      gap: 4px;
+      border-right: 1px solid rgba(255,255,255,0.05);
     }
 
     .card__stat:last-child { border-right: none; }
 
     .card__stat-val {
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 26px;
+      font-weight: 800;
       color: var(--gold);
       line-height: 1;
     }
 
     .card__stat-label {
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
       color: var(--dim);
     }
 
-    /* Badges */
+    /* ── Badge showcase ── */
     .card__badges {
-      padding: 20px 24px;
+      padding: 22px 28px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-direction: column;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .card__badge {
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
+    .card__badges-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-bottom: 2px;
+    }
+
+    .card__badge-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card__badge-icon {
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: var(--gold-d);
       border: 1px solid var(--gold-b);
-      color: var(--gold);
+      border-radius: 10px;
+      flex-shrink: 0;
     }
 
-    /* Footer */
+    .card__badge-body { display: flex; flex-direction: column; gap: 2px; }
+
+    .card__badge-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .card__badge-desc {
+      font-size: 11px;
+      color: var(--dim);
+      line-height: 1.4;
+    }
+
+    /* ── Footer ── */
     .card__footer {
       padding: 14px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: rgba(0,0,0,0.15);
     }
 
     .card__verified {
-      font-size: 11px;
-      color: var(--dim);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--dim);
     }
 
     .card__verified-dot {
@@ -161,235 +260,348 @@
       height: 7px;
       border-radius: 50%;
       background: var(--green);
+      box-shadow: 0 0 6px rgba(45,184,122,0.5);
       flex-shrink: 0;
     }
 
-    .card__link {
+    .card__date {
       font-size: 11px;
-      color: var(--gold);
-      text-decoration: none;
-      opacity: 0.7;
-      transition: opacity 0.15s;
-    }
-
-    .card__link:hover { opacity: 1; }
-
-    /* Loading / error states */
-    .state {
       color: var(--dim);
-      font-size: 14px;
-      text-align: center;
-      padding: 60px 24px;
     }
 
-    .state__owl { font-size: 40px; margin-bottom: 14px; }
-    .state__msg { margin-bottom: 8px; }
-    .state__sub { font-size: 12px; opacity: 0.6; }
-
-    /* Share button below card */
-    .share-row {
-      margin-top: 20px;
+    /* ── Actions ── */
+    .actions {
+      margin-top: 22px;
       display: flex;
       gap: 10px;
+      width: 100%;
+      max-width: 540px;
     }
 
-    .share-btn {
-      background: var(--gold-d);
-      border: 1px solid var(--gold-b);
-      border-radius: 8px;
-      color: var(--gold);
+    .btn {
+      flex: 1;
+      padding: 11px 20px;
+      border-radius: 9px;
       font-family: inherit;
       font-size: 13px;
-      font-weight: 600;
-      padding: 9px 20px;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.15s;
+      border: 1px solid var(--gold-b);
+      background: var(--gold-d);
+      color: var(--gold);
     }
 
-    .share-btn:hover { background: rgba(201,168,76,0.2); }
+    .btn:hover { background: rgba(201,168,76,0.2); border-color: var(--gold); }
 
-    .share-btn--dim {
+    .btn--ghost {
       background: transparent;
+      border-color: rgba(255,255,255,0.08);
       color: var(--dim);
-      border-color: rgba(255,255,255,0.1);
       font-weight: 400;
     }
 
-    .share-btn--dim:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .btn--ghost:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 
-    /* Print */
+    .btn--done {
+      color: var(--green);
+      border-color: rgba(45,184,122,0.35);
+      background: rgba(45,184,122,0.08);
+    }
+
+    /* ── Loading / error ── */
+    .state {
+      text-align: center;
+      padding: 80px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .state__owl { font-size: 48px; }
+
+    .state__msg {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .state__sub {
+      font-size: 13px;
+      color: var(--dim);
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    /* ── Print ── */
     @media print {
-      body { background: #fff; padding: 0; justify-content: flex-start; }
-      .card { max-width: 100%; box-shadow: none; border-color: #ddd; }
-      .card__header { background: #f8f6f0; }
-      .card__course, .card__title, .card__name { color: #1a1a1a; }
-      .card__stat-val, .card__badge, .card__link { color: #8a6f2e; }
-      .card__stat-label, .card__dim, .card__date { color: #777; }
-      .card__verified-dot { background: #1d9e75; }
-      .share-row { display: none; }
+      body { background: #fff; padding: 0; }
+      canvas, .actions { display: none !important; }
+      .card {
+        max-width: 100%;
+        box-shadow: none;
+        border: 1px solid #e0d5b8;
+        border-radius: 8px;
+        animation: none;
+      }
+      .card__hero { background: #faf7ee; border-color: #e0d5b8; }
+      .card__hero::before { display: none; }
+      .card__eyebrow, .card__note-sig { color: #8a6f2e; }
+      .card__name { color: #8a6f2e; }
+      .card__note { color: #555; border-color: #e0d5b8; }
+      .card__headline, .card__date, .card__dim { color: #888; }
+      .card__stat-val, .card__badge-icon { color: #8a6f2e; }
+      .card__badge-icon { background: #faf7ee; border-color: #e0d5b8; }
+      .card__stat-label, .card__badges-label, .card__badge-desc { color: #999; }
+      .card__verified { color: #999; }
+      .card__verified-dot { background: #2db87a; box-shadow: none; }
+      .card__footer { background: transparent; border-top: 1px solid #eee; }
     }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+<canvas id="confetti"></canvas>
+<div id="root"></div>
 
-  <script>
-    const WORKER   = 'https://athena-sync.kwasikontor45-995.workers.dev'
-    const TOTAL_LX = 13
+<script>
+const WORKER = 'https://athena-sync.kwasikontor45-995.workers.dev'
+const TOTAL  = 13
 
-    const BADGE_LABELS = {
-      'first-click': '🖱️ First Click',
-      explorer:      '🗂️ Explorer',
-      emailer:       '✉️ Emailer',
-      scholar:       '🎓 Scholar',
-      graduate:      '🏆 Graduate',
-    }
+// ── Athena's personal notes — 8 variants ──────────────────────────────────
+const NOTES = [
+  "You came in not knowing where to start. You leave having built real things, sent real emails, navigated a real web, and written real code. That gap you just crossed? Nobody can take it from you.",
+  "Most people who say they'll learn this stuff never sit down and actually do it. You did. Every step, every lesson, every time it got confusing — you stayed. That's the whole game.",
+  "There's no such thing as a 'computer person.' There are just people who tried, and people who haven't yet. You tried. You figured it out. Now you're one of the people who knows.",
+  "Not everyone gets here. Some people start and stop. Some people never start at all. You finished. Completely. That's not a small thing — that's exactly the kind of thing worth being proud of.",
+  "You showed up to something unfamiliar and you made it familiar. That's courage, whether it felt like it or not. The digital world is yours now — all of it.",
+  "Every question you asked, every step you got wrong and tried again, every moment you kept going when you could have stopped — that's what this badge represents. Not the easy parts. The kept-going parts.",
+  "Somewhere between your first click and your last commit, something shifted. Skills you didn't have, you have now. A world that felt closed off, opened. You did that.",
+  "This wasn't about learning to use a computer. It was about learning that you can learn anything. That's the real thing you earned today."
+]
 
-    function formatDate(ts) {
-      if (!ts) return '—'
-      return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-    }
+const BADGE_DATA = {
+  'first-click': { icon: '🖱️', name: 'First Click',  desc: 'you found your way in and kept going' },
+  explorer:      { icon: '🗂️', name: 'Explorer',     desc: 'you made the digital world your own' },
+  emailer:       { icon: '✉️', name: 'Emailer',      desc: 'you reached out and connected' },
+  scholar:       { icon: '🎓', name: 'Scholar',      desc: 'you showed up and did the work' },
+  graduate:      { icon: '🏆', name: 'Graduate',     desc: 'you finished what you started — all of it' },
+}
 
-    function renderLoading() {
-      document.getElementById('root').innerHTML = `
-        <div class="state">
-          <div class="state__owl">🦉</div>
-          <div class="state__msg">loading…</div>
-        </div>
-      `
-    }
+function pickNote(learnerId) {
+  let hash = 0
+  for (const c of (learnerId || '')) hash = (hash * 31 + c.charCodeAt(0)) >>> 0
+  return NOTES[hash % NOTES.length]
+}
 
-    function renderError() {
-      document.getElementById('root').innerHTML = `
-        <div class="state">
-          <div class="state__owl">🦉</div>
-          <div class="state__msg">card not found</div>
-          <div class="state__sub">this link may be invalid or the learner's data isn't available.</div>
-        </div>
-      `
-    }
+function formatDate(ts) {
+  if (!ts) return null
+  return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
 
-    function renderCard(data) {
-      const { learner, events } = data
+function daysBetween(a, b) {
+  if (!a || !b) return null
+  const d = Math.round(Math.abs(b - a) / 86400000)
+  if (d === 0) return 'in one session'
+  if (d === 1) return 'in 2 days'
+  return `over ${d} days`
+}
 
-      // Derive stats from events
-      const completedLessons = new Set(
-        events.filter(e => e.event === 'lesson-complete').map(e => e.lesson)
-      )
-      const lessonsCount = completedLessons.size
+// ── Gold confetti ──────────────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById('confetti')
+  const ctx    = canvas.getContext('2d')
+  canvas.width  = window.innerWidth
+  canvas.height = window.innerHeight
 
-      // XP: 50 per lesson complete
-      const xp = events.filter(e => e.event === 'lesson-complete').length * 50
+  const COLORS = ['#c9a84c','#e5c46a','#f0d98a','#a07830','#ffffff']
+  const N = 90
+  const particles = Array.from({ length: N }, () => ({
+    x:  Math.random() * canvas.width,
+    y:  Math.random() * canvas.height - canvas.height,
+    r:  Math.random() * 5 + 2,
+    d:  Math.random() * N,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    tilt: Math.random() * 10 - 5,
+    tiltDir: 0.15,
+    opacity: 1,
+  }))
 
-      // Badges
-      const badges = []
-      if (events.some(e => e.event === 'first-click' || e.lesson === 'desktop-navigation')) badges.push('first-click')
-      if (completedLessons.has('my-files'))      badges.push('explorer')
-      if (completedLessons.has('email'))         badges.push('emailer')
-      if (completedLessons.has('school-portal')) badges.push('scholar')
-      if (lessonsCount >= TOTAL_LX)              badges.push('graduate')
+  let frame = 0
+  let running = true
 
-      // Completion date = timestamp of last lesson-complete event
-      const completionEvents = events.filter(e => e.event === 'lesson-complete')
-      const completedAt = completionEvents.length
-        ? Math.max(...completionEvents.map(e => e.timestamp))
-        : null
+  function draw() {
+    if (!running) return
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    frame++
 
-      const displayName = learner.display_name || 'Athena Learner'
-      const cardUrl     = window.location.href
-
-      document.getElementById('root').innerHTML = `
-        <div class="card" id="card">
-          <div class="card__header">
-            <div class="card__owl">🦉</div>
-            <div class="card__course">Digital Foundations · kontor.studio</div>
-            <div class="card__title">course complete</div>
-            <div class="card__name">${displayName}</div>
-            ${completedAt ? `<div class="card__date">completed ${formatDate(completedAt)}</div>` : ''}
-          </div>
-
-          <div class="card__stats">
-            <div class="card__stat">
-              <div class="card__stat-val">${lessonsCount}</div>
-              <div class="card__stat-label">lessons</div>
-            </div>
-            <div class="card__stat">
-              <div class="card__stat-val">${xp}</div>
-              <div class="card__stat-label">XP</div>
-            </div>
-            <div class="card__stat">
-              <div class="card__stat-val">${badges.length}</div>
-              <div class="card__stat-label">badges</div>
-            </div>
-          </div>
-
-          ${badges.length ? `
-          <div class="card__badges">
-            ${badges.map(b => `<span class="card__badge">${BADGE_LABELS[b] || b}</span>`).join('')}
-          </div>` : ''}
-
-          <div class="card__footer">
-            <div class="card__verified">
-              <div class="card__verified-dot"></div>
-              verified by Athena
-            </div>
-            <a class="card__link" href="https://athena.kontor.studio" target="_blank">athena.kontor.studio</a>
-          </div>
-        </div>
-
-        <div class="share-row">
-          <button class="share-btn" id="copy-btn" onclick="copyLink()">copy link</button>
-          <button class="share-btn share-btn--dim" onclick="window.print()">save as PDF</button>
-        </div>
-      `
-    }
-
-    function copyLink() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        const btn = document.getElementById('copy-btn')
-        btn.textContent = 'copied ✓'
-        setTimeout(() => { btn.textContent = 'copy link' }, 2000)
-      })
-    }
-
-    async function init() {
-      const params   = new URLSearchParams(window.location.search)
-      const learnerId = params.get('id')
-
-      if (!learnerId) {
-        renderError()
-        return
+    particles.forEach(p => {
+      p.y        += Math.cos(frame / 30 + p.d) + 2 + p.r / 2
+      p.x        += Math.sin(frame / 30) * 1.5
+      p.tilt     += p.tiltDir
+      p.opacity   = Math.max(0, p.opacity - (frame > 90 ? 0.012 : 0))
+      if (p.y > canvas.height + 10) {
+        p.y = -10; p.x = Math.random() * canvas.width
+        p.opacity = frame < 90 ? 1 : 0
       }
+      ctx.globalAlpha = p.opacity
+      ctx.beginPath()
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.5, p.tilt, 0, Math.PI * 2)
+      ctx.fillStyle = p.color
+      ctx.fill()
+    })
 
-      renderLoading()
+    if (frame < 220) requestAnimationFrame(draw)
+    else { running = false; ctx.clearRect(0, 0, canvas.width, canvas.height) }
+  }
 
-      try {
-        const res = await fetch(`${WORKER}/progress/${learnerId}`)
-        if (!res.ok) { renderError(); return }
-        const data = await res.json()
+  draw()
+}
 
-        // Only show card if graduate badge earned (all lessons complete)
-        const completedLessons = new Set(
-          data.events.filter(e => e.event === 'lesson-complete').map(e => e.lesson)
-        )
-        if (completedLessons.size < TOTAL_LX) {
-          document.getElementById('root').innerHTML = `
-            <div class="state">
-              <div class="state__owl">🦉</div>
-              <div class="state__msg">still in progress</div>
-              <div class="state__sub">this learner hasn't completed all lessons yet.</div>
-            </div>
-          `
-          return
-        }
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderCard(data) {
+  const { learner, events } = data
+  const name = learner.display_name || 'Athena Learner'
 
-        renderCard(data)
-      } catch {
-        renderError()
-      }
+  const completedSet = new Set(
+    events.filter(e => e.event === 'lesson-complete').map(e => e.lesson)
+  )
+  const lessonsCount = completedSet.size
+  const xp           = events.filter(e => e.event === 'lesson-complete').length * 50
+
+  const badges = []
+  if (events.some(e => e.lesson === 'desktop-navigation')) badges.push('first-click')
+  if (completedSet.has('my-files'))                        badges.push('explorer')
+  if (completedSet.has('email'))                           badges.push('emailer')
+  if (completedSet.has('school-portal'))                   badges.push('scholar')
+  if (lessonsCount >= TOTAL)                               badges.push('graduate')
+
+  const completionTs  = events.filter(e => e.event === 'lesson-complete')
+                              .reduce((max, e) => Math.max(max, e.timestamp), 0) || null
+  const firstEventTs  = events.length ? events[0].timestamp : null
+  const timeSpan      = daysBetween(firstEventTs, completionTs)
+
+  const note      = pickNote(learner.id)
+  const dateStr   = formatDate(completionTs)
+
+  document.getElementById('root').innerHTML = `
+    <div class="card">
+      <div class="card__hero">
+        <div class="card__owl">🦉</div>
+        <div class="card__eyebrow">Athena · Digital Foundations</div>
+        <div class="card__headline">this belongs to</div>
+        <div class="card__name">${name}</div>
+        <p class="card__note">
+          "${note}"
+          <span class="card__note-sig">— Athena</span>
+        </p>
+      </div>
+
+      <div class="card__stats">
+        <div class="card__stat">
+          <div class="card__stat-val">${lessonsCount}</div>
+          <div class="card__stat-label">lessons</div>
+        </div>
+        <div class="card__stat">
+          <div class="card__stat-val">${xp}</div>
+          <div class="card__stat-label">XP</div>
+        </div>
+        <div class="card__stat">
+          <div class="card__stat-val">${badges.length}</div>
+          <div class="card__stat-label">badges</div>
+        </div>
+        ${timeSpan ? `
+        <div class="card__stat">
+          <div class="card__stat-val" style="font-size:13px;line-height:1.3;text-align:center">${timeSpan}</div>
+          <div class="card__stat-label">journey</div>
+        </div>` : ''}
+      </div>
+
+      ${badges.length ? `
+      <div class="card__badges">
+        <div class="card__badges-label">earned</div>
+        ${badges.map(id => {
+          const b = BADGE_DATA[id]
+          return `
+            <div class="card__badge-row">
+              <div class="card__badge-icon">${b.icon}</div>
+              <div class="card__badge-body">
+                <div class="card__badge-name">${b.name}</div>
+                <div class="card__badge-desc">${b.desc}</div>
+              </div>
+            </div>`
+        }).join('')}
+      </div>` : ''}
+
+      <div class="card__footer">
+        <div class="card__verified">
+          <div class="card__verified-dot"></div>
+          verified by Athena
+        </div>
+        ${dateStr ? `<div class="card__date">completed ${dateStr}</div>` : ''}
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="copy-btn" onclick="copyLink()">🔗 copy link</button>
+      <button class="btn btn--ghost" onclick="window.print()">save as PDF</button>
+    </div>
+  `
+
+  setTimeout(launchConfetti, 400)
+}
+
+function renderState(owl, msg, sub) {
+  document.getElementById('root').innerHTML = `
+    <div class="state">
+      <div class="state__owl">${owl}</div>
+      <div class="state__msg">${msg}</div>
+      ${sub ? `<div class="state__sub">${sub}</div>` : ''}
+    </div>
+  `
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('copy-btn')
+    btn.textContent = '✓ copied!'
+    btn.classList.add('btn--done')
+    setTimeout(() => {
+      btn.textContent = '🔗 copy link'
+      btn.classList.remove('btn--done')
+    }, 2500)
+  })
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+async function init() {
+  const id = new URLSearchParams(window.location.search).get('id')
+
+  if (!id) {
+    renderState('🦉', 'no card found', 'this link looks incomplete. ask the learner to copy it again from their Progress screen.')
+    return
+  }
+
+  renderState('🦉', 'loading…', '')
+
+  try {
+    const res = await fetch(`${WORKER}/progress/${id}`)
+    if (!res.ok) { renderState('🦉', 'card not found', 'this learner\'s data isn\'t available. the link may be outdated.'); return }
+    const data = await res.json()
+
+    const done = new Set(data.events.filter(e => e.event === 'lesson-complete').map(e => e.lesson)).size
+    if (done < TOTAL) {
+      renderState('🦉', 'still in progress', `${done} of ${TOTAL} lessons complete. check back when the journey's finished.`)
+      return
     }
 
-    init()
-  </script>
+    renderCard(data)
+  } catch {
+    renderState('🦉', 'couldn\'t load card', 'check your connection and try again.')
+  }
+}
+
+init()
+</script>
 </body>
 </html>
