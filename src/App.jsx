@@ -20,6 +20,7 @@ import { useStreak } from './utils/use-streak'
 import { playFanfare } from './utils/sound'
 import { LESSONS } from './utils/lessons'
 import CelebrationOverlay from './components/celebration'
+import { trackEvent } from './utils/use-sync'
 import './app.css'
 
 function RestoreBanner({ onRestore, onDismiss }) {
@@ -240,6 +241,7 @@ export default function App() {
   const handleAthenaEvent = useCallback((ev) => {
     setCurrentEvent(ev)
     recordEvent(ev.lesson, ev.event)
+    trackEvent(ev.lesson, ev.event, ev.context || '')
   }, [recordEvent])
 
   // Fire desktop-navigation events with Athena response, but only the first time each
