@@ -66,13 +66,22 @@ export default function Desktop({
   getLessonStatus, getEventProgress, onSelectLesson,
   earnedBadges, totalXP, currentWeek, completedLessons,
 }) {
-  const [cpCopied, setCpCopied]   = useState(false)
-  const [pasteCode, setPasteCode] = useState('')
-  const [pasteError, setPasteError] = useState('')
-  const [resetStep, setResetStep] = useState('idle')
+  const [cpCopied,      setCpCopied]      = useState(false)
+  const [pasteCode,     setPasteCode]     = useState('')
+  const [pasteError,    setPasteError]    = useState('')
+  const [resetStep,     setResetStep]     = useState('idle')
+  const [lessonPanelOpen, setLessonPanelOpen] = useState(() => {
+    try { return localStorage.getItem('athena_lesson_panel') !== 'closed' } catch { return true }
+  })
 
   const savedCode  = progressToCode()
   const restoreUrl = savedCode ? `${window.location.origin}/?restore=${savedCode}` : null
+
+  function toggleLessonPanel() {
+    const next = !lessonPanelOpen
+    setLessonPanelOpen(next)
+    try { localStorage.setItem('athena_lesson_panel', next ? 'open' : 'closed') } catch {}
+  }
 
   function handleCopyLink() {
     if (!restoreUrl) return
@@ -217,15 +226,26 @@ export default function Desktop({
 
   return (
     <div className="desktop">
-      <aside className="desktop__lesson-panel">
-        <LessonPanel
-          getLessonStatus={getLessonStatus}
-          getEventProgress={getEventProgress}
-          onSelectLesson={onSelectLesson}
-        />
-      </aside>
+      {lessonPanelOpen && (
+        <aside className="desktop__lesson-panel">
+          <LessonPanel
+            getLessonStatus={getLessonStatus}
+            getEventProgress={getEventProgress}
+            onSelectLesson={onSelectLesson}
+          />
+        </aside>
+      )}
 
       <div className="desktop__grid-area">
+        <div className="desktop__grid-topbar">
+          <button
+            className={`desktop__panel-toggle${lessonPanelOpen ? ' desktop__panel-toggle--open' : ''}`}
+            onClick={toggleLessonPanel}
+            title={lessonPanelOpen ? 'Hide lessons' : 'Show lessons'}
+          >
+            {lessonPanelOpen ? '‹ lessons' : '› lessons'}
+          </button>
+        </div>
         <DailyMission completedLessons={completedLessons} onOpenApp={onSelectLesson} />
         <div className="desktop__icon-grid">
           {APP_ICONS.map(({ id, emoji, label }) => (
