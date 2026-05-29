@@ -38,73 +38,6 @@ function RestoreBanner({ onRestore, onDismiss }) {
   )
 }
 
-function SimWindow({ children, defaultW, defaultH, onClose }) {
-  const W = defaultW || 920
-  const H = defaultH || 640
-  const PANEL_W = 272
-  const [pos, setPos] = useState(() => ({
-    x: Math.max(PANEL_W + 12, Math.round((window.innerWidth + PANEL_W - W) / 2)),
-    y: Math.max(54, Math.round((window.innerHeight - 44 - H) / 2) + 44),
-  }))
-  const [size,      setSize]      = useState({ w: W, h: H })
-  const [maximized, setMaximized] = useState(false)
-  const wrapRef = useRef(null)
-
-  function toggleMaximize() { setMaximized(m => !m) }
-
-  // Drag from the title bar only
-  function handleBarMouseDown(e) {
-    if (maximized || e.target.closest('button')) return
-    e.preventDefault()
-    const startMX = e.clientX, startMY = e.clientY
-    const startX = pos.x,     startY = pos.y
-    function onMove(e) { setPos({ x: startX + (e.clientX - startMX), y: startY + (e.clientY - startMY) }) }
-    function onUp()   { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('mouseup',   onUp)
-  }
-
-  function handleResizeDown(e) {
-    if (maximized) return
-    e.preventDefault(); e.stopPropagation()
-    const startMX = e.clientX, startMY = e.clientY
-    const startW = size.w,     startH = size.h
-    function onMove(e) {
-      setSize({ w: Math.max(600, startW + (e.clientX - startMX)), h: Math.max(420, startH + (e.clientY - startMY)) })
-    }
-    function onUp() { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('mouseup',   onUp)
-  }
-
-  const style = maximized ? {} : {
-    position: 'fixed',
-    left: pos.x, top: pos.y,
-    width: size.w,
-    height: size.h,
-  }
-
-  return (
-    <div ref={wrapRef} className={`sim-window${maximized ? ' sim-window--maximized' : ''}`} style={style}>
-      {/* Transparent drag zone — floats over content, no height cost */}
-      <div className="sim-window__bar" onMouseDown={handleBarMouseDown}>
-        <div className="sim-window__lights">
-          <button className="sim-window__light sim-window__light--red"   onClick={onClose}        title="close"    aria-label="close" />
-          <button className="sim-window__light sim-window__light--green" onClick={toggleMaximize} title={maximized ? 'restore' : 'maximise'} aria-label="maximise" />
-        </div>
-      </div>
-      <div className="sim-window__content">{children}</div>
-      {!maximized && (
-        <div className="sim-window__resize-handle" onMouseDown={handleResizeDown} />
-      )}
-    </div>
-  )
-}
-
-const SIM_SIZES = {
-  'code-bootcamp': { w: 960, h: 660 },
-  'git-basics':    { w: 960, h: 700 },
-}
 
 const SIM_MAP = {
   'my-files':       FileExplorerSim,
@@ -257,6 +190,7 @@ export default function App() {
       setOpenApp('playground')
       setCurrentView('desktop')
     } else {
+      setOpenApp(null)
       setCurrentView(view)
     }
   }, [fireDesktopNavOnce])
@@ -324,34 +258,30 @@ export default function App() {
           badges={earnedBadges}
           currentApp={openApp}
         />
-        <Desktop
-          currentView={currentView}
-          onBack={() => setCurrentView('desktop')}
-          openApp={openApp}
-          onOpenApp={handleOpenApp}
-          getLessonStatus={getLessonStatus}
-          getEventProgress={getEventProgress}
-          onSelectLesson={handleSelectLesson}
-          earnedBadges={earnedBadges}
-          totalXP={totalXP}
-          currentWeek={currentWeek}
-          completedLessons={completedLessons}
-        />
-      </div>
-
-      {ActiveSim && (
-        <>
-          <div className="app__sim-backdrop" />
-          <div className="app__sim-stage">
-            <SimWindow key={openApp} defaultW={SIM_SIZES[openApp]?.w} defaultH={SIM_SIZES[openApp]?.h} onClose={handleCloseApp}>
-              <ActiveSim
-                onClose={handleCloseApp}
-                onAthenaEvent={handleAthenaEvent}
-              />
-            </SimWindow>
+        {ActiveSim ? (
+          <div className="app__sim-view">
+            <ActiveSim
+              key={openApp}
+              onClose={handleCloseApp}
+              onAthenaEvent={handleAthenaEvent}
+            />
           </div>
-        </>
-      )}
+        ) : (
+          <Desktop
+            currentView={currentView}
+            onBack={() => setCurrentView('desktop')}
+            openApp={openApp}
+            onOpenApp={handleOpenApp}
+            getLessonStatus={getLessonStatus}
+            getEventProgress={getEventProgress}
+            onSelectLesson={handleSelectLesson}
+            earnedBadges={earnedBadges}
+            totalXP={totalXP}
+            currentWeek={currentWeek}
+            completedLessons={completedLessons}
+          />
+        )}
+      </div>
 
       {celebration && (
         <CelebrationOverlay

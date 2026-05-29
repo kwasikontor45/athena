@@ -196,6 +196,32 @@
   transition: transform 0.15s ease;
 }
 
+.aw__orb-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--athena-gold);
+  color: #0a0e1a;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  pointer-events: none;
+  border: 2px solid var(--athena-bg-base);
+  animation: orb-badge-pop 0.2s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+@keyframes orb-badge-pop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
 .aw__orb { cursor: grab; }
 .aw__orb:active { cursor: grabbing; transform: scale(0.95); }
 .aw__orb:hover  { transform: scale(1.08); }

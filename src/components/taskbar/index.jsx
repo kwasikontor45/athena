@@ -30,14 +30,6 @@ export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP,
 
   return (
     <header className="taskbar">
-      <div className="taskbar__brand">
-        <span className="taskbar__brand-owl">🦉</span>
-        <span>athena</span>
-        {streak > 1 && (
-          <span className="taskbar__streak" title={`${streak}-day streak`}>🔥 {streak}</span>
-        )}
-      </div>
-
       <nav className="taskbar__nav">
         {NAV_ITEMS.map(({ id, label }) => (
           <button
@@ -73,6 +65,13 @@ export default function Taskbar({ currentView, onNavigate, currentWeek, totalXP,
           completedLessons={completedLessons}
           earnedBadges={earnedBadges}
         />
+        <div className="taskbar__brand">
+          <span className="taskbar__brand-owl">🦉</span>
+          <span>athena</span>
+          {streak > 1 && (
+            <span className="taskbar__streak" title={`${streak}-day streak`}>🔥 {streak}</span>
+          )}
+        </div>
       </div>
     </header>
   )

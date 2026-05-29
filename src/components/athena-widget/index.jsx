@@ -70,7 +70,8 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
   const [isTyping,  setIsTyping]  = useState(false)
   const [orbState,  setOrbState]  = useState('idle')
   const [failCount, setFailCount] = useState(0)
-  const [orbPos,    setOrbPos]    = useState(null) // null = CSS default bottom-right
+  const [orbPos,    setOrbPos]    = useState(null)
+  const [unread,    setUnread]    = useState(0) // null = CSS default bottom-right
   const bottomRef  = useRef(null)
   const inputRef   = useRef(null)
   const prevApp    = useRef(currentApp)
@@ -149,6 +150,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
       setMessages(prev => addMsg(prev, {
         id: crypto.randomUUID(), type: 'athena', text, timestamp: Date.now(),
       }))
+      setUnread(u => u + 1)
     })
 
     onEventHandled?.()
@@ -186,6 +188,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
   }
 
   function focusInput() {
+    setUnread(0)
     inputRef.current?.focus()
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -242,6 +245,9 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
         <div className="aw__orb-sphere">
           <span className="aw__orb-owl">🦉</span>
         </div>
+        {unread > 0 && (
+          <span className="aw__orb-badge">{unread > 9 ? '9+' : unread}</span>
+        )}
       </div>
     </>
   )

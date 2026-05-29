@@ -16,13 +16,15 @@
 .taskbar__brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   color: var(--athena-gold);
   font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.02em;
-  min-width: 130px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
   user-select: none;
+  padding-left: 10px;
+  border-left: 1px solid var(--athena-gold-border);
+  margin-left: 4px;
 }
 
 .taskbar__brand-owl {
