@@ -64,7 +64,7 @@ function addMsg(prev, msg) {
 }
 
 // orbState: 'idle' | 'thinking' | 'success' | 'struggling'
-export default function AthenaWidget({ currentEvent, currentLesson, onEventHandled, currentApp }) {
+export default function AthenaWidget({ currentEvent, currentLesson, onEventHandled, currentApp, onOrbStateChange }) {
   const [messages,  setMessages]  = useState([WELCOME])
   const [input,     setInput]     = useState('')
   const [isTyping,  setIsTyping]  = useState(false)
@@ -105,7 +105,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
 
   // Orb follows typing state
   useEffect(() => {
-    if (isTyping) setOrbState('thinking')
+    if (isTyping) { setOrbState('thinking'); onOrbStateChange?.('thinking') }
   }, [isTyping])
 
   // Reset on sim change
@@ -120,7 +120,8 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
   function pulseOrb(state, duration = 2200) {
     if (orbTimer.current) clearTimeout(orbTimer.current)
     setOrbState(state)
-    orbTimer.current = setTimeout(() => setOrbState('idle'), duration)
+    onOrbStateChange?.(state)
+    orbTimer.current = setTimeout(() => { setOrbState('idle'); onOrbStateChange?.('idle') }, duration)
   }
 
   // Handle incoming events

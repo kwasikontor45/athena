@@ -105,6 +105,7 @@ export default function App() {
 
   const { phase, palette, isReEntry } = useCircadian()
   const streak = useStreak()
+  const [orbState, setOrbState] = useState('idle')
   const [celebration, setCelebration] = useState(null)
   const prevCompletedRef = useRef(null)
   if (prevCompletedRef.current === null) prevCompletedRef.current = new Set(completedLessons)
@@ -168,6 +169,7 @@ export default function App() {
 
   const handleCloseApp = useCallback(() => {
     setOpenApp(null)
+    setCurrentView('desktop')
     fireDesktopNavOnce('closed-window')
   }, [fireDesktopNavOnce])
 
@@ -188,7 +190,7 @@ export default function App() {
     fireDesktopNavOnce('found-taskbar')
     if (view === 'practice') {
       setOpenApp('playground')
-      setCurrentView('desktop')
+      setCurrentView('practice')
     } else {
       setOpenApp(null)
       setCurrentView(view)
@@ -249,6 +251,7 @@ export default function App() {
         completedLessons={completedLessons}
         earnedBadges={earnedBadges}
         streak={streak}
+        orbState={orbState}
       />
       <div className="app__body">
         <AthenaWidget
@@ -257,6 +260,7 @@ export default function App() {
           onEventHandled={() => setCurrentEvent(null)}
           badges={earnedBadges}
           currentApp={openApp}
+          onOrbStateChange={setOrbState}
         />
         {ActiveSim ? (
           <div className="app__sim-view">
