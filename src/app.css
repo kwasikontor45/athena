@@ -5,6 +5,13 @@
   position: relative;
 }
 
+.app__body {
+  display: flex;
+  height: calc(100vh - 44px);
+  margin-top: 44px;
+  overflow: hidden;
+}
+
 .app__sim-backdrop {
   position: fixed;
   inset: 0;

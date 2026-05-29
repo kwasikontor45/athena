@@ -322,19 +322,28 @@ export default function App() {
         earnedBadges={earnedBadges}
         streak={streak}
       />
-      <Desktop
-        currentView={currentView}
-        onBack={() => setCurrentView('desktop')}
-        openApp={openApp}
-        onOpenApp={handleOpenApp}
-        getLessonStatus={getLessonStatus}
-        getEventProgress={getEventProgress}
-        onSelectLesson={handleSelectLesson}
-        earnedBadges={earnedBadges}
-        totalXP={totalXP}
-        currentWeek={currentWeek}
-        completedLessons={completedLessons}
-      />
+      <div className="app__body">
+        <AthenaWidget
+          currentEvent={currentEvent}
+          currentLesson={currentLesson}
+          onEventHandled={() => setCurrentEvent(null)}
+          badges={earnedBadges}
+          currentApp={openApp}
+        />
+        <Desktop
+          currentView={currentView}
+          onBack={() => setCurrentView('desktop')}
+          openApp={openApp}
+          onOpenApp={handleOpenApp}
+          getLessonStatus={getLessonStatus}
+          getEventProgress={getEventProgress}
+          onSelectLesson={handleSelectLesson}
+          earnedBadges={earnedBadges}
+          totalXP={totalXP}
+          currentWeek={currentWeek}
+          completedLessons={completedLessons}
+        />
+      </div>
 
       {ActiveSim && (
         <>
@@ -357,13 +366,6 @@ export default function App() {
         />
       )}
 
-      <AthenaWidget
-        currentEvent={currentEvent}
-        currentLesson={currentLesson}
-        onEventHandled={() => setCurrentEvent(null)}
-        badges={earnedBadges}
-        currentApp={openApp}
-      />
     </div>
   )
 }
