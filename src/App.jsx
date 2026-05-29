@@ -38,81 +38,73 @@ function RestoreBanner({ onRestore, onDismiss }) {
   )
 }
 
-function SimWindow({ children, defaultW, defaultH }) {
+function SimWindow({ children, defaultW, defaultH, onClose }) {
   const W = defaultW || 920
   const H = defaultH || 640
   const [pos, setPos] = useState(() => ({
     x: Math.max(20, Math.round((window.innerWidth  - W) / 2)),
     y: Math.max(50, Math.round((window.innerHeight - 44 - H) / 2) + 44),
   }))
-  const [size, setSize] = useState({ w: W, h: H })
+  const [size,      setSize]      = useState({ w: W, h: H })
   const [maximized, setMaximized] = useState(false)
+  const [minimized, setMinimized] = useState(false)
   const wrapRef = useRef(null)
 
   function toggleMaximize() {
     setMaximized(m => !m)
+    setMinimized(false)
   }
 
-  function handleMouseDown(e) {
-    if (maximized) return
-    if (e.target.closest('input, textarea, select, button, .sim-window__resize-handle')) return
-    const rect = wrapRef.current.getBoundingClientRect()
-    if (e.clientY - rect.top > 40) return
+  function toggleMinimize() {
+    setMinimized(m => !m)
+    setMaximized(false)
+  }
+
+  // Drag from the title bar only
+  function handleBarMouseDown(e) {
+    if (maximized || e.target.closest('button')) return
     e.preventDefault()
-    const startMX = e.clientX
-    const startMY = e.clientY
-    const startX  = pos.x
-    const startY  = pos.y
-    function onMove(e) {
-      setPos({ x: startX + (e.clientX - startMX), y: startY + (e.clientY - startMY) })
-    }
-    function onUp() {
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('mouseup',  onUp)
-    }
+    const startMX = e.clientX, startMY = e.clientY
+    const startX = pos.x,     startY = pos.y
+    function onMove(e) { setPos({ x: startX + (e.clientX - startMX), y: startY + (e.clientY - startMY) }) }
+    function onUp()   { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mouseup',   onUp)
   }
 
   function handleResizeDown(e) {
     if (maximized) return
-    e.preventDefault()
-    e.stopPropagation()
-    const startMX = e.clientX
-    const startMY = e.clientY
-    const startW  = size.w
-    const startH  = size.h
+    e.preventDefault(); e.stopPropagation()
+    const startMX = e.clientX, startMY = e.clientY
+    const startW = size.w,     startH = size.h
     function onMove(e) {
-      setSize({
-        w: Math.max(600, startW + (e.clientX - startMX)),
-        h: Math.max(420, startH + (e.clientY - startMY)),
-      })
+      setSize({ w: Math.max(600, startW + (e.clientX - startMX)), h: Math.max(420, startH + (e.clientY - startMY)) })
     }
-    function onUp() {
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('mouseup',  onUp)
-    }
+    function onUp() { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mouseup',   onUp)
   }
 
+  const style = maximized ? {} : {
+    position: 'fixed',
+    left: pos.x, top: pos.y,
+    width: size.w,
+    height: minimized ? 32 : size.h,
+  }
+
   return (
-    <div
-      ref={wrapRef}
-      className={`sim-window${maximized ? ' sim-window--maximized' : ''}`}
-      style={maximized ? {} : { position: 'fixed', left: pos.x, top: pos.y, width: size.w, height: size.h }}
-      onMouseDown={handleMouseDown}
-    >
-      <button
-        className="sim-window__maximize"
-        onClick={toggleMaximize}
-        aria-label={maximized ? 'restore' : 'maximize'}
-        title={maximized ? 'restore' : 'maximize'}
-      >
-        {maximized ? '⛶' : '□'}
-      </button>
-      {children}
-      {!maximized && (
+    <div ref={wrapRef} className={`sim-window${maximized ? ' sim-window--maximized' : ''}${minimized ? ' sim-window--minimized' : ''}`} style={style}>
+      {/* Traffic light title bar */}
+      <div className="sim-window__bar" onMouseDown={handleBarMouseDown}>
+        <div className="sim-window__lights">
+          <button className="sim-window__light sim-window__light--red"    onClick={onClose}        title="close"    aria-label="close" />
+          <button className="sim-window__light sim-window__light--yellow" onClick={toggleMinimize} title={minimized ? 'restore' : 'minimise'} aria-label="minimise" />
+          <button className="sim-window__light sim-window__light--green"  onClick={toggleMaximize} title={maximized ? 'restore' : 'maximise'} aria-label="maximise" />
+        </div>
+      </div>
+      {/* Sim content */}
+      {!minimized && <div className="sim-window__content">{children}</div>}
+      {!maximized && !minimized && (
         <div className="sim-window__resize-handle" onMouseDown={handleResizeDown} />
       )}
     </div>
@@ -348,7 +340,7 @@ export default function App() {
         <>
           <div className="app__sim-backdrop" />
           <div className="app__sim-stage">
-            <SimWindow key={openApp} defaultW={SIM_SIZES[openApp]?.w} defaultH={SIM_SIZES[openApp]?.h}>
+            <SimWindow key={openApp} defaultW={SIM_SIZES[openApp]?.w} defaultH={SIM_SIZES[openApp]?.h} onClose={handleCloseApp}>
               <ActiveSim
                 onClose={handleCloseApp}
                 onAthenaEvent={handleAthenaEvent}

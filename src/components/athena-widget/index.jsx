@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import useAthena from '../../utils/use-athena'
 import './athena-widget.css'
 
@@ -67,13 +67,15 @@ function addMsg(prev, msg) {
 export default function AthenaWidget({
   currentEvent, currentLesson, onEventHandled, badges = [], currentApp
 }) {
-  const [open,      setOpen]      = useState(false)
+  const [open,      setOpen]      = useState(true)  // starts open
   const [messages,  setMessages]  = useState([WELCOME])
   const [input,     setInput]     = useState('')
   const [isTyping,  setIsTyping]  = useState(false)
   const [unread,    setUnread]    = useState(0)
   const [pulse,     setPulse]     = useState(false)
   const [failCount, setFailCount] = useState(0)
+  // Drag position — null = default (bottom-right via CSS), set when user drags
+  const [dragPos,   setDragPos]   = useState(null)
   const bottomRef  = useRef(null)
   const inputRef   = useRef(null)
   const prevApp    = useRef(currentApp)
@@ -217,12 +219,45 @@ export default function AthenaWidget({
     })
   }
 
+  // Drag the entire widget by its header
+  const handleDragStart = useCallback((e) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    // Get current position from either dragPos or default CSS position
+    const el = e.currentTarget.closest('.aw__panel, .aw__container')
+    const container = document.querySelector('.aw__container')
+    if (!container) return
+    const rect = container.getBoundingClientRect()
+    const startX = e.clientX, startY = e.clientY
+    const startLeft = rect.left, startTop = rect.top
+
+    function onMove(e) {
+      setDragPos({
+        left: Math.max(8, startLeft + (e.clientX - startX)),
+        top:  Math.max(8, startTop  + (e.clientY - startY)),
+      })
+    }
+    function onUp() {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }, [])
+
+  const containerStyle = dragPos
+    ? { position: 'fixed', left: dragPos.left, top: dragPos.top, bottom: 'auto', right: 'auto' }
+    : {}
+
   return (
-    <>
-      {/* Chat panel — slides up from button */}
+    <div
+      className="aw__container"
+      style={containerStyle}
+    >
+      {/* Chat panel */}
       {open && (
         <div className="aw__panel">
-          <div className="aw__header">
+          <div className="aw__header" onMouseDown={handleDragStart}>
             <div className="aw__header-brand">
               <span className="aw__header-owl">🦉</span>
               <span className="aw__header-name">Athena</span>
@@ -270,10 +305,11 @@ export default function AthenaWidget({
         </div>
       )}
 
-      {/* Floating owl button — always visible */}
+      {/* Owl toggle button */}
       <button
         className={`aw__button${pulse ? ' aw__button--pulse' : ''}${open ? ' aw__button--open' : ''}`}
         onClick={toggleOpen}
+        onMouseDown={handleDragStart}
         aria-label={open ? 'close Athena' : 'open Athena'}
         title={open ? 'close Athena' : 'ask Athena'}
       >
@@ -282,6 +318,6 @@ export default function AthenaWidget({
           <span className="aw__unread">{unread > 9 ? '9+' : unread}</span>
         )}
       </button>
-    </>
+    </div>
   )
 }

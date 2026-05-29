@@ -1,8 +1,17 @@
-/* ── Floating owl button ───────────────────────────────────────────────────── */
-.aw__button {
+/* ── Container — positions the whole widget ─────────────────────────────────── */
+.aw__container {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* ── Floating owl button ───────────────────────────────────────────────────── */
+.aw__button {
   z-index: 600;
   width: 56px;
   height: 56px;
@@ -79,11 +88,9 @@
   border: 2px solid var(--athena-bg-base, #0a0e1a);
 }
 
-/* ── Chat panel ────────────────────────────────────────────────────────────── */
+/* ── Chat panel — stacks above button inside container ──────────────────────── */
 .aw__panel {
-  position: fixed;
-  bottom: 90px;
-  right: 24px;
+  order: -1;
   z-index: 600;
   width: 320px;
   max-height: 480px;
@@ -112,7 +119,11 @@
   background: var(--athena-bg-surface, #0c1120);
   border-bottom: 1px solid var(--athena-gold-border, rgba(201,168,76,0.15));
   flex-shrink: 0;
+  cursor: grab;
+  user-select: none;
 }
+
+.aw__header:active { cursor: grabbing; }
 
 .aw__header-brand {
   display: flex;
