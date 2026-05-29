@@ -70,11 +70,33 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
   const [isTyping,  setIsTyping]  = useState(false)
   const [orbState,  setOrbState]  = useState('idle')
   const [failCount, setFailCount] = useState(0)
+  const [orbPos,    setOrbPos]    = useState(null) // null = CSS default bottom-right
   const bottomRef  = useRef(null)
   const inputRef   = useRef(null)
   const prevApp    = useRef(currentApp)
   const orbTimer   = useRef(null)
   const { ask }    = useAthena()
+
+  const handleOrbDrag = useCallback((e) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    const el   = e.currentTarget
+    const rect = el.getBoundingClientRect()
+    const sx = e.clientX, sy = e.clientY
+    const sl = rect.left,  st = rect.top
+    function onMove(e) {
+      setOrbPos({
+        left:   Math.max(8, sl + (e.clientX - sx)),
+        top:    Math.max(8, st + (e.clientY - sy)),
+      })
+    }
+    function onUp() {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -211,11 +233,15 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
       {/* ── Floating orb — her presence above all windows ── */}
       <div
         className={`aw__orb aw__orb--${orbState}`}
+        style={orbPos ? { left: orbPos.left, top: orbPos.top, bottom: 'auto', right: 'auto' } : {}}
         onClick={focusInput}
+        onMouseDown={handleOrbDrag}
         title="Athena"
         aria-label="Athena"
       >
-        <div className="aw__orb-sphere" />
+        <div className="aw__orb-sphere">
+          <span className="aw__orb-owl">🦉</span>
+        </div>
       </div>
     </>
   )

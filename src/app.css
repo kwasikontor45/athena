@@ -69,58 +69,55 @@
   z-index: 300 !important;
 }
 
-/* SimWindow title bar with traffic lights */
+/* SimWindow — traffic lights float as overlay, zero height cost */
 .sim-window__bar {
-  height: 32px;
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: absolute;
+  top: 9px;
+  left: 11px;
+  z-index: 20;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  flex-shrink: 0;
+  /* Extend invisible hit area for dragging */
+  padding: 6px 80px 6px 0;
   cursor: grab;
   user-select: none;
-  position: relative;
-  z-index: 5;
+  border-radius: 6px;
 }
 
 .sim-window__bar:active { cursor: grabbing; }
 
 .sim-window__lights {
   display: flex;
-  gap: 8px;
+  gap: 7px;
   align-items: center;
 }
 
 .sim-window__light {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
   padding: 0;
   transition: filter 0.15s, transform 0.1s;
   flex-shrink: 0;
+  opacity: 0.75;
 }
 
-.sim-window__light:hover  { filter: brightness(1.3); transform: scale(1.12); }
-.sim-window__light:active { transform: scale(0.9); }
+.sim-window__light:hover  { filter: brightness(1.3); transform: scale(1.15); opacity: 1; }
+.sim-window__light:active { transform: scale(0.88); }
 
-.sim-window__light--red    { background: #ff5f56; box-shadow: 0 0 4px rgba(255,95,86,0.4); }
-.sim-window__light--yellow { background: #ffbd2e; box-shadow: 0 0 4px rgba(255,189,46,0.4); }
-.sim-window__light--green  { background: #27c93f; box-shadow: 0 0 4px rgba(39,201,63,0.4); }
+.sim-window__light--red   { background: #ff5f56; box-shadow: 0 0 5px rgba(255,95,86,0.5); }
+.sim-window__light--green { background: #27c93f; box-shadow: 0 0 5px rgba(39,201,63,0.5); }
 
-/* Content fills below bar */
+/* Content fills 100% — bar floats above it */
 .sim-window__content {
-  flex: 1;
-  min-height: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
-
-.sim-window--minimized { overflow: hidden; }
-.sim-window--minimized .sim-window__bar { border-bottom: none; cursor: pointer; }
 
 .sim-window__resize-handle {
   position: absolute;

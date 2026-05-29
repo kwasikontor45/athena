@@ -41,9 +41,10 @@ function RestoreBanner({ onRestore, onDismiss }) {
 function SimWindow({ children, defaultW, defaultH, onClose }) {
   const W = defaultW || 920
   const H = defaultH || 640
+  const PANEL_W = 272
   const [pos, setPos] = useState(() => ({
-    x: Math.max(20, Math.round((window.innerWidth  - W) / 2)),
-    y: Math.max(50, Math.round((window.innerHeight - 44 - H) / 2) + 44),
+    x: Math.max(PANEL_W + 12, Math.round((window.innerWidth + PANEL_W - W) / 2)),
+    y: Math.max(54, Math.round((window.innerHeight - 44 - H) / 2) + 44),
   }))
   const [size,      setSize]      = useState({ w: W, h: H })
   const [maximized, setMaximized] = useState(false)
@@ -85,6 +86,7 @@ function SimWindow({ children, defaultW, defaultH, onClose }) {
 
   return (
     <div ref={wrapRef} className={`sim-window${maximized ? ' sim-window--maximized' : ''}`} style={style}>
+      {/* Transparent drag zone — floats over content, no height cost */}
       <div className="sim-window__bar" onMouseDown={handleBarMouseDown}>
         <div className="sim-window__lights">
           <button className="sim-window__light sim-window__light--red"   onClick={onClose}        title="close"    aria-label="close" />

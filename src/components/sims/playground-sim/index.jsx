@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import useAthena from '../../../utils/use-athena'
 import FileExplorerSim from '../file-explorer-sim'
 import EmailSim from '../email-sim'
 import BrowserSim from '../browser-sim'
@@ -20,16 +19,11 @@ const SIMS = [
 ]
 
 export default function PlaygroundSim({ onClose }) {
-  const [openSims, setOpenSims] = useState([]) // ordered — last = highest z-index
-  const [question, setQuestion] = useState('')
-  const [response, setResponse] = useState('')
-  const { ask, isLoading } = useAthena()
+  const [openSims, setOpenSims] = useState([])
 
   function openSim(id) {
     setOpenSims(prev =>
-      prev.includes(id)
-        ? [...prev.filter(s => s !== id), id]  // bring to front
-        : [...prev, id]
+      prev.includes(id) ? [...prev.filter(s => s !== id), id] : [...prev, id]
     )
   }
 
@@ -37,36 +31,9 @@ export default function PlaygroundSim({ onClose }) {
     setOpenSims(prev => prev.filter(s => s !== id))
   }
 
-  async function handleAsk() {
-    const q = question.trim()
-    if (!q || isLoading) return
-    setQuestion('')
-    const res = await ask({ lesson: 'playground', event: 'direct-question', context: q })
-    setResponse(res)
-  }
-
   return (
     <div className="pg">
-      <div className="pg__titlebar">
-        <div className="pg__dots">
-          <button className="pg__dot pg__dot--red" onClick={onClose} aria-label="Close" />
-          <span className="pg__dot pg__dot--yellow" />
-          <span className="pg__dot pg__dot--green" />
-        </div>
-        <span className="pg__title">playground</span>
-        <span />
-      </div>
-
       <div className="pg__body">
-        <div className="pg__bubble">
-          <span className="pg__bubble-owl">🦉</span>
-          <p className="pg__bubble-text">
-            Perfect — this is your space. No goals, no grades.
-            Open anything, try everything, and see what you discover.
-            I'm here if you need me.
-          </p>
-        </div>
-
         <div className="pg__launcher">
           {SIMS.map(({ id, emoji, label, cls }) => {
             const isOpen = openSims.includes(id)
@@ -79,35 +46,11 @@ export default function PlaygroundSim({ onClose }) {
                 <span className="pg__tile-icon">{emoji}</span>
                 <div className="pg__tile-bottom">
                   <span className="pg__tile-label">{label}</span>
-                  <span className="pg__tile-action">{isOpen ? 'open ✓' : 'open →'}</span>
+                  <span className="pg__tile-action">{isOpen ? '✓ open' : 'open →'}</span>
                 </div>
               </button>
             )
           })}
-        </div>
-
-        <div className="pg__chat">
-          {response && (
-            <div className="pg__response">
-              <span className="pg__response-owl">🦉</span>
-              <p className="pg__response-text">{response}</p>
-            </div>
-          )}
-          <div className="pg__input-row">
-            <input
-              className="pg__input"
-              value={question}
-              onChange={e => setQuestion(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleAsk()}
-              placeholder={isLoading ? 'thinking...' : 'ask athena anything...'}
-              disabled={isLoading}
-            />
-            <button
-              className="pg__send"
-              onClick={handleAsk}
-              disabled={isLoading || !question.trim()}
-            >→</button>
-          </div>
         </div>
       </div>
 
