@@ -47,18 +47,9 @@ function SimWindow({ children, defaultW, defaultH, onClose }) {
   }))
   const [size,      setSize]      = useState({ w: W, h: H })
   const [maximized, setMaximized] = useState(false)
-  const [minimized, setMinimized] = useState(false)
   const wrapRef = useRef(null)
 
-  function toggleMaximize() {
-    setMaximized(m => !m)
-    setMinimized(false)
-  }
-
-  function toggleMinimize() {
-    setMinimized(m => !m)
-    setMaximized(false)
-  }
+  function toggleMaximize() { setMaximized(m => !m) }
 
   // Drag from the title bar only
   function handleBarMouseDown(e) {
@@ -89,22 +80,19 @@ function SimWindow({ children, defaultW, defaultH, onClose }) {
     position: 'fixed',
     left: pos.x, top: pos.y,
     width: size.w,
-    height: minimized ? 32 : size.h,
+    height: size.h,
   }
 
   return (
-    <div ref={wrapRef} className={`sim-window${maximized ? ' sim-window--maximized' : ''}${minimized ? ' sim-window--minimized' : ''}`} style={style}>
-      {/* Traffic light title bar */}
+    <div ref={wrapRef} className={`sim-window${maximized ? ' sim-window--maximized' : ''}`} style={style}>
       <div className="sim-window__bar" onMouseDown={handleBarMouseDown}>
         <div className="sim-window__lights">
-          <button className="sim-window__light sim-window__light--red"    onClick={onClose}        title="close"    aria-label="close" />
-          <button className="sim-window__light sim-window__light--yellow" onClick={toggleMinimize} title={minimized ? 'restore' : 'minimise'} aria-label="minimise" />
-          <button className="sim-window__light sim-window__light--green"  onClick={toggleMaximize} title={maximized ? 'restore' : 'maximise'} aria-label="maximise" />
+          <button className="sim-window__light sim-window__light--red"   onClick={onClose}        title="close"    aria-label="close" />
+          <button className="sim-window__light sim-window__light--green" onClick={toggleMaximize} title={maximized ? 'restore' : 'maximise'} aria-label="maximise" />
         </div>
       </div>
-      {/* Sim content */}
-      {!minimized && <div className="sim-window__content">{children}</div>}
-      {!maximized && !minimized && (
+      <div className="sim-window__content">{children}</div>
+      {!maximized && (
         <div className="sim-window__resize-handle" onMouseDown={handleResizeDown} />
       )}
     </div>
@@ -253,9 +241,13 @@ export default function App() {
       setCurrentEvent({ lesson: 'desktop-navigation', event: 'lesson-selected' })
       return
     }
+    if (getLessonStatus(lessonId) === 'locked') {
+      setCurrentEvent({ lesson: 'desktop-navigation', event: 'locked-lesson', context: lessonId })
+      return
+    }
     const appId = LESSON_TO_APP[lessonId]
     if (appId) { setOpenApp(appId); setCurrentView('desktop') }
-  }, [])
+  }, [getLessonStatus])
 
   const handleNavigate = useCallback((view) => {
     fireDesktopNavOnce('found-taskbar')

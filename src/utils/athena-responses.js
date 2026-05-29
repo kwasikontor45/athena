@@ -133,7 +133,12 @@ export const athenaResponses = {
       "Desktop Navigation — done! You can open, close, and manage windows. That's real skill.",
       "Excellent work. You just learned how to be in control of your screen.",
       "Look at what you built today. Navigating like a pro — complete."
-    ]
+    ],
+    'locked-lesson': [
+      "Not quite yet — finish the lessons above first and this one unlocks. You're closer than you think.",
+      "Almost there! Complete the earlier lessons in this week and this one will open right up.",
+      "This one's waiting for you. Knock out the lessons before it and it's yours."
+    ],
   },
 
   'file-explorer': {

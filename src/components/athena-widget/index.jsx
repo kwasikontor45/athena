@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import useAthena from '../../utils/use-athena'
 import './athena-widget.css'
 
-const MAX_MESSAGES = 20
+const MAX_MESSAGES   = 20
+const FAIL_THRESHOLD = 3
 
 const DASHBOARD_HASH = '0b7e80cfaccb6214ca7089cd1f4f38f32c2d26c7e0a5038307d14eb055f8a06c'
 
@@ -62,47 +63,69 @@ function addMsg(prev, msg) {
   return next.length > MAX_MESSAGES ? next.slice(next.length - MAX_MESSAGES) : next
 }
 
+// orbState: 'idle' | 'thinking' | 'success' | 'struggling'
 export default function AthenaWidget({ currentEvent, currentLesson, onEventHandled, currentApp }) {
-  const [messages, setMessages]   = useState([WELCOME])
-  const [input,    setInput]      = useState('')
-  const [isTyping, setIsTyping]   = useState(false)
-  const bottomRef = useRef(null)
-  const inputRef  = useRef(null)
-  const prevApp   = useRef(currentApp)
-  const { ask }   = useAthena()
+  const [messages,  setMessages]  = useState([WELCOME])
+  const [input,     setInput]     = useState('')
+  const [isTyping,  setIsTyping]  = useState(false)
+  const [orbState,  setOrbState]  = useState('idle')
+  const [failCount, setFailCount] = useState(0)
+  const bottomRef  = useRef(null)
+  const inputRef   = useRef(null)
+  const prevApp    = useRef(currentApp)
+  const orbTimer   = useRef(null)
+  const { ask }    = useAthena()
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping])
 
-  // Reset chat context when sim changes
+  // Orb follows typing state
+  useEffect(() => {
+    if (isTyping) setOrbState('thinking')
+  }, [isTyping])
+
+  // Reset on sim change
   useEffect(() => {
     if (currentApp !== prevApp.current) {
       prevApp.current = currentApp
+      setFailCount(0)
       setMessages([{ ...WELCOME, id: crypto.randomUUID(), timestamp: Date.now() }])
     }
   }, [currentApp])
 
-  // Handle incoming lesson/sim events
+  function pulseOrb(state, duration = 2200) {
+    if (orbTimer.current) clearTimeout(orbTimer.current)
+    setOrbState(state)
+    orbTimer.current = setTimeout(() => setOrbState('idle'), duration)
+  }
+
+  // Handle incoming events
   useEffect(() => {
     if (!currentEvent) return
     const { lesson, event, context = '' } = currentEvent
+    const isFail    = event === 'step-failed'
+    const isSuccess = event === 'step-advanced' || event === 'lesson-complete'
+
+    setFailCount(prev => {
+      const next = isFail ? prev + 1 : isSuccess ? 0 : prev
+      if (next >= FAIL_THRESHOLD) { pulseOrb('struggling', 3000); return 0 }
+      return next
+    })
+
+    if (isSuccess) pulseOrb('success', 2000)
 
     setMessages(prev => addMsg(prev, {
-      id: crypto.randomUUID(),
-      type: 'system',
-      text: systemLabel(lesson, event),
-      timestamp: Date.now(),
+      id: crypto.randomUUID(), type: 'system',
+      text: systemLabel(lesson, event), timestamp: Date.now(),
     }))
 
     setIsTyping(true)
     ask({ lesson, event, context }).then(text => {
       setIsTyping(false)
+      setOrbState('idle')
       setMessages(prev => addMsg(prev, {
-        id: crypto.randomUUID(),
-        type: 'athena',
-        text,
-        timestamp: Date.now(),
+        id: crypto.randomUUID(), type: 'athena', text, timestamp: Date.now(),
       }))
     })
 
@@ -126,12 +149,9 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
 
     setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'user', text, timestamp: Date.now() }))
     setIsTyping(true)
-    const response = await ask({
-      lesson: currentLesson ?? 'desktop-navigation',
-      event: 'direct-question',
-      context: text,
-    })
+    const response = await ask({ lesson: currentLesson ?? 'desktop-navigation', event: 'direct-question', context: text })
     setIsTyping(false)
+    setOrbState('idle')
     setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'athena', text: response, timestamp: Date.now() }))
   }
 
@@ -143,48 +163,60 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
     setMessages([{ ...WELCOME, id: crypto.randomUUID(), timestamp: Date.now() }])
   }
 
+  function focusInput() {
+    inputRef.current?.focus()
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
-    <div className="aw__panel">
-      <div className="aw__header">
-        <div className="aw__header-brand">
-          <span className="aw__header-owl">🦉</span>
-          <span className="aw__header-name">Athena</span>
-          <span className="aw__header-dot" />
+    <>
+      {/* ── Permanent left panel ── */}
+      <div className="aw__panel">
+        <div className="aw__header">
+          <div className="aw__header-brand">
+            <span className="aw__header-name">Athena</span>
+            <span className={`aw__header-dot aw__header-dot--${orbState}`} />
+          </div>
+          <button className="aw__action-btn" onClick={handleClear} title="clear chat">🗑</button>
         </div>
-        <button className="aw__action-btn" onClick={handleClear} title="clear chat">🗑</button>
+
+        <div className="aw__messages">
+          {messages.map(msg => (
+            <div key={msg.id} className={`aw__bubble aw__bubble--${msg.type}`}>
+              {msg.text}
+            </div>
+          ))}
+          {isTyping && (
+            <div className="aw__bubble aw__bubble--athena">
+              <span className="aw__typing"><span /><span /><span /></span>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        <div className="aw__input-row">
+          <input
+            ref={inputRef}
+            className="aw__input"
+            placeholder="ask Athena anything…"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={isTyping}
+          />
+          <button className="aw__send" onClick={handleSend} disabled={isTyping || !input.trim()} aria-label="send">→</button>
+        </div>
       </div>
 
-      <div className="aw__messages">
-        {messages.map(msg => (
-          <div key={msg.id} className={`aw__bubble aw__bubble--${msg.type}`}>
-            {msg.text}
-          </div>
-        ))}
-        {isTyping && (
-          <div className="aw__bubble aw__bubble--athena">
-            <span className="aw__typing"><span /><span /><span /></span>
-          </div>
-        )}
-        <div ref={bottomRef} />
+      {/* ── Floating orb — her presence above all windows ── */}
+      <div
+        className={`aw__orb aw__orb--${orbState}`}
+        onClick={focusInput}
+        title="Athena"
+        aria-label="Athena"
+      >
+        <div className="aw__orb-sphere" />
       </div>
-
-      <div className="aw__input-row">
-        <input
-          ref={inputRef}
-          className="aw__input"
-          placeholder="ask Athena anything…"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isTyping}
-        />
-        <button
-          className="aw__send"
-          onClick={handleSend}
-          disabled={isTyping || !input.trim()}
-          aria-label="send"
-        >→</button>
-      </div>
-    </div>
+    </>
   )
 }

@@ -144,7 +144,8 @@
 
 .desktop__lesson-row:hover { background: rgba(255,255,255,0.04); }
 
-.desktop__lesson-row--done { opacity: 0.55; }
+.desktop__lesson-row--done   { opacity: 0.55; }
+.desktop__lesson-row--locked { opacity: 0.35; cursor: default; }
 
 .desktop__lesson-row-icon {
   font-size: 17px;

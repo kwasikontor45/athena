@@ -42,28 +42,24 @@ function WeekSection({ week, lessons, currentWeek, getLessonStatus, onSelectLess
     <div className={`desktop__week${isActive ? ' desktop__week--active' : ''}${isLocked ? ' desktop__week--locked' : ''}`}>
       <div className="desktop__week-header">
         <span className="desktop__week-label">week {week}</span>
-        {isLocked
-          ? <span className="desktop__week-lock">locked</span>
-          : <span className="desktop__week-count">{doneCount}/{lessons.length}</span>
-        }
+        <span className="desktop__week-count">{isLocked ? '—' : `${doneCount}/${lessons.length}`}</span>
       </div>
-      {!isLocked && (
-        <div className="desktop__week-bar">
-          <div className="desktop__week-fill" style={{ width: `${pct}%` }} />
-        </div>
-      )}
-      {!isLocked && lessons.map(lesson => {
-        const status = getLessonStatus(lesson.id)
-        const isDone = status === 'complete'
+      <div className="desktop__week-bar">
+        <div className="desktop__week-fill" style={{ width: `${pct}%` }} />
+      </div>
+      {lessons.map(lesson => {
+        const status   = getLessonStatus(lesson.id)
+        const isDone   = status === 'complete'
+        const isRowLocked = status === 'locked'
         return (
           <button
             key={lesson.id}
-            className={`desktop__lesson-row${isDone ? ' desktop__lesson-row--done' : ''}`}
+            className={`desktop__lesson-row${isDone ? ' desktop__lesson-row--done' : ''}${isRowLocked ? ' desktop__lesson-row--locked' : ''}`}
             onClick={() => onSelectLesson(lesson.id)}
           >
             <span className="desktop__lesson-row-icon">{lesson.icon}</span>
             <span className="desktop__lesson-row-title">{lesson.title}</span>
-            <span className="desktop__lesson-row-arrow">{isDone ? '✓' : '→'}</span>
+            <span className="desktop__lesson-row-arrow">{isDone ? '✓' : isRowLocked ? '·' : '→'}</span>
           </button>
         )
       })}
