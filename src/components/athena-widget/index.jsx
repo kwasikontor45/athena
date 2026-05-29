@@ -65,13 +65,16 @@ function addMsg(prev, msg) {
 
 // orbState: 'idle' | 'thinking' | 'success' | 'struggling'
 export default function AthenaWidget({ currentEvent, currentLesson, onEventHandled, currentApp, onOrbStateChange }) {
-  const [messages,  setMessages]  = useState([WELCOME])
-  const [input,     setInput]     = useState('')
-  const [isTyping,  setIsTyping]  = useState(false)
-  const [orbState,  setOrbState]  = useState('idle')
-  const [failCount, setFailCount] = useState(0)
-  const [orbPos,    setOrbPos]    = useState(null)
-  const [unread,    setUnread]    = useState(0) // null = CSS default bottom-right
+  const [messages,   setMessages]   = useState([WELCOME])
+  const [input,      setInput]      = useState('')
+  const [isTyping,   setIsTyping]   = useState(false)
+  const [orbState,   setOrbState]   = useState('idle')
+  const [failCount,  setFailCount]  = useState(0)
+  const [orbPos,     setOrbPos]     = useState(null)
+  const [unread,     setUnread]     = useState(0)
+  const [collapsed,  setCollapsed]  = useState(() => {
+    try { return localStorage.getItem('athena_panel_collapsed') === 'true' } catch { return false }
+  }) // null = CSS default bottom-right
   const bottomRef  = useRef(null)
   const inputRef   = useRef(null)
   const prevApp    = useRef(currentApp)
@@ -194,19 +197,30 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  function toggleCollapsed() {
+    const next = !collapsed
+    setCollapsed(next)
+    try { localStorage.setItem('athena_panel_collapsed', String(next)) } catch {}
+  }
+
   return (
     <>
       {/* ── Permanent left panel ── */}
-      <div className="aw__panel">
+      <div className={`aw__panel${collapsed ? ' aw__panel--collapsed' : ''}`}>
         <div className="aw__header">
-          <div className="aw__header-brand">
-            <span className="aw__header-name">Athena</span>
-            <span className={`aw__header-dot aw__header-dot--${orbState}`} />
-          </div>
-          <button className="aw__action-btn" onClick={handleClear} title="clear chat">🗑</button>
+          {!collapsed && (
+            <div className="aw__header-brand">
+              <span className="aw__header-name">Athena</span>
+              <span className={`aw__header-dot aw__header-dot--${orbState}`} />
+            </div>
+          )}
+          {collapsed && <span className={`aw__header-dot aw__header-dot--${orbState}`} style={{ margin: '0 auto' }} />}
+          <button className="aw__action-btn aw__collapse-btn" onClick={toggleCollapsed} title={collapsed ? 'expand Athena' : 'collapse panel'}>
+            {collapsed ? '›' : '‹'}
+          </button>
         </div>
 
-        <div className="aw__messages">
+        {!collapsed && <div className="aw__messages">
           {messages.map(msg => (
             <div key={msg.id} className={`aw__bubble aw__bubble--${msg.type}`}>
               {msg.text}
@@ -218,9 +232,9 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
             </div>
           )}
           <div ref={bottomRef} />
-        </div>
+        </div>}
 
-        <div className="aw__input-row">
+        {!collapsed && <div className="aw__input-row">
           <input
             ref={inputRef}
             className="aw__input"
@@ -231,7 +245,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
             disabled={isTyping}
           />
           <button className="aw__send" onClick={handleSend} disabled={isTyping || !input.trim()} aria-label="send">→</button>
-        </div>
+        </div>}
       </div>
 
       {/* ── Floating orb — her presence above all windows ── */}

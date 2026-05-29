@@ -12,13 +12,13 @@
   color: var(--athena-text-primary);
 }
 
-/* Body — fills the full window, top padding clears the floating traffic lights */
+/* Body — fills the full window */
 .pg__body {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 44px 20px 20px;
+  padding: 16px 20px 20px;
   overflow: hidden;
   box-sizing: border-box;
 }

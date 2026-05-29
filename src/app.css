@@ -19,6 +19,11 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  pointer-events: auto;
+}
+
+.app__sim-view > * {
+  pointer-events: auto;
 }
 
 .app__sim-view .fes,

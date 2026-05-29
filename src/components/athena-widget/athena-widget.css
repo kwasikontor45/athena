@@ -11,6 +11,19 @@
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* ── Collapsed state ── */
+.aw__panel--collapsed {
+  width: 44px;
+  min-width: 44px;
+}
+
+.aw__panel--collapsed .aw__header {
+  padding: 10px 6px;
+  flex-direction: column;
+  gap: 8px;
+  height: auto;
+}
+
 /* ── Header ── */
 .aw__header {
   display: flex;
@@ -54,6 +67,14 @@
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
 }
+
+.aw__collapse-btn {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  padding: 2px 5px;
+}
+.aw__collapse-btn:hover { color: var(--athena-gold); background: none; }
 
 .aw__action-btn {
   background: none;
