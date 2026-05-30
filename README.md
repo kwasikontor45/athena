@@ -69,7 +69,11 @@ Validation is lenient-with-coaching: `git add .` is accepted but notes why namin
 
 ## AI Assistant — Athena
 
-Athena responds to every lesson event with contextual guidance. She tries two live AI providers before falling back to built-in offline responses:
+Athena is always visible — a permanent 272px left panel with a floating 🦉 orb that pulses with her state (gold/breathing when idle, blue when thinking, green on success, amber when you're struggling). The panel collapses to 44px to give sims more room.
+
+**Adaptive responses (Phase 5):** before each reply, Athena fetches your progress from the backend. She knows which lessons you've completed, where you've struggled (lessons with repeated failures), and how long you've been learning. Responses are personalised — she references your history, not generic encouragement.
+
+She tries two live AI providers before falling back to built-in offline responses:
 
 1. **Groq** (`llama-3.1-8b-instant`) — fast, free tier
 2. **OpenRouter** (`llama-3.1-8b` free) — fallback
@@ -84,8 +88,10 @@ Set keys in `.env.local` to enable live AI. Athena works fully offline without t
 - **PWA** — installable, works fully offline after first load
 - **Circadian engine** — UI palette shifts by time of day (dawn / day / golden hour / night)
 - **Progress checkpoints** — export your progress as a shareable restore link; works across any device or browser
-- **Cloud sync** — every lesson event syncs to a Cloudflare D1 database via `athena-sync` worker (see [athena-worker](https://github.com/kwasikontor45/athena-worker))
+- **Cloud sync** — every lesson event syncs to a Cloudflare D1 database via `athena-sync` worker (see [athena-worker](https://github.com/k6-bleedin6ed6e-k6/athena-worker))
 - **Instructor dashboard** — `athena.kontor.studio/dashboard.html` — cohort progress, per-lesson heatmap, learner drilldown, weak spot analysis
+- **Sim ecosystem** — email, portal, library, and file explorer share one student narrative (credentials, downloadable files, cross-references)
+- **Free Explore** — Practice tab opens all 11 sims with no lesson locks, scrollable grid
 
 ---
 
