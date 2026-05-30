@@ -71,48 +71,141 @@ function SearchResults({ query, onNavigate }) {
 function SchoolPage() {
   return (
     <div className="bsp bsp--school">
-      <div className="bsp__school-logo">🎓 Kontor Community College</div>
-      <nav className="bsp__school-nav">
-        <span>Admissions</span><span>Courses</span><span>Student Life</span><span>Contact</span>
-      </nav>
-      <h2 className="bsp__school-headline">Empowering Students Since 1998</h2>
-      <button className="bsp__school-btn">Student Login →</button>
+      <div className="bsp__school-header">
+        <div className="bsp__school-logo">🎓 Kontor Community College</div>
+        <nav className="bsp__school-nav">
+          <span>Admissions</span><span>Academics</span><span>Library</span><span>Student Life</span><span>Contact</span>
+        </nav>
+      </div>
+      <div className="bsp__school-body">
+        <div className="bsp__school-hero">
+          <h2 className="bsp__school-headline">Empowering Students Since 1998</h2>
+          <p className="bsp__school-sub">Building skills for life, careers, and community.</p>
+          <div className="bsp__school-actions">
+            <button className="bsp__school-btn bsp__school-btn--primary">Student Portal →</button>
+            <button className="bsp__school-btn">Course Catalog</button>
+          </div>
+        </div>
+        <div className="bsp__school-notices">
+          <div className="bsp__school-notices-title">📢 Announcements</div>
+          {[
+            { icon: '📅', text: 'Week 1 classes begin Monday. Check your email for room assignments.' },
+            { icon: '📚', text: 'Library orientation sessions available — visit library.edu to book a slot.' },
+            { icon: '💰', text: 'Financial aid award letters are now available in the student portal.' },
+          ].map((n, i) => (
+            <div key={i} className="bsp__school-notice">
+              <span>{n.icon}</span>
+              <span>{n.text}</span>
+            </div>
+          ))}
+        </div>
+        <div className="bsp__school-links">
+          {[
+            { icon: '🎓', label: 'Student Portal' },
+            { icon: '📅', label: 'Class Schedule' },
+            { icon: '📝', label: 'Assignment Hub' },
+            { icon: '💬', label: 'Student Support' },
+          ].map(l => (
+            <div key={l.label} className="bsp__school-link">
+              <span className="bsp__school-link-icon">{l.icon}</span>
+              <span className="bsp__school-link-label">{l.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
 
-function LibraryPage({ onAthenaEvent }) {
-  const [downloaded, setDownloaded] = useState(false)
+const CATALOG = [
+  { id: 'b1', title: 'Introduction to Business', author: 'T. Bateman',  subject: 'Business',    available: true  },
+  { id: 'b2', title: 'Financial Literacy: The Basics', author: 'A. Mensah', subject: 'Business', available: true  },
+  { id: 'b3', title: 'Microsoft Office Essentials',  author: 'K. Linden',  subject: 'Technology', available: false },
+  { id: 'b4', title: 'Digital Literacy in the Modern Age', author: 'R. Osei', subject: 'Technology', available: true },
+  { id: 'b5', title: 'Study Skills for College Students', author: 'P. Ellis', subject: 'General',   available: true  },
+  { id: 'b6', title: 'English Composition Handbook',  author: 'C. Walsh',   subject: 'English',    available: true  },
+  { id: 'b7', title: 'Introduction to Psychology',    author: 'D. Myers',   subject: 'Psychology', available: false },
+  { id: 'b8', title: 'College Mathematics',           author: 'B. Blitzer', subject: 'Maths',      available: true  },
+]
 
-  function handleDownload() {
-    setDownloaded(true)
-    onAthenaEvent?.({ lesson: 'browser', event: 'downloaded-file', context: 'BUS101-Syllabus.pdf' })
+const DOWNLOADS = [
+  { id: 'd1', name: 'BUS101-Syllabus.pdf',   label: 'BUS 101 Syllabus',      meta: 'Prof. Mensah · Introduction to Business' },
+  { id: 'd2', name: 'BUS101-Week1-Slides.pdf', label: 'BUS 101 Week 1 Slides', meta: 'Prof. Mensah · Introduction to Business' },
+  { id: 'd3', name: 'StudySkills-Guide.pdf',  label: 'Study Skills Guide',    meta: 'Student Support Services' },
+]
+
+function LibraryPage({ onAthenaEvent }) {
+  const [query,     setQuery]     = useState('')
+  const [downloaded, setDownloaded] = useState({})
+
+  const results = query.trim()
+    ? CATALOG.filter(b =>
+        b.title.toLowerCase().includes(query.toLowerCase()) ||
+        b.author.toLowerCase().includes(query.toLowerCase()) ||
+        b.subject.toLowerCase().includes(query.toLowerCase())
+      )
+    : CATALOG
+
+  function handleDownload(file) {
+    setDownloaded(prev => ({ ...prev, [file.id]: true }))
+    onAthenaEvent?.({ lesson: 'browser', event: 'downloaded-file', context: file.name })
   }
 
   return (
     <div className="bsp bsp--library">
-      <div className="bsp__library-logo">📚 Kontor Community Library</div>
-      <input className="bsp__library-search" placeholder="Search the catalog..." />
-      <div className="bsp__library-section">
-        <div className="bsp__library-section-title">📋 Course Materials — BUS 101</div>
-        <div className="bsp__library-resource">
-          <span className="bsp__library-resource-icon">📄</span>
-          <div className="bsp__library-resource-info">
-            <div className="bsp__library-resource-name">BUS101-Syllabus.pdf</div>
-            <div className="bsp__library-resource-meta">Prof. Mensah · Introduction to Business</div>
-          </div>
-          <button
-            className={`bsp__library-download${downloaded ? ' bsp__library-download--done' : ''}`}
-            onClick={handleDownload}
-            disabled={downloaded}
-          >
-            {downloaded ? '✓ saved to downloads' : '↓ download'}
-          </button>
-        </div>
+      <div className="bsp__library-header">
+        <div className="bsp__library-logo">📚 Kontor Community Library</div>
+        <div className="bsp__library-hours">Mon–Fri 8am–9pm · Sat 9am–5pm</div>
       </div>
-      <div className="bsp__book-list">
-        {['Introduction to Business (Textbook)', 'Microsoft Office Essentials', 'Study Skills for College Students'].map(b => (
-          <div key={b} className="bsp__book">📖 {b}</div>
+
+      <div className="bsp__library-search-row">
+        <input
+          className="bsp__library-search"
+          placeholder="Search by title, author, or subject…"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+        {query && (
+          <button className="bsp__library-clear" onClick={() => setQuery('')}>✕</button>
+        )}
+      </div>
+
+      <div className="bsp__library-section">
+        <div className="bsp__library-section-title">📋 Course Materials</div>
+        {DOWNLOADS.map(file => (
+          <div key={file.id} className="bsp__library-resource">
+            <span className="bsp__library-resource-icon">📄</span>
+            <div className="bsp__library-resource-info">
+              <div className="bsp__library-resource-name">{file.name}</div>
+              <div className="bsp__library-resource-meta">{file.meta}</div>
+            </div>
+            <button
+              className={`bsp__library-download${downloaded[file.id] ? ' bsp__library-download--done' : ''}`}
+              onClick={() => handleDownload(file)}
+              disabled={!!downloaded[file.id]}
+            >
+              {downloaded[file.id] ? '✓ saved' : '↓ download'}
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="bsp__library-section">
+        <div className="bsp__library-section-title">
+          📖 Catalog {query ? `— ${results.length} result${results.length !== 1 ? 's' : ''} for "${query}"` : `— ${CATALOG.length} titles`}
+        </div>
+        {results.length === 0 ? (
+          <div className="bsp__library-empty">No titles found for "{query}"</div>
+        ) : results.map(b => (
+          <div key={b.id} className="bsp__book">
+            <div className="bsp__book-info">
+              <span className="bsp__book-title">{b.title}</span>
+              <span className="bsp__book-author">{b.author} · {b.subject}</span>
+            </div>
+            <span className={`bsp__book-status${b.available ? '' : ' bsp__book-status--out'}`}>
+              {b.available ? 'Available' : 'Checked out'}
+            </span>
+          </div>
         ))}
       </div>
     </div>
