@@ -97,6 +97,7 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
                 />
               </div>
             </div>
+            <div className="sp__login-hint">💡 Check your welcome email for your login details</div>
             <div className="sp__login-error">{loginError}</div>
             <button className="sp__login-btn" onClick={handleLogin}>Sign In</button>
           </div>

@@ -19,7 +19,9 @@ const INITIAL_FS = {
       id: 'folder-downloads',
       name: 'downloads',
       type: 'folder',
-      children: [],
+      children: [
+        { id: 'file-syllabus', name: 'BUS101-Syllabus.pdf', type: 'file' },
+      ],
     },
     { id: 'file-3', name: 'welcome.txt', type: 'file' },
   ],

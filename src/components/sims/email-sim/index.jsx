@@ -3,24 +3,31 @@ import './email-sim.css'
 
 const INBOX = [
   {
+    id: 'e0',
+    from: 'Kontor College Admissions',
+    subject: 'Welcome — Your Student Login Details',
+    body: 'Welcome to Kontor Community College!\n\nHere are your student portal credentials:\n\n  Username:  student2026\n  Password:  welcome1\n\nLog in at kontor.edu to access your courses, check your grades, and submit assignments.\n\nYour first class — BUS 101 with Professor Mensah — starts this week. Course materials are available in the Library.\n\nSee you on campus!\n— Admissions Team, Kontor College',
+    read: false,
+  },
+  {
     id: 'e1',
     from: 'Professor Mensah',
     subject: 'Welcome to BUS 101',
-    body: 'Welcome! Please reply to confirm you received this.',
+    body: 'Welcome to BUS 101 — Introduction to Business!\n\nPlease reply to confirm you received this email. The syllabus is available in the Kontor Library — search for BUS 101.\n\nSee you in class.\n— Prof. Mensah',
     read: false,
   },
   {
     id: 'e2',
     from: 'Financial Aid Office',
     subject: 'Your award letter is ready',
-    body: 'Log in to the student portal to view your award letter.',
+    body: 'Your financial aid award letter is ready to view.\n\nLog in to the student portal at kontor.edu using your student credentials and navigate to Financial Aid → Award Letter.\n\nDeadline to accept: end of the month.',
     read: false,
   },
   {
     id: 'e3',
     from: 'Library Services',
     subject: 'Your library card is active',
-    body: 'Your card number is 00847. You can now borrow up to 5 books.',
+    body: 'Your Kontor Library card is now active.\n\nCard number: 00847\n\nYou can borrow up to 5 items at a time. Visit the Library tab in your browser to search the catalog and download course materials.\n\n— Kontor Community Library',
     read: false,
   },
 ]

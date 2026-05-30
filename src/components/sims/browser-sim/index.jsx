@@ -81,11 +81,35 @@ function SchoolPage() {
   )
 }
 
-function LibraryPage() {
+function LibraryPage({ onAthenaEvent }) {
+  const [downloaded, setDownloaded] = useState(false)
+
+  function handleDownload() {
+    setDownloaded(true)
+    onAthenaEvent?.({ lesson: 'browser', event: 'downloaded-file', context: 'BUS101-Syllabus.pdf' })
+  }
+
   return (
     <div className="bsp bsp--library">
       <div className="bsp__library-logo">📚 Kontor Community Library</div>
       <input className="bsp__library-search" placeholder="Search the catalog..." />
+      <div className="bsp__library-section">
+        <div className="bsp__library-section-title">📋 Course Materials — BUS 101</div>
+        <div className="bsp__library-resource">
+          <span className="bsp__library-resource-icon">📄</span>
+          <div className="bsp__library-resource-info">
+            <div className="bsp__library-resource-name">BUS101-Syllabus.pdf</div>
+            <div className="bsp__library-resource-meta">Prof. Mensah · Introduction to Business</div>
+          </div>
+          <button
+            className={`bsp__library-download${downloaded ? ' bsp__library-download--done' : ''}`}
+            onClick={handleDownload}
+            disabled={downloaded}
+          >
+            {downloaded ? '✓ saved to downloads' : '↓ download'}
+          </button>
+        </div>
+      </div>
       <div className="bsp__book-list">
         {['Introduction to Business (Textbook)', 'Microsoft Office Essentials', 'Study Skills for College Students'].map(b => (
           <div key={b} className="bsp__book">📖 {b}</div>
@@ -300,7 +324,7 @@ export default function BrowserSim({ onClose, onAthenaEvent }) {
     if (currentTab.page === 'google')  return <GooglePage onSearch={handleSearch} onSearchFocus={() => fire('found-search-bar')} />
     if (currentTab.page === 'search')  return <SearchResults query={currentTab.searchQuery ?? ''} onNavigate={navigate} />
     if (currentTab.page === 'school')  return <SchoolPage />
-    if (currentTab.page === 'library') return <LibraryPage />
+    if (currentTab.page === 'library') return <LibraryPage onAthenaEvent={onAthenaEvent} />
     if (currentTab.page === 'video')   return <VideoPage />
     if (currentTab.page === 'wiki')    return <WikiPage url={currentTab.url} />
     if (currentTab.page === 'news')    return <NewsPage />
