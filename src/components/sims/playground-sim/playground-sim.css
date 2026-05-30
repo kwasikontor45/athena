@@ -23,12 +23,13 @@
   box-sizing: border-box;
 }
 
-/* App launcher grid */
+/* App launcher grid — scrollable so all apps are reachable */
 .pg__launcher {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  flex: 1;
+  overflow-y: auto;
+  align-content: start;
 }
 
 .pg__tile {
@@ -94,6 +95,24 @@
 .pg__tile--open.pg__tile--docs    { border-color: rgba(139,92,246,0.5);  background: rgba(139,92,246,0.1);  }
 .pg__tile--open.pg__tile--school  { border-color: rgba(236,72,153,0.5);  background: rgba(236,72,153,0.1);  }
 .pg__tile--open.pg__tile--typing  { border-color: rgba(249,115,22,0.5);  background: rgba(249,115,22,0.1);  }
+
+.pg__tile--video     { background: rgba(168,85,247,0.07);  border-color: rgba(168,85,247,0.2);  }
+.pg__tile--shortcuts { background: rgba(20,184,166,0.07);  border-color: rgba(20,184,166,0.2);  }
+.pg__tile--password  { background: rgba(239,68,68,0.07);   border-color: rgba(239,68,68,0.2);   }
+.pg__tile--code      { background: rgba(234,179,8,0.07);   border-color: rgba(234,179,8,0.2);   }
+.pg__tile--git       { background: rgba(251,146,60,0.07);  border-color: rgba(251,146,60,0.2);  }
+
+.pg__tile--video:hover     { background: rgba(168,85,247,0.14); border-color: rgba(168,85,247,0.5); }
+.pg__tile--shortcuts:hover { background: rgba(20,184,166,0.14); border-color: rgba(20,184,166,0.5); }
+.pg__tile--password:hover  { background: rgba(239,68,68,0.14);  border-color: rgba(239,68,68,0.5);  }
+.pg__tile--code:hover      { background: rgba(234,179,8,0.14);  border-color: rgba(234,179,8,0.5);  }
+.pg__tile--git:hover       { background: rgba(251,146,60,0.14); border-color: rgba(251,146,60,0.5); }
+
+.pg__tile--open.pg__tile--video     { border-color: rgba(168,85,247,0.5);  background: rgba(168,85,247,0.1);  }
+.pg__tile--open.pg__tile--shortcuts { border-color: rgba(20,184,166,0.5);  background: rgba(20,184,166,0.1);  }
+.pg__tile--open.pg__tile--password  { border-color: rgba(239,68,68,0.5);   background: rgba(239,68,68,0.1);   }
+.pg__tile--open.pg__tile--code      { border-color: rgba(234,179,8,0.5);   background: rgba(234,179,8,0.1);   }
+.pg__tile--open.pg__tile--git       { border-color: rgba(251,146,60,0.5);  background: rgba(251,146,60,0.1);  }
 
 
 /* Sim layer — overlays open sims on top of playground */

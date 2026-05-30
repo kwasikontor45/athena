@@ -27,36 +27,36 @@
   pointer-events: auto;
 }
 
-.app__sim-view .fes,
-.app__sim-view .es,
-.app__sim-view .bs,
-.app__sim-view .de,
-.app__sim-view .sp,
-.app__sim-view .ts,
-.app__sim-view .pg,
-.app__sim-view .vc,
-.app__sim-view .sc,
-.app__sim-view .ps,
-.app__sim-view .mp,
-.app__sim-view .cb-sim,
-.app__sim-view .gs-sim {
-  position: relative;
-  /* flex: 1 + min-height: 0 is the correct way to fill a flex column —
-     height: 100% fails when parent height comes from flex rather than explicit value */
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  /* Strip floating-window chrome — sims are native columns now */
-  border-radius: 0;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  box-shadow: none;
+/* Direct children only — not sims nested inside playground sub-layers */
+.app__sim-view > .fes,
+.app__sim-view > .es,
+.app__sim-view > .bs,
+.app__sim-view > .de,
+.app__sim-view > .sp,
+.app__sim-view > .ts,
+.app__sim-view > .pg,
+.app__sim-view > .vc,
+.app__sim-view > .sc,
+.app__sim-view > .ps,
+.app__sim-view > .mp,
+.app__sim-view > .cb-sim,
+.app__sim-view > .gs-sim {
+  position: relative !important;
+  flex: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  align-self: stretch !important;
+  border-radius: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  box-shadow: none !important;
 }
 
-/* Internal sim dots: hide yellow/green (do nothing), keep red (closes sim) */
-.app__sim-view [class$="__dot--yellow"],
-.app__sim-view [class$="__dot--green"] {
+/* Hide yellow/green internal dots (do nothing without SimWindow) — direct children only */
+.app__sim-view > * [class$="__dot--yellow"],
+.app__sim-view > * [class$="__dot--green"] {
   display: none;
 }
 

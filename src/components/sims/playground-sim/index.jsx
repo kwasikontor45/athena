@@ -1,21 +1,31 @@
 import { useState } from 'react'
-import FileExplorerSim from '../file-explorer-sim'
-import EmailSim from '../email-sim'
-import BrowserSim from '../browser-sim'
-import DocEditorSim from '../doc-editor-sim'
-import SchoolPortalSim from '../school-portal-sim'
-import TypingSim from '../typing-sim'
+import FileExplorerSim    from '../file-explorer-sim'
+import EmailSim           from '../email-sim'
+import BrowserSim         from '../browser-sim'
+import DocEditorSim       from '../doc-editor-sim'
+import SchoolPortalSim    from '../school-portal-sim'
+import TypingSim          from '../typing-sim'
+import VideoCallSim       from '../video-call-sim'
+import ShortcutsSim       from '../shortcuts-sim'
+import PasswordSim        from '../password-sim'
+import CodeBootcampSim    from '../code-bootcamp-sim'
+import GitSim             from '../git-sim'
 import './playground-sim.css'
 
 const NOOP = () => {}
 
 const SIMS = [
-  { id: 'my-files',      emoji: '🗂️', label: 'my files',     Component: FileExplorerSim, cls: 'pg__tile--files'  },
-  { id: 'email',         emoji: '✉️', label: 'email',         Component: EmailSim,        cls: 'pg__tile--email'  },
-  { id: 'browser',       emoji: '🌐', label: 'browser',       Component: BrowserSim,      cls: 'pg__tile--browser'},
-  { id: 'documents',     emoji: '📝', label: 'documents',     Component: DocEditorSim,    cls: 'pg__tile--docs'   },
-  { id: 'school-portal', emoji: '🎓', label: 'school portal', Component: SchoolPortalSim, cls: 'pg__tile--school' },
-  { id: 'typing',        emoji: '⌨️', label: 'typing',        Component: TypingSim,       cls: 'pg__tile--typing' },
+  { id: 'my-files',      emoji: '🗂️', label: 'my files',      Component: FileExplorerSim,  cls: 'pg__tile--files'    },
+  { id: 'email',         emoji: '✉️', label: 'email',          Component: EmailSim,         cls: 'pg__tile--email'    },
+  { id: 'browser',       emoji: '🌐', label: 'browser',        Component: BrowserSim,       cls: 'pg__tile--browser'  },
+  { id: 'documents',     emoji: '📝', label: 'documents',      Component: DocEditorSim,     cls: 'pg__tile--docs'     },
+  { id: 'school-portal', emoji: '🎓', label: 'school portal',  Component: SchoolPortalSim,  cls: 'pg__tile--school'   },
+  { id: 'typing',        emoji: '⌨️', label: 'typing',         Component: TypingSim,        cls: 'pg__tile--typing'   },
+  { id: 'video-call',    emoji: '📹', label: 'video call',     Component: VideoCallSim,     cls: 'pg__tile--video'    },
+  { id: 'shortcuts',     emoji: '⌨️', label: 'shortcuts',      Component: ShortcutsSim,     cls: 'pg__tile--shortcuts'},
+  { id: 'password',      emoji: '🔐', label: 'passwords',      Component: PasswordSim,      cls: 'pg__tile--password' },
+  { id: 'code-bootcamp', emoji: '🧪', label: 'code bootcamp',  Component: CodeBootcampSim,  cls: 'pg__tile--code'     },
+  { id: 'git',           emoji: '🔧', label: 'git basics',     Component: GitSim,           cls: 'pg__tile--git'      },
 ]
 
 export default function PlaygroundSim({ onClose }) {
