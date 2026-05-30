@@ -248,22 +248,24 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
         </div>}
       </div>
 
-      {/* ── Floating orb — her presence above all windows ── */}
-      <div
-        className={`aw__orb aw__orb--${orbState}`}
-        style={orbPos ? { left: orbPos.left, top: orbPos.top, bottom: 'auto', right: 'auto' } : {}}
-        onClick={focusInput}
-        onMouseDown={handleOrbDrag}
-        title="Athena"
-        aria-label="Athena"
-      >
-        <div className="aw__orb-sphere">
-          <span className="aw__orb-owl">🦉</span>
+      {/* ── Floating orb — visible when collapsed, unread, or active ── */}
+      {(collapsed || unread > 0 || orbState !== 'idle') && (
+        <div
+          className={`aw__orb aw__orb--${orbState}`}
+          style={orbPos ? { left: orbPos.left, top: orbPos.top, bottom: 'auto', right: 'auto' } : {}}
+          onClick={focusInput}
+          onMouseDown={handleOrbDrag}
+          title="Athena"
+          aria-label="Athena"
+        >
+          <div className="aw__orb-sphere">
+            <span className="aw__orb-owl">🦉</span>
+          </div>
+          {unread > 0 && (
+            <span className="aw__orb-badge">{unread > 9 ? '9+' : unread}</span>
+          )}
         </div>
-        {unread > 0 && (
-          <span className="aw__orb-badge">{unread > 9 ? '9+' : unread}</span>
-        )}
-      </div>
+      )}
     </>
   )
 }
