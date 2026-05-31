@@ -5,13 +5,21 @@ import './athena-widget.css'
 const MAX_MESSAGES   = 20
 const FAIL_THRESHOLD = 3
 
-const DASHBOARD_HASH = '0b7e80cfaccb6214ca7089cd1f4f38f32c2d26c7e0a5038307d14eb055f8a06c'
+const WORKER_URL = 'https://athena-sync.kwasikontor45-995.workers.dev'
 
-async function matchesPhrase(input) {
+async function requestDashboardAccess(input) {
   const encoded = new TextEncoder().encode(input.trim())
   const buf = await crypto.subtle.digest('SHA-256', encoded)
   const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
-  return hex === DASHBOARD_HASH
+  try {
+    const res = await fetch(`${WORKER_URL}/dashboard/unlock`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ phrase_hash: hex }),
+    })
+    if (!res.ok) return null
+    return await res.json()
+  } catch { return null }
 }
 
 const WELCOME = {
@@ -165,11 +173,12 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
     if (!text || isTyping) return
     setInput('')
 
-    if (await matchesPhrase(text)) {
+    const dashResult = await requestDashboardAccess(text)
+    if (dashResult?.secret) {
       setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'user', text: '••••••••', timestamp: Date.now() }))
       setMessages(prev => addMsg(prev, {
         id: crypto.randomUUID(), type: 'athena',
-        text: `🔒 dashboard → athena.kontor.studio/dashboard\n🗝 secret → k0nt0r-d4sh-34a81412b13c`,
+        text: `🔒 dashboard → ${dashResult.url}\n🗝 secret → ${dashResult.secret}`,
         timestamp: Date.now(),
       }))
       return
