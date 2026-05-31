@@ -19,9 +19,7 @@ const INITIAL_FS = {
       id: 'folder-downloads',
       name: 'downloads',
       type: 'folder',
-      children: [
-        { id: 'file-syllabus', name: 'BUS101-Syllabus.pdf', type: 'file' },
-      ],
+      children: [],
     },
     { id: 'file-3', name: 'welcome.txt', type: 'file' },
   ],
@@ -90,8 +88,15 @@ function buildCrumbs(root, targetId, trail = []) {
   return null
 }
 
-export default function FileExplorerSim({ onClose, onAthenaEvent }) {
-  const [fs, setFs] = useState(INITIAL_FS)
+export default function FileExplorerSim({ onClose, onAthenaEvent, simContext }) {
+  const [fs, setFs] = useState(() => {
+    if (!simContext?.downloads?.length) return INITIAL_FS
+    let base = INITIAL_FS
+    simContext.downloads.forEach(name => {
+      base = insertNode(base, 'folder-downloads', { id: genId(), name, type: 'file' })
+    })
+    return base
+  })
   const [currentId, setCurrentId] = useState('root')
   const [selectedId, setSelectedId] = useState(null)
   const [renamingId, setRenamingId] = useState(null)

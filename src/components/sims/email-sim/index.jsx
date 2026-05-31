@@ -32,7 +32,7 @@ const INBOX = [
   },
 ]
 
-export default function EmailSim({ onClose, onAthenaEvent }) {
+export default function EmailSim({ onClose, onAthenaEvent, simContext, onSimContext }) {
   const [emails, setEmails]     = useState(INBOX)
   const [selected, setSelected] = useState(null)
   const [view, setView]         = useState('inbox') // 'inbox' | 'compose' | 'reply'
@@ -58,6 +58,7 @@ export default function EmailSim({ onClose, onAthenaEvent }) {
     setSelected(email)
     setView('inbox')
     setEmails(prev => prev.map(e => e.id === email.id ? { ...e, read: true } : e))
+    if (email.id === 'e0') onSimContext?.({ credentialsRead: true })
   }
 
   function startCompose() {
@@ -80,6 +81,7 @@ export default function EmailSim({ onClose, onAthenaEvent }) {
     setTimeout(() => { setSendFlash(false); setView('inbox') }, 1200)
     fire('wrote-subject')
     fire(isReply ? 'replied' : 'sent-email')
+    if (isReply && selected?.id === 'e1') onSimContext?.({ repliedToMensah: true })
   }
 
   const currentEmail = emails.find(e => e.id === selected?.id) ?? selected

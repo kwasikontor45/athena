@@ -87,6 +87,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState('desktop')
   const [openApp, setOpenApp] = useState(null)
   const [currentEvent, setCurrentEvent] = useState(null)
+  const [simContext, setSimContext] = useState({})
   const [pendingRestore, setPendingRestore] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     const code = params.get('restore')
@@ -154,6 +155,10 @@ export default function App() {
   const ActiveSim = openApp ? (SIM_MAP[openApp] ?? null) : null
   const currentLesson = LESSON_MAP[openApp] ?? 'desktop-navigation'
   const urlApp = new URLSearchParams(window.location.search).get('app')
+
+  const handleSimContext = useCallback((update) => {
+    setSimContext(prev => ({ ...prev, ...update }))
+  }, [])
 
   const handleAthenaEvent = useCallback((ev) => {
     setCurrentEvent(ev)
@@ -268,6 +273,8 @@ export default function App() {
               key={openApp}
               onClose={handleCloseApp}
               onAthenaEvent={handleAthenaEvent}
+              simContext={simContext}
+              onSimContext={handleSimContext}
             />
           </div>
         ) : (

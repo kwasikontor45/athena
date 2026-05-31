@@ -8,9 +8,9 @@ const COURSES = [
   { code: 'COM 105', name: 'Business Communication',   prof: 'Prof. Addo',    active: false },
 ]
 
-export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
+export default function SchoolPortalSim({ onClose, onAthenaEvent, simContext }) {
   const [screen, setScreen]         = useState('login')
-  const [username, setUsername]     = useState('')
+  const [username, setUsername]     = useState(() => simContext?.credentialsRead ? 'student2026' : '')
   const [password, setPassword]     = useState('')
   const [loginError, setLoginError] = useState('')
   const [displayName, setDisplayName] = useState('')
@@ -34,6 +34,10 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
   function handleLogin() {
     if (!username.trim() || !password.trim()) {
       setLoginError('Please enter your username and password.')
+      return
+    }
+    if (username.trim() !== 'student2026' || password.trim() !== 'welcome1') {
+      setLoginError('Incorrect username or password. Check your welcome email.')
       return
     }
     setDisplayName(username.trim())
@@ -97,7 +101,10 @@ export default function SchoolPortalSim({ onClose, onAthenaEvent }) {
                 />
               </div>
             </div>
-            <div className="sp__login-hint">💡 Check your welcome email for your login details</div>
+            {simContext?.credentialsRead
+              ? <div className="sp__login-hint sp__login-hint--found">✉️ From your welcome email — username: <strong>student2026</strong> · password: <strong>welcome1</strong></div>
+              : <div className="sp__login-hint">💡 Check your welcome email for your login details</div>
+            }
             <div className="sp__login-error">{loginError}</div>
             <button className="sp__login-btn" onClick={handleLogin}>Sign In</button>
           </div>

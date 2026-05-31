@@ -134,8 +134,8 @@ const DOWNLOADS = [
   { id: 'd3', name: 'StudySkills-Guide.pdf',  label: 'Study Skills Guide',    meta: 'Student Support Services' },
 ]
 
-function LibraryPage({ onAthenaEvent }) {
-  const [query,     setQuery]     = useState('')
+function LibraryPage({ onAthenaEvent, simContext, onSimContext }) {
+  const [query,     setQuery]     = useState(() => simContext?.repliedToMensah ? 'BUS 101' : '')
   const [downloaded, setDownloaded] = useState({})
 
   const results = query.trim()
@@ -149,6 +149,7 @@ function LibraryPage({ onAthenaEvent }) {
   function handleDownload(file) {
     setDownloaded(prev => ({ ...prev, [file.id]: true }))
     onAthenaEvent?.({ lesson: 'browser', event: 'downloaded-file', context: file.name })
+    onSimContext?.({ downloads: [...(simContext?.downloads ?? []), file.name] })
   }
 
   return (
@@ -330,7 +331,7 @@ function BlankPage() {
 
 /* ── Main sim ───────────────────────────────────────────────────────────── */
 
-export default function BrowserSim({ onClose, onAthenaEvent }) {
+export default function BrowserSim({ onClose, onAthenaEvent, simContext, onSimContext }) {
   const [tabs, setTabs] = useState([{ id: 1, url: 'google.com', page: 'google', searchQuery: null }])
   const [activeTab, setActiveTab] = useState(1)
   const [urlInput, setUrlInput] = useState('google.com')
@@ -417,7 +418,7 @@ export default function BrowserSim({ onClose, onAthenaEvent }) {
     if (currentTab.page === 'google')  return <GooglePage onSearch={handleSearch} onSearchFocus={() => fire('found-search-bar')} />
     if (currentTab.page === 'search')  return <SearchResults query={currentTab.searchQuery ?? ''} onNavigate={navigate} />
     if (currentTab.page === 'school')  return <SchoolPage />
-    if (currentTab.page === 'library') return <LibraryPage onAthenaEvent={onAthenaEvent} />
+    if (currentTab.page === 'library') return <LibraryPage onAthenaEvent={onAthenaEvent} simContext={simContext} onSimContext={onSimContext} />
     if (currentTab.page === 'video')   return <VideoPage />
     if (currentTab.page === 'wiki')    return <WikiPage url={currentTab.url} />
     if (currentTab.page === 'news')    return <NewsPage />
