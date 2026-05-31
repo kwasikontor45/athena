@@ -321,6 +321,18 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
               <button className="cb-sim__btn cb-sim__btn--primary" onClick={goNext}>next →</button>
             )}
           </div>
+
+          {isLast && canAdvance && (
+            <a
+              href="https://py-bite.kontor.studio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cb-sim__pybite"
+            >
+              <span className="cb-sim__pybite-label">want more Python?</span>
+              <span className="cb-sim__pybite-url">py-bite.kontor.studio →</span>
+            </a>
+          )}
         </aside>
       </div>
     </div>

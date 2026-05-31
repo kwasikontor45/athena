@@ -755,3 +755,48 @@
   white-space: pre-wrap;
   font-family: monospace;
 }
+
+/* ─── py-bite completion nudge ───────────────────────────────────────────── */
+.cb-sim__pybite {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 14px;
+  padding: 11px 14px;
+  background: rgba(212, 175, 55, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.cb-sim__pybite:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+.cb-sim__pybite-label {
+  font-size: 11px;
+  color: #888;
+}
+.cb-sim__pybite-url {
+  font-size: 13px;
+  color: var(--athena-gold, #d4af37);
+  font-weight: 500;
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cb-sim__workspace {
+    flex-direction: column;
+  }
+  .cb-sim__editor-panel {
+    flex: none;
+    height: 55%;
+  }
+  .cb-sim__guide-panel {
+    flex: none;
+    height: 45%;
+    overflow-y: auto;
+    border-left: none;
+    border-top: 1px solid #2a2a2a;
+  }
+}

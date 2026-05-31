@@ -213,3 +213,15 @@
   height: 90vh;
   max-width: 1200px;
 }
+
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .aw__panel {
+    display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .taskbar__time { display: none; }
+  .taskbar__contact { display: none; }
+}

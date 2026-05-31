@@ -33,14 +33,11 @@ function clearGitSession() {
 
 // ─── File Tree ────────────────────────────────────────────────────────────────
 function FileTree({ gs }) {
-  const committed = [
-    ...(gs.commits.length > 0 ? ['README.md'] : []),
-    ...(gs.commits.some(c => c.branch === 'feature-about') &&
-        !gs.staged.includes('ABOUT.md') &&
-        !gs.untracked.includes('ABOUT.md') &&
-        !gs.modified.includes('ABOUT.md')
-      ? ['ABOUT.md'] : []),
-  ]
+  const committed = gs.commits.length > 0
+    ? Object.keys(gs.fileContents || {}).filter(f =>
+        !gs.staged.includes(f) && !gs.untracked.includes(f) && !gs.modified.includes(f)
+      )
+    : []
 
   return (
     <div className="gs-tree">
@@ -407,7 +404,7 @@ function SandboxTerminal({ lessonGitState }) {
 
       setSandboxGs(newGs)
       setCwd(`~/${displayRepo}`)
-      setCloneData({ owner: fetchOwner, repo: fetchRepo, files, dirs, repoInfo })
+      setCloneData({ owner: fetchOwner, repo: fetchRepo, displayRepo, files, dirs, repoInfo })
       setLoading(false)
 
       setHistory(prev => {
@@ -705,24 +702,27 @@ function SandboxTerminal({ lessonGitState }) {
 
     // ── Shell commands ────────────────────────────────────────────────────────
     if (prog === 'ls') {
-      if (cloneData && cwd === `~/${cloneData.repo}`) {
+      const repoDir = cloneData?.displayRepo || cloneData?.repo
+      if (cloneData && cwd === `~/${repoDir}`) {
         const items = [
           ...cloneData.dirs.map(d => `${d.name}/`),
           ...cloneData.files.map(f => f.name),
         ]
         push(prompt_str(), cmd, [L(items.join('  ') || '(empty)')]); return
       }
+      const committed = Object.keys(gs.fileContents || {}).filter(f =>
+        !gs.untracked.includes(f) && !gs.modified.includes(f) && !gs.staged.includes(f)
+      )
       const items = [
-        ...(gs.commits.length ? ['README.md'] : []),
-        ...(gs.commits.some(c => c.branch === 'feature-about') ? ['ABOUT.md'] : []),
+        ...(gs.commits.length ? committed : []),
         ...gs.untracked, ...gs.staged, ...gs.modified,
         ...(gs.initialized ? ['.git'] : []),
       ]
-      push(prompt_str(), cmd, [L(items.join('  ') || '(empty)')]); return
+      push(prompt_str(), cmd, [L([...new Set(items)].join('  ') || '(empty)')]); return
     }
 
     if (prog === 'cat') {
-      const filename = rest[0]
+      const filename = sub
       if (!filename) { push(prompt_str(), cmd, [RED('cat: missing operand')]); return }
       const local = gs.fileContents?.[filename]
       if (local !== undefined && local !== null) { push(prompt_str(), cmd, [L(local)]); return }
@@ -741,8 +741,9 @@ function SandboxTerminal({ lessonGitState }) {
     }
 
     if (prog === 'cd') {
-      const target = rest[0] || '~'
-      if (cloneData && target === cloneData.repo) { setCwd(`~/${cloneData.repo}`); push(prompt_str(), cmd, []); return }
+      const target  = sub || '~'
+      const repoDir = cloneData?.displayRepo || cloneData?.repo
+      if (cloneData && target === repoDir) { setCwd(`~/${repoDir}`); push(prompt_str(), cmd, []); return }
       if (target === '..' || target === '~') { setCwd('~'); push(prompt_str(), cmd, []); return }
       if (target === 'my-project') { setCwd('~/my-project'); push(prompt_str(), cmd, []); return }
       push(prompt_str(), cmd, [RED(`cd: ${target}: No such file or directory`)]); return
