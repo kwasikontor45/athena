@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import {
-  gitBasicsLesson,
+  createGitLesson,
   gitStatusOutput,
   gitLogOutput,
   gitLogOneline,
@@ -857,7 +857,16 @@ function SandboxTerminal({ lessonGitState }) {
 
 // ─── Main sim ─────────────────────────────────────────────────────────────────
 export default function GitSim({ onClose, onAthenaEvent, simContext }) {
-  const lesson = gitBasicsLesson
+  // Detect script from simContext (same session) or saved gitState (page reload)
+  const scriptName = simContext?.pythonScript?.name || (() => {
+    try {
+      const raw = localStorage.getItem(GIT_STORAGE_KEY)
+      if (!raw) return null
+      const fc = JSON.parse(raw)?.gitState?.fileContents || {}
+      return Object.keys(fc).find(f => f.endsWith('.py')) || null
+    } catch { return null }
+  })()
+  const lesson = createGitLesson(scriptName)
   const saved  = loadGitSession(lesson)
 
   const [stepIndex,      setStepIndex]      = useState(saved?.stepIndex   ?? 0)
