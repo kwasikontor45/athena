@@ -26,3 +26,4 @@ dist-ssr
 # Nested repos
 kontor-studio/
 .wrangler/
+src/data/codebase-summary.json
