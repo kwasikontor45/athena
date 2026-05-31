@@ -5,14 +5,12 @@ import './athena-widget.css'
 const MAX_MESSAGES   = 20
 const FAIL_THRESHOLD = 3
 
-const WORKER_URL = 'https://athena-sync.kwasikontor45-995.workers.dev'
-
 async function requestDashboardAccess(input) {
   const encoded = new TextEncoder().encode(input.trim())
   const buf = await crypto.subtle.digest('SHA-256', encoded)
   const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
   try {
-    const res = await fetch(`${WORKER_URL}/dashboard/unlock`, {
+    const res = await fetch('/dashboard/unlock', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ phrase_hash: hex }),
