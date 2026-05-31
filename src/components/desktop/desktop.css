@@ -213,6 +213,7 @@
 }
 
 .desktop__ext-link:hover { opacity: 0.9; }
+.desktop__ext-link--highlight { color: var(--athena-gold); opacity: 0.7; }
 
 /* ── Full-view (progress screen) ─────────────────────────────────────────── */
 .desktop__full-view {

@@ -329,6 +329,7 @@ export default function Desktop({
             🎮 free explore — open any app
           </button>
           <div className="desktop__ext-links">
+            <a href="https://py-bite.kontor.studio" target="_blank" rel="noopener noreferrer" className="desktop__ext-link desktop__ext-link--highlight">🐍 py-bite ↗</a>
             <a href="https://kontor.studio" target="_blank" rel="noopener noreferrer" className="desktop__ext-link">kontor.studio ↗</a>
             <a href="https://kwasikontor.dev" target="_blank" rel="noopener noreferrer" className="desktop__ext-link">kwasikontor.dev ↗</a>
           </div>
