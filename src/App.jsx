@@ -309,6 +309,7 @@ export default function App() {
               onAthenaEvent={handleAthenaEvent}
               simContext={simContext}
               onSimContext={handleSimContext}
+              onOpenApp={handleOpenApp}
             />
           </div>
         ) : (

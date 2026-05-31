@@ -68,13 +68,15 @@ function SearchResults({ query, onNavigate }) {
   )
 }
 
-function SchoolPage() {
+function SchoolPage({ onOpenPortal, onNavigateLibrary }) {
   return (
     <div className="bsp bsp--school">
       <div className="bsp__school-header">
         <div className="bsp__school-logo">🎓 Kontor Community College</div>
         <nav className="bsp__school-nav">
-          <span>Admissions</span><span>Academics</span><span>Library</span><span>Student Life</span><span>Contact</span>
+          <span>Admissions</span><span>Academics</span>
+          <button className="bsp__school-nav-link" onClick={onNavigateLibrary}>Library</button>
+          <span>Student Life</span><span>Contact</span>
         </nav>
       </div>
       <div className="bsp__school-body">
@@ -82,7 +84,7 @@ function SchoolPage() {
           <h2 className="bsp__school-headline">Empowering Students Since 1998</h2>
           <p className="bsp__school-sub">Building skills for life, careers, and community.</p>
           <div className="bsp__school-actions">
-            <button className="bsp__school-btn bsp__school-btn--primary">Student Portal →</button>
+            <button className="bsp__school-btn bsp__school-btn--primary" onClick={onOpenPortal}>Student Portal →</button>
             <button className="bsp__school-btn">Course Catalog</button>
           </div>
         </div>
@@ -101,15 +103,19 @@ function SchoolPage() {
         </div>
         <div className="bsp__school-links">
           {[
-            { icon: '🎓', label: 'Student Portal' },
-            { icon: '📅', label: 'Class Schedule' },
-            { icon: '📝', label: 'Assignment Hub' },
-            { icon: '💬', label: 'Student Support' },
+            { icon: '🎓', label: 'Student Portal', action: onOpenPortal },
+            { icon: '📅', label: 'Class Schedule', action: null },
+            { icon: '📝', label: 'Assignment Hub', action: onOpenPortal },
+            { icon: '💬', label: 'Student Support', action: null },
           ].map(l => (
-            <div key={l.label} className="bsp__school-link">
+            <button
+              key={l.label}
+              className={`bsp__school-link${l.action ? '' : ' bsp__school-link--inert'}`}
+              onClick={l.action ?? undefined}
+            >
               <span className="bsp__school-link-icon">{l.icon}</span>
               <span className="bsp__school-link-label">{l.label}</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -331,7 +337,7 @@ function BlankPage() {
 
 /* ── Main sim ───────────────────────────────────────────────────────────── */
 
-export default function BrowserSim({ onClose, onAthenaEvent, simContext, onSimContext }) {
+export default function BrowserSim({ onClose, onAthenaEvent, simContext, onSimContext, onOpenApp }) {
   const [tabs, setTabs] = useState([{ id: 1, url: 'google.com', page: 'google', searchQuery: null }])
   const [activeTab, setActiveTab] = useState(1)
   const [urlInput, setUrlInput] = useState('google.com')
@@ -417,7 +423,7 @@ export default function BrowserSim({ onClose, onAthenaEvent, simContext, onSimCo
   function renderPage() {
     if (currentTab.page === 'google')  return <GooglePage onSearch={handleSearch} onSearchFocus={() => fire('found-search-bar')} />
     if (currentTab.page === 'search')  return <SearchResults query={currentTab.searchQuery ?? ''} onNavigate={navigate} />
-    if (currentTab.page === 'school')  return <SchoolPage />
+    if (currentTab.page === 'school')  return <SchoolPage onOpenPortal={() => onOpenApp?.('school-portal')} onNavigateLibrary={() => navigate('library.edu')} />
     if (currentTab.page === 'library') return <LibraryPage onAthenaEvent={onAthenaEvent} simContext={simContext} onSimContext={onSimContext} />
     if (currentTab.page === 'video')   return <VideoPage />
     if (currentTab.page === 'wiki')    return <WikiPage url={currentTab.url} />

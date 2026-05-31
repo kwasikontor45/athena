@@ -467,8 +467,16 @@
   transition: border-color 0.15s, background 0.15s;
 }
 .bsp__school-link:hover { border-color: var(--athena-gold-border); background: var(--athena-gold-dim); }
+.bsp__school-link--inert { cursor: default; }
+.bsp__school-link--inert:hover { border-color: rgba(255,255,255,0.06); background: var(--athena-bg-surface); }
 .bsp__school-link-icon { font-size: 22px; }
 .bsp__school-link-label { font-size: 11px; color: var(--athena-text-secondary); text-align: center; }
+.bsp__school-nav-link {
+  background: none; border: none; padding: 0; font-family: inherit;
+  font-size: 12px; color: var(--athena-text-secondary); cursor: pointer;
+  transition: color 0.15s;
+}
+.bsp__school-nav-link:hover { color: var(--athena-gold); }
 
 /* Library page */
 .bsp--library { display: flex; flex-direction: column; overflow-y: auto; }
