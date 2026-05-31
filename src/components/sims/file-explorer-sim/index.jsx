@@ -368,6 +368,32 @@ export default function FileExplorerSim({ onClose, onAthenaEvent, simContext }) 
             )}
           </div>
         </div>
+
+        {/* Task list */}
+        <div className="fes__tasks">
+          <div className="fes__tasks-title">📋 your tasks</div>
+          {[
+            { event: 'opened-folder',  label: 'open a folder',       hint: 'double-click any folder' },
+            { event: 'created-folder', label: 'create a new folder',  hint: 'click "+ new folder" above' },
+            { event: 'renamed-file',   label: 'rename something',     hint: 'right-click a file → rename' },
+            { event: 'moved-file',     label: 'move a file',          hint: 'drag a file into a folder' },
+            { event: 'deleted-file',   label: 'delete something',     hint: 'select a file → click trash' },
+          ].map(({ event, label, hint }) => {
+            const done = completed.has(event)
+            return (
+              <div key={event} className={`fes__task${done ? ' fes__task--done' : ''}`}>
+                <span className="fes__task-check">{done ? '✓' : '○'}</span>
+                <div className="fes__task-body">
+                  <span className="fes__task-label">{label}</span>
+                  {!done && <span className="fes__task-hint">{hint}</span>}
+                </div>
+              </div>
+            )
+          })}
+          {completed.has('lesson-complete') && (
+            <div className="fes__tasks-done">all done! 🎉</div>
+          )}
+        </div>
       </div>
 
       {contextMenu && (
