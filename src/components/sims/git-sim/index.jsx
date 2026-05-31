@@ -468,14 +468,22 @@ function SandboxTerminal({ lessonGitState }) {
       push(prompt_str(), `git clone ${url}`, [RED('fatal: repository not found or invalid GitHub URL')])
       return
     }
-    const [, owner, repo] = m
+    const [, owner, repoRaw] = m
+    const displayRepo = repoRaw.replace(/\.git$/, '')
+
+    // Learner cloning their own pushed project → serve from k6/grades (real content)
+    const username = lessonGitState.githubUsername
+    const isOwnRepo = username && owner === username && displayRepo === 'my-project'
+    const fetchOwner = isOwnRepo ? 'k6-bleedin6ed6e-k6' : owner
+    const fetchRepo  = isOwnRepo ? 'grades' : displayRepo
+
     setLoading(true)
-    push(prompt_str(), `git clone ${url}`, [DIM(`Cloning into '${repo}'...`)])
+    push(prompt_str(), `git clone ${url}`, [DIM(`Cloning into '${displayRepo}'...`)])
 
     try {
       const [repoRes, contentsRes] = await Promise.all([
-        fetch(`https://api.github.com/repos/${owner}/${repo}`),
-        fetch(`https://api.github.com/repos/${owner}/${repo}/contents`),
+        fetch(`https://api.github.com/repos/${fetchOwner}/${fetchRepo}`),
+        fetch(`https://api.github.com/repos/${fetchOwner}/${fetchRepo}/contents`),
       ])
       if (!repoRes.ok) {
         setLoading(false)
@@ -499,24 +507,24 @@ function SandboxTerminal({ lessonGitState }) {
         commits: [{ hash: 'a'.repeat(40), short: 'abcdef1', message: repoInfo.description || 'initial commit', date: repoInfo.updated_at }],
         remote: { name: 'origin', url, pushed: true },
         fileContents: newFs,
-        _repoOwner: owner, _repoName: repo,
+        _repoOwner: fetchOwner, _repoName: fetchRepo,
       }
 
       setSandboxGs(newGs)
-      setCwd(`~/${repo}`)
-      setCloneData({ owner, repo, files, dirs, repoInfo })
+      setCwd(`~/${displayRepo}`)
+      setCloneData({ owner: fetchOwner, repo: fetchRepo, files, dirs, repoInfo })
       setLoading(false)
 
       setHistory(prev => {
         const n = [...prev]
         n[n.length-1].lines = [
-          DIM(`Cloning into '${repo}'...`),
+          DIM(`Cloning into '${displayRepo}'...`),
           DIM('remote: Enumerating objects: done.'),
           DIM(`remote: Counting objects: 100% (${files.length + dirs.length}/${files.length + dirs.length}), done.`),
-          GRN(`✓ Cloned ${owner}/${repo}`),
+          GRN(`✓ Cloned ${owner}/${displayRepo}`),
           L(`${files.length} file${files.length !== 1 ? 's' : ''}${dirs.length ? `, ${dirs.length} dir${dirs.length !== 1 ? 's' : ''}` : ''} · ${repoInfo.stargazers_count ?? 0} ★`),
           repoInfo.description ? DIM(repoInfo.description) : DIM('(no description)'),
-          DIM(`cd ${repo} to explore`),
+          DIM(`cd ${displayRepo} to explore`),
         ]
         return n
       })
@@ -909,7 +917,7 @@ function SandboxTerminal({ lessonGitState }) {
             <div className="gs-sandbox__welcome">
               <span className="gs-sandbox__welcome-line">✓ zero to ship — sandbox unlocked</span>
               <span className="gs-sandbox__welcome-line gs-sandbox__welcome-dim">
-                try: git clone https://github.com/k6-bleedin6ed6e-k6/grades
+                try: git clone https://github.com/{lessonGitState.githubUsername || 'your-username'}/my-project.git
               </span>
               <span className="gs-sandbox__welcome-line gs-sandbox__welcome-dim">
                 nano · touch · python · git add · git commit · git log
