@@ -114,6 +114,27 @@ export default function DocEditorSim({ onClose, onAthenaEvent }) {
         <button className="de__save-btn" onClick={handleExport}>Export</button>
       </div>
 
+      {/* Task strip */}
+      {!fired.has('lesson-complete') && (
+        <div className="de__tasks">
+          {[
+            { key: 'started-typing', label: 'start typing',   hint: 'click in the page and type' },
+            { key: 'used-bold',      label: 'make text bold', hint: 'select text → click B or Ctrl+B' },
+            { key: 'named-doc',      label: 'name your doc',  hint: 'type a name in the filename box' },
+            { key: 'saved-doc',      label: 'save it',        hint: 'Ctrl+S or click Save' },
+          ].map(({ key, label, hint }) => {
+            const done = fired.has(key)
+            return (
+              <div key={key} className={`de__task${done ? ' de__task--done' : ''}`}>
+                <span className="de__task-check">{done ? '✓' : '○'}</span>
+                <span className="de__task-label">{label}</span>
+                {!done && <span className="de__task-hint">{hint}</span>}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       <div className="de__page-wrap">
         <div className="de__page">
           <div

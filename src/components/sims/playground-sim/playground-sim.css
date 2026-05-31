@@ -135,3 +135,32 @@
 .pg__sim-layer .de { top: 50px;  left: 80px;  }
 .pg__sim-layer .sp { top: 60px;  left: 100px; }
 .pg__sim-layer .ts { top: 70px;  left: 120px; }
+
+/* Back header */
+.pg__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  height: 40px;
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.pg__back {
+  background: none;
+  border: none;
+  color: var(--athena-gold, #d4af37);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+.pg__back:hover { opacity: 1; }
+.pg__header-title {
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 0.03em;
+}

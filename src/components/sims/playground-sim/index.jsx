@@ -43,6 +43,10 @@ export default function PlaygroundSim({ onClose, simContext, onSimContext, onOpe
 
   return (
     <div className="pg">
+      <div className="pg__header">
+        <button className="pg__back" onClick={onClose}>← back to lessons</button>
+        <span className="pg__header-title">free explore — open any sim</span>
+      </div>
       <div className="pg__body">
         <div className="pg__launcher">
           {SIMS.map(({ id, emoji, label, cls }) => {

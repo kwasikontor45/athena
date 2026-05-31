@@ -297,3 +297,16 @@
   color: var(--athena-gold);
   font-weight: 600;
 }
+
+/* Task list */
+.es__tasks { padding: 12px 10px 10px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 4px; }
+.es__tasks-title { font-size: 10px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+.es__task { display: flex; gap: 7px; align-items: flex-start; padding: 4px 0; }
+.es__task--done { opacity: 0.4; }
+.es__task-check { font-size: 11px; color: var(--athena-gold,#d4af37); flex-shrink: 0; width: 12px; margin-top: 1px; }
+.es__task--done .es__task-check { color: #2db87a; }
+.es__task-body { display: flex; flex-direction: column; gap: 1px; }
+.es__task-label { font-size: 11.5px; color: #ccc; line-height: 1.3; }
+.es__task--done .es__task-label { text-decoration: line-through; color: #555; }
+.es__task-hint { font-size: 10px; color: #555; line-height: 1.3; }
+.es__tasks-done { font-size: 11px; color: var(--athena-gold,#d4af37); margin-top: 8px; text-align: center; }

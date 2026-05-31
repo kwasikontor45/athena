@@ -163,3 +163,27 @@
   color: var(--athena-text-secondary);
   opacity: .6;
 }
+
+/* Task strip */
+.de__tasks {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.12);
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+.de__task {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px 5px 0;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  margin-right: 14px;
+}
+.de__task:last-child { border-right: none; }
+.de__task-check { font-size: 11px; color: var(--athena-gold,#d4af37); flex-shrink: 0; }
+.de__task--done .de__task-check { color: #2db87a; }
+.de__task-label { font-size: 11px; color: #999; }
+.de__task--done .de__task-label { color: #555; text-decoration: line-through; }
+.de__task-hint { font-size: 10px; color: #484f58; margin-left: 2px; }

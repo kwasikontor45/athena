@@ -17,6 +17,7 @@ export default function VideoCallSim({ onClose, onAthenaEvent }) {
   const [messages,  setMessages]  = useState([])
   const [elapsed,   setElapsed]   = useState(0)
   const firedRef   = useRef(new Set())
+  const [firedSet, setFiredSet] = useState(new Set())
   const chatEndRef = useRef(null)
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function VideoCallSim({ onClose, onAthenaEvent }) {
   function fire(event) {
     if (firedRef.current.has(event)) return
     firedRef.current.add(event)
+    setFiredSet(prev => { const n = new Set(prev); n.add(event); return n })
     onAthenaEvent?.({ lesson: 'video-call', event })
     const skills = ['muted-self', 'camera-off', 'raised-hand', 'sent-message']
     if (skills.filter(s => firedRef.current.has(s)).length >= 3 && !firedRef.current.has('lesson-complete')) {
@@ -115,6 +117,26 @@ export default function VideoCallSim({ onClose, onAthenaEvent }) {
           </div>
         )}
       </div>
+
+      {/* Task strip */}
+      {!firedSet.has('lesson-complete') && (
+        <div className="vc__tasks">
+          {[
+            { key: 'joined-call', label: 'join the call',     hint: 'done automatically' },
+            { key: 'muted-self',  label: 'mute yourself',     hint: 'click the 🔇 button' },
+            { key: 'raised-hand', label: 'raise your hand',   hint: 'click the ✋ button' },
+          ].map(({ key, label, hint }) => {
+            const done = firedSet.has(key)
+            return (
+              <div key={key} className={`vc__task${done ? ' vc__task--done' : ''}`}>
+                <span className="vc__task-check">{done ? '✓' : '○'}</span>
+                <span className="vc__task-label">{label}</span>
+                {!done && <span className="vc__task-hint">{hint}</span>}
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       <div className="vc__controls">
         <button className={`vc__ctrl${muted ? ' vc__ctrl--warn' : ''}`} onClick={() => { setMuted(m => !m); if (!muted) fire('muted-self') }}>

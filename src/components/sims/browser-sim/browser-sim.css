@@ -584,3 +584,27 @@
 }
 .bsp__library-download:hover:not(:disabled) { background: rgba(201,168,76,0.2); border-color: var(--athena-gold); }
 .bsp__library-download--done { color: #2db87a; border-color: rgba(45,184,122,0.4); background: rgba(45,184,122,0.08); cursor: default; }
+
+/* Task strip */
+.bs__tasks {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.15);
+  padding: 0 12px;
+  flex-shrink: 0;
+}
+.bs__task {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px 5px 0;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  margin-right: 12px;
+}
+.bs__task:last-child { border-right: none; }
+.bs__task-check { font-size: 11px; color: var(--athena-gold,#d4af37); flex-shrink: 0; }
+.bs__task--done .bs__task-check { color: #2db87a; }
+.bs__task-label { font-size: 11px; color: #999; }
+.bs__task--done .bs__task-label { color: #555; text-decoration: line-through; }
+.bs__task-hint { font-size: 10px; color: #484f58; margin-left: 2px; }

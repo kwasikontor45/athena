@@ -479,6 +479,27 @@ export default function BrowserSim({ onClose, onAthenaEvent, simContext, onSimCo
         }
       </div>
 
+      {/* Task strip */}
+      {!fired.has('lesson-complete') && (
+        <div className="bs__tasks">
+          {[
+            { key: 'typed-url',        label: 'type a URL',     hint: 'address bar → Enter' },
+            { key: 'opened-tab',       label: 'open a new tab', hint: 'click + next to tabs' },
+            { key: 'used-back-button', label: 'go back',        hint: 'click the ← button'  },
+            { key: 'found-search-bar', label: 'use search',     hint: 'search on Google'     },
+          ].map(({ key, label, hint }) => {
+            const done = fired.has(key)
+            return (
+              <div key={key} className={`bs__task${done ? ' bs__task--done' : ''}`} title={done ? '' : hint}>
+                <span className="bs__task-check">{done ? '✓' : '○'}</span>
+                <span className="bs__task-label">{label}</span>
+                {!done && <span className="bs__task-hint">{hint}</span>}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       <div className="bs__content">{renderPage()}</div>
     </div>
   )

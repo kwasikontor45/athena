@@ -126,6 +126,27 @@ export default function EmailSim({ onClose, onAthenaEvent, simContext, onSimCont
               </button>
             ))}
           </div>
+
+          {/* Task list */}
+          <div className="es__tasks">
+            <div className="es__tasks-title">📋 your tasks</div>
+            {[
+              { key: 'sent-email', label: 'write & send an email', hint: 'click "+ new email" above' },
+              { key: 'replied',    label: 'reply to a message',    hint: 'open an email → click Reply' },
+            ].map(({ key, label, hint }) => {
+              const done = fired.has(key)
+              return (
+                <div key={key} className={`es__task${done ? ' es__task--done' : ''}`}>
+                  <span className="es__task-check">{done ? '✓' : '○'}</span>
+                  <div className="es__task-body">
+                    <span className="es__task-label">{label}</span>
+                    {!done && <span className="es__task-hint">{hint}</span>}
+                  </div>
+                </div>
+              )
+            })}
+            {fired.has('lesson-complete') && <div className="es__tasks-done">all done! 🎉</div>}
+          </div>
         </nav>
 
         {/* Main pane */}
