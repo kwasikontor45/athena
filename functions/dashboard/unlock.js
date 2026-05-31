@@ -1,16 +1,13 @@
 const PHRASE_HASH = '0b7e80cfaccb6214ca7089cd1f4f38f32c2d26c7e0a5038307d14eb055f8a06c'
+async function rl(ip,ep,lim,DB){const w=Math.floor(Date.now()/60000);try{const r=await DB.prepare('INSERT INTO rate_limits(ip,endpoint,window_min,count)VALUES(?,?,?,1)ON CONFLICT(ip,endpoint,window_min)DO UPDATE SET count=count+1 RETURNING count').bind(ip,ep,w).first();DB.prepare('DELETE FROM rate_limits WHERE window_min<?').bind(w-10).run();return(r?.count??1)>lim}catch{return false}}
 
 export async function onRequestPost({ request, env }) {
-  try {
-    const { phrase_hash } = await request.json()
-    if (!phrase_hash || phrase_hash !== PHRASE_HASH) {
-      return Response.json({ error: 'unauthorized' }, { status: 401 })
-    }
-    return Response.json({
-      url:    'https://athena.kontor.studio/dashboard',
-      secret: env.DASHBOARD_SECRET,
-    })
-  } catch {
-    return Response.json({ error: 'bad request' }, { status: 400 })
-  }
+  const clientIp = request.headers.get('CF-Connecting-IP') || '0.0.0.0'
+  if (await rl(clientIp, 'unlock', 5, env.DB)) return Response.json({ error: 'too many attempts' }, { status: 429 })
+
+  const { phrase_hash } = await request.json().catch(() => ({}))
+  if (!phrase_hash || typeof phrase_hash !== 'string') return Response.json({ error: 'phrase_hash required' }, { status: 400 })
+  if (phrase_hash !== PHRASE_HASH) return Response.json({ error: 'unauthorized' }, { status: 401 })
+
+  return Response.json({ url: 'https://athena.kontor.studio/dashboard', secret: env.DASHBOARD_SECRET })
 }

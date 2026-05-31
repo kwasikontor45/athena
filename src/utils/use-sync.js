@@ -1,4 +1,4 @@
-const WORKER_URL     = 'https://athena-sync.kwasikontor45-995.workers.dev'
+const WORKER_URL     = ''
 const PASSPHRASE_KEY = 'athena_passphrase'
 const LEARNER_ID_KEY = 'athena_learner_id'
 const QUEUE_KEY      = 'athena_event_queue'

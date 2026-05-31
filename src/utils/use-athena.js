@@ -7,7 +7,7 @@ function pickRandom(arr) {
 
 const GROQ_KEY       = import.meta.env.VITE_GROQ_API_KEY
 const OPENROUTER_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
-const WORKER_URL     = 'https://athena-sync.kwasikontor45-995.workers.dev'
+const WORKER_URL     = ''
 
 const DIRECT_KEYWORDS = [
   { match: /\b(close|exit|quit|back|leave|stop)\b/i,
