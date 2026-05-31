@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { LESSONS, WEEKS } from '../../utils/lessons'
 import { progressToCode, codeToProgress, resetProgress } from '../../utils/use-progress'
-import { joinCohort, getLearnerId } from '../../utils/use-sync'
+import { joinCohort, getLearnerId, restoreFromPassphrase } from '../../utils/use-sync'
 import './desktop.css'
 
 const MISSION_POOL = LESSONS.filter(l => l.id !== 'desktop-navigation')
@@ -78,6 +78,7 @@ export default function Desktop({
   onOpenApp, onSelectLesson,
   getLessonStatus, getEventProgress,
   earnedBadges, totalXP, currentWeek, completedLessons,
+  noPassphrase,
 }) {
   const [cpCopied,     setCpCopied]     = useState(false)
   const [pasteCode,    setPasteCode]    = useState('')
@@ -86,6 +87,8 @@ export default function Desktop({
   const [cohortCode,   setCohortCode]   = useState('')
   const [cohortStatus, setCohortStatus] = useState('idle')
   const [cardCopied,   setCardCopied]   = useState(false)
+  const [restoreCode,  setRestoreCode]  = useState('')
+  const [restoreState, setRestoreState] = useState('idle') // idle | loading | error
 
   const savedCode  = progressToCode()
   const restoreUrl = savedCode ? `${window.location.origin}/?restore=${savedCode}` : null
@@ -124,6 +127,19 @@ export default function Desktop({
     } else {
       setPasteError("That code didn't work — double-check and try again.")
       setTimeout(() => setPasteError(''), 3000)
+    }
+  }
+
+  async function handlePassphraseRestore() {
+    const code = restoreCode.trim()
+    if (!code) return
+    setRestoreState('loading')
+    const result = await restoreFromPassphrase(code)
+    if (!result || result.learner?.is_new) {
+      setRestoreState('error')
+      setTimeout(() => setRestoreState('idle'), 3000)
+    } else {
+      window.location.reload()
     }
   }
 
@@ -254,6 +270,28 @@ export default function Desktop({
     <div className="desktop">
       <div className="desktop__content">
         <DailyMission completedLessons={completedLessons} onSelectLesson={onSelectLesson} />
+
+        {noPassphrase && (
+          <div className="desktop__restore-card">
+            <span className="desktop__restore-label">↩ returning learner? enter your save code</span>
+            <div className="desktop__restore-row">
+              <input
+                className="desktop__restore-input"
+                placeholder="e.g. amber-cedar-42"
+                value={restoreCode}
+                onChange={e => setRestoreCode(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handlePassphraseRestore()}
+              />
+              <button
+                className="desktop__restore-btn"
+                onClick={handlePassphraseRestore}
+                disabled={restoreState === 'loading' || !restoreCode.trim()}
+              >
+                {restoreState === 'loading' ? '…' : restoreState === 'error' ? 'not found' : 'restore'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="desktop__weeks">
           {WEEKS.map(w => (

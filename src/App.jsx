@@ -21,19 +21,38 @@ import { playFanfare } from './utils/sound'
 import { LESSONS } from './utils/lessons'
 import CelebrationOverlay from './components/celebration'
 import AthenaWidget from './components/athena-widget'
-import { trackEvent } from './utils/use-sync'
+import { trackEvent, getPassphrase } from './utils/use-sync'
 import './app.css'
 
 function RestoreBanner({ onRestore, onDismiss }) {
   return (
     <div className="app__restore-banner">
       <span className="app__restore-banner-text">checkpoint found — restore your progress?</span>
-      <button className="app__restore-banner-btn app__restore-banner-btn--primary" onClick={onRestore}>
-        restore
-      </button>
-      <button className="app__restore-banner-btn" onClick={onDismiss}>
-        dismiss
-      </button>
+      <button className="app__restore-banner-btn app__restore-banner-btn--primary" onClick={onRestore}>restore</button>
+      <button className="app__restore-banner-btn" onClick={onDismiss}>dismiss</button>
+    </div>
+  )
+}
+
+function SaveCodeBanner({ code, onDismiss }) {
+  const [copied, setCopied] = useState(false)
+  function handleCopy() {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    })
+  }
+  return (
+    <div className="app__save-banner">
+      <div className="app__save-banner-body">
+        <span className="app__save-banner-label">🔑 your save code —</span>
+        <span className="app__save-banner-code">{code}</span>
+        <button className="app__save-banner-copy" onClick={handleCopy}>
+          {copied ? '✓ copied' : 'copy'}
+        </button>
+        <span className="app__save-banner-hint">write it down · enter it on any device to restore your progress</span>
+      </div>
+      <button className="app__save-banner-dismiss" onClick={onDismiss}>got it</button>
     </div>
   )
 }
@@ -108,6 +127,8 @@ export default function App() {
   const streak = useStreak()
   const [orbState, setOrbState] = useState('idle')
   const [celebration, setCelebration] = useState(null)
+  const [showSaveCode, setShowSaveCode] = useState(false)
+  const saveCodeDismissed = useRef(localStorage.getItem('athena_save_code_shown') === 'true')
   const prevCompletedRef = useRef(null)
   if (prevCompletedRef.current === null) prevCompletedRef.current = new Set(completedLessons)
 
@@ -129,6 +150,9 @@ export default function App() {
       if (lesson) {
         playFanfare()
         setCelebration(lesson)
+      }
+      if (!saveCodeDismissed.current && getPassphrase()) {
+        setTimeout(() => setShowSaveCode(true), 4800)
       }
     }
     prevCompletedRef.current = new Set(completedLessons)
@@ -246,6 +270,16 @@ export default function App() {
           onDismiss={() => setPendingRestore(null)}
         />
       )}
+      {showSaveCode && getPassphrase() && (
+        <SaveCodeBanner
+          code={getPassphrase()}
+          onDismiss={() => {
+            setShowSaveCode(false)
+            saveCodeDismissed.current = true
+            localStorage.setItem('athena_save_code_shown', 'true')
+          }}
+        />
+      )}
       <Taskbar
         currentView={currentView}
         onNavigate={handleNavigate}
@@ -290,6 +324,7 @@ export default function App() {
             totalXP={totalXP}
             currentWeek={currentWeek}
             completedLessons={completedLessons}
+            noPassphrase={!getPassphrase()}
           />
         )}
       </div>

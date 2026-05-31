@@ -408,3 +408,50 @@
   cursor: pointer; padding: 0; text-decoration: underline; color: #c47777;
 }
 .desktop__progress-cp-reset-confirm button:last-child { color: #888; }
+
+/* Restore-by-passphrase card */
+.desktop__restore-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+.desktop__restore-label {
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 0.02em;
+}
+.desktop__restore-row {
+  display: flex;
+  gap: 8px;
+}
+.desktop__restore-input {
+  flex: 1;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  color: #ccc;
+  font-size: 12px;
+  font-family: monospace;
+  outline: none;
+}
+.desktop__restore-input:focus { border-color: rgba(255,255,255,0.2); }
+.desktop__restore-btn {
+  padding: 6px 14px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  color: #aaa;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.desktop__restore-btn:hover:not(:disabled) { color: #fff; border-color: rgba(255,255,255,0.2); }
+.desktop__restore-btn:disabled { opacity: 0.4; cursor: default; }

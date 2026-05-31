@@ -111,6 +111,65 @@
   border-color: #e5c04a;
 }
 
+/* Save code banner */
+.app__save-banner {
+  position: fixed;
+  top: 44px;
+  left: 0;
+  right: 0;
+  z-index: 490;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: #1a1700;
+  border-bottom: 1px solid var(--athena-gold, #d4af37);
+}
+.app__save-banner-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.app__save-banner-label {
+  font-size: 12px;
+  color: #ccc;
+}
+.app__save-banner-code {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--athena-gold, #d4af37);
+  letter-spacing: 0.04em;
+}
+.app__save-banner-copy {
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--athena-gold, #d4af37);
+  background: transparent;
+  color: var(--athena-gold, #d4af37);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.app__save-banner-hint {
+  font-size: 11px;
+  color: #666;
+}
+.app__save-banner-dismiss {
+  padding: 5px 14px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  color: #aaa;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.app__save-banner-dismiss:hover { color: #fff; }
+
 /* Standalone bootcamp view */
 .app--standalone-bootcamp {
   min-height: 100vh;
