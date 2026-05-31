@@ -102,6 +102,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
   })
   const [validation,   setValidation]   = useState('idle')
   const [attempts,     setAttempts]     = useState(0)
+  const [showHint,     setShowHint]     = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
   const [pyOutput,     setPyOutput]     = useState(null)
@@ -122,8 +123,9 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
   }
 
   function handleCheck() {
+    const nextAttempts = attempts + 1
     setValidation('checking')
-    setAttempts(a => a + 1)
+    setAttempts(nextAttempts)
     setTimeout(() => {
       try {
         const passed = step.validate(files, pyOutput)
@@ -136,6 +138,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
           }
         } else {
           setValidation('fail')
+          if (nextAttempts >= 2) setShowHint(true)
           fire('step-failed', step.title)
         }
       } catch {
@@ -151,6 +154,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
       setStepIndex(next)
       setValidation('idle')
       setAttempts(0)
+      setShowHint(false)
       setShowSolution(false)
       setPyOutput(null)
     }
@@ -161,6 +165,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
       setStepIndex(i => i - 1)
       setValidation('idle')
       setAttempts(0)
+      setShowHint(false)
       setShowSolution(false)
     }
   }
@@ -197,6 +202,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
     setStepIndex(0)
     setValidation('idle')
     setAttempts(0)
+    setShowHint(false)
     setShowSolution(false)
     setConfirmReset(false)
     setPyOutput(null)
@@ -212,8 +218,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
     fire('bootcamp-opened')
   }, [])
 
-  const canAdvance  = validation === 'pass'
-  const hintVisible = !!step.hint
+  const canAdvance = validation === 'pass'
 
   return (
     <div className="cb-sim">
@@ -284,7 +289,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
           <div className="cb-sim__step-title">{step.title}</div>
           <div className="cb-sim__step-instruction">{step.instruction}</div>
 
-          {hintVisible && (
+          {showHint && step.hint && (
             <div className="cb-sim__hint">
               <strong>hint:</strong>
               <pre className="cb-sim__hint-code">{step.hint}</pre>
@@ -319,6 +324,11 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
               <button className="cb-sim__btn cb-sim__btn--primary" disabled>finished ✓</button>
             ) : (
               <button className="cb-sim__btn cb-sim__btn--primary" onClick={goNext}>next →</button>
+            )}
+            {!canAdvance && step.hint && (
+              <button className="cb-sim__btn" onClick={() => setShowHint(h => !h)}>
+                {showHint ? 'hide hint' : '💡 hint'}
+              </button>
             )}
           </div>
 

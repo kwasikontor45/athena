@@ -953,7 +953,6 @@ export default function GitSim({ onClose, onAthenaEvent, simContext }) {
     if (!cmd) return
     setInput('')
     setNote(null)
-    setShowHint(false)
 
     if (step.type === 'explainer' || step.type === 'ship-it' || step.type === 'github-signup') return
 
