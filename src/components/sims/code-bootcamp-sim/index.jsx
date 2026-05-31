@@ -124,7 +124,6 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
   function handleCheck() {
     setValidation('checking')
     setAttempts(a => a + 1)
-    setShowHint(false)
     setTimeout(() => {
       try {
         const passed = step.validate(files, pyOutput)

@@ -100,7 +100,7 @@ export const LESSONS = [
     title: 'your first git repo',
     week: 5,
     icon: '🔧',
-    description: 'Learn the core Git workflow: init, status, add, commit, log.',
+    description: 'Commit your code, create a GitHub account, and push your project live.',
     requiredEvents: ['git-opened', 'step-advanced', 'lesson-complete'],
   },
 ]

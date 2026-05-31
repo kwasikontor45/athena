@@ -4,7 +4,7 @@ import {
   gitStatusOutput,
   gitLogOutput,
   gitLogOneline,
-  README_V1, README_V2, ABOUT_FILE,
+  README_V1,
 } from '../../../utils/git-lessons'
 import { playChime } from '../../../utils/sound'
 import { runPython } from '../../../utils/pyodide-runner'
@@ -201,109 +201,6 @@ function EditorModal({ filename, initialContent, editorType, onSave, onCancel })
 }
 
 // ─── GitHub View ──────────────────────────────────────────────────────────────
-function GitHubView({ gs }) {
-  const repoUrl  = gs.remote?.url || 'https://github.com/learner/my-project.git'
-  const repoName = repoUrl.replace(/\.git$/, '').split('/').slice(-2).join('/')
-  return (
-    <div className="gs-github">
-      <div className="gs-github__header">
-        <span className="gs-github__logo">⊙ GitHub</span>
-        <span className="gs-github__repo">{repoName}</span>
-        <span className="gs-github__badge">Public</span>
-      </div>
-      <div className="gs-github__meta">
-        <span className="gs-github__branch">⎇ main</span>
-        <span className="gs-github__commits">{gs.commits.length} commit{gs.commits.length !== 1 ? 's' : ''}</span>
-      </div>
-      <div className="gs-github__files">
-        {gs.commits.slice(-1).map(c => (
-          <div key="readme" className="gs-github__file-row">
-            <span className="gs-github__file-icon">📄</span>
-            <span className="gs-github__file-name">README.md</span>
-            <span className="gs-github__file-msg">{c.message}</span>
-            <span className="gs-github__file-age">just now</span>
-          </div>
-        ))}
-      </div>
-      <div className="gs-github__readme">
-        <div className="gs-github__readme-bar">📄 README.md</div>
-        <div className="gs-github__readme-body">
-          <strong>My Project</strong>
-          <p>Hello, world! This is my first project.</p>
-          <strong>Getting Started</strong>
-          <p>Clone this repo and open index.html in your browser.</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── PR View ──────────────────────────────────────────────────────────────────
-function PRView({ gs }) {
-  return (
-    <div className="gs-pr">
-      <div className="gs-pr__header">
-        <span className="gs-pr__badge gs-pr__badge--open">Open</span>
-        <span className="gs-pr__title">Add about section</span>
-      </div>
-      <div className="gs-pr__meta">
-        <span>learner</span> wants to merge <span className="gs-pr__branch">feature-about</span> into <span className="gs-pr__branch">main</span>
-      </div>
-      <div className="gs-pr__files">
-        <div className="gs-pr__file-header">1 file changed</div>
-        <div className="gs-pr__diff">
-          <div className="gs-pr__diff-name">ABOUT.md</div>
-          {ABOUT_FILE.split('\n').map((line, i) => (
-            <div key={i} className="gs-pr__diff-line gs-pr__diff-line--add">+ {line}</div>
-          ))}
-        </div>
-      </div>
-      <div className="gs-pr__actions">
-        <div className="gs-pr__btn gs-pr__btn--merge">✓ Merge pull request</div>
-        <div className="gs-pr__btn-sub">In a real team, teammates review this first.</div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Diagrams ─────────────────────────────────────────────────────────────────
-function RemoteDiagram() {
-  return (
-    <div className="gs-remote-diag">
-      <div className="gs-remote-diag__box gs-remote-diag__box--local">
-        <div className="gs-remote-diag__label">your machine</div>
-        <div className="gs-remote-diag__inner">~/my-project/.git</div>
-      </div>
-      <div className="gs-remote-diag__arrow">
-        <span>git push →</span>
-        <span className="gs-remote-diag__arrow-sub">← git pull</span>
-      </div>
-      <div className="gs-remote-diag__box gs-remote-diag__box--remote">
-        <div className="gs-remote-diag__label">github.com</div>
-        <div className="gs-remote-diag__inner">origin / main</div>
-      </div>
-    </div>
-  )
-}
-
-function BranchDiagram() {
-  return (
-    <div className="gs-branch-diag">
-      <div className="gs-branch-diag__track">
-        <div className="gs-branch-diag__dot" />
-        <div className="gs-branch-diag__dot" />
-        <div className="gs-branch-diag__dot gs-branch-diag__dot--fork" />
-        <div className="gs-branch-diag__label-main">main</div>
-      </div>
-      <div className="gs-branch-diag__feature">
-        <div className="gs-branch-diag__dot gs-branch-diag__dot--feature" />
-        <div className="gs-branch-diag__dot gs-branch-diag__dot--feature" />
-        <div className="gs-branch-diag__dot gs-branch-diag__dot--merge" />
-        <div className="gs-branch-diag__label-feature">feature-about</div>
-      </div>
-    </div>
-  )
-}
 
 // ─── Terminal output line ─────────────────────────────────────────────────────
 function OutLine({ line }) {
@@ -324,17 +221,16 @@ function handleOffScript(cmd, gs) {
   if (prog !== 'git') {
     if (prog === 'ls') {
       const files = [
-        ...(gs.commits.length ? ['README.md'] : []),
-        ...(gs.commits.some(c => c.branch === 'feature-about') ? ['ABOUT.md'] : []),
+        ...(gs.commits.length ? Object.keys(gs.fileContents || {}).filter(f => !gs.untracked.includes(f) && !gs.modified.includes(f) && !gs.staged.includes(f)) : []),
         ...gs.untracked, ...gs.staged, ...gs.modified,
         ...(gs.initialized ? ['.git'] : []),
       ]
-      return [L(files.length ? files.join('  ') : '(empty)')]
+      return [L(files.length ? [...new Set(files)].join('  ') : '(empty)')]
     }
     if (prog === 'pwd') return [L('/home/learner/my-project')]
     if (prog === 'cat') {
-      const fname = rest[0]
-      if (fname && gs.fileContents?.[fname]) return [L(gs.fileContents[fname])]
+      const fname = sub
+      if (fname && gs.fileContents?.[fname] != null) return [L(gs.fileContents[fname])]
       if (fname) return [RED(`cat: ${fname}: No such file or directory`)]
       return [RED('cat: missing operand')]
     }
@@ -343,7 +239,7 @@ function handleOffScript(cmd, gs) {
     }
     if (prog === 'clear') return []
     if (prog === 'echo') return [L(rest.join(' '))]
-    if (prog === 'help') return [DIM('git commands: init · status · add · commit · log · diff · branch · checkout')]
+    if (prog === 'help') return [DIM('git commands: init · status · add · commit · log · remote · push · pull · clone')]
     return [RED(`bash: ${prog}: command not found`)]
   }
 
@@ -380,11 +276,11 @@ function handleOffScript(cmd, gs) {
         L(`${b === (gs.currentBranch || gs.branch) ? '* ' : '  '}${b}`, b === (gs.currentBranch || gs.branch) ? 'green' : '')
       )
     case 'checkout': case 'switch':
-      return [DIM('(follow the lesson steps to checkout a branch)')]
+      return [DIM('(branching is beyond this lesson — finish and explore it in the sandbox)')]
     case 'merge':
-      return [DIM('(try git merge in sandbox mode after the lesson)')]
+      return [DIM('(merging is beyond this lesson — finish and explore it in the sandbox)')]
     case 'help': case '--help':
-      return [DIM('Common commands: init, status, add, commit, log, diff, remote, push, pull, branch, checkout')]
+      return [DIM('Common commands: init, status, add, commit, log, remote, push, pull, clone')]
     default:
       return [RED(`git: '${sub}' is not a git command. See 'git --help'.`)]
   }
@@ -397,7 +293,6 @@ function SandboxTerminal({ lessonGitState }) {
   const [sandboxGs,  setSandboxGs]  = useState(() => ({
     ...lessonGitState,
     currentBranch: 'main',
-    fileContents: { 'README.md': README_V2, 'ABOUT.md': ABOUT_FILE },
   }))
   const [cwd,        setCwd]        = useState('~/my-project')
   const [cloneData,  setCloneData]  = useState(null)
@@ -1187,11 +1082,6 @@ export default function GitSim({ onClose, onAthenaEvent, simContext }) {
               <div className="gs-sim__diagram-sub">your changes · ready to save · saved forever</div>
             </div>
           )}
-          {isExplainer && step.remoteDiagram && <RemoteDiagram />}
-          {isExplainer && step.branchDiagram && <BranchDiagram />}
-          {isExplainer && step.githubView    && <GitHubView gs={gitState} />}
-          {isExplainer && step.prView        && <PRView gs={gitState} />}
-
           <div className="gs-sim__instruction">
             {step.instruction.replace(/\{username\}/g, gitState.githubUsername || signupUsername || 'your-username')}
           </div>

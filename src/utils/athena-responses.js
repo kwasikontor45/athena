@@ -460,9 +460,9 @@ export const athenaResponses = {
       "Git won't guess what you meant. The hint shows exactly what it expects.",
     ],
     'lesson-complete': [
-      "You just ran a real Git workflow — twice. That second loop is where the habit forms.",
-      "Two commits. A real history. You now know what 90% of developers do every day.",
-      "init → status → add → commit → log. That's Git. You've got it.",
+      "Zero to ship. You initialised a repo, committed your work, created a GitHub account, and pushed. That's the full loop.",
+      "Your project is on GitHub. Every developer in the world uses exactly what you just did.",
+      "init → add → commit → push. That's Git. You've got it — and your project is live to prove it.",
     ],
   },
 
