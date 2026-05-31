@@ -75,9 +75,9 @@ export const LESSONS = [
     id: 'shortcuts',
     title: 'keyboard shortcuts',
     week: 4,
-    icon: '⌨️',
+    icon: '⚡',
     description: 'Learn Ctrl+A, C, V, Z, and S to work faster in any app.',
-    requiredEvents: ['used-select-all', 'used-copy', 'used-save'],
+    requiredEvents: ['used-select-all', 'used-copy', 'used-paste', 'used-undo', 'used-save'],
   },
   {
     id: 'password-security',
@@ -92,7 +92,7 @@ export const LESSONS = [
     title: 'code bootcamp',
     week: 5,
     icon: '🧪',
-    description: 'Build a drag-and-drop kanban board from scratch using React and Dragula.',
+    description: 'Write a Python grade calculator and run it live in the browser.',
     requiredEvents: ['bootcamp-opened', 'step-advanced', 'lesson-complete'],
   },
   {

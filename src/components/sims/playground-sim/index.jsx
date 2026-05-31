@@ -28,7 +28,7 @@ const SIMS = [
   { id: 'git',           emoji: '🔧', label: 'git basics',     Component: GitSim,           cls: 'pg__tile--git'      },
 ]
 
-export default function PlaygroundSim({ onClose }) {
+export default function PlaygroundSim({ onClose, simContext, onSimContext, onOpenApp }) {
   const [openSims, setOpenSims] = useState([])
 
   function openSim(id) {
@@ -71,7 +71,7 @@ export default function PlaygroundSim({ onClose }) {
           const { Component } = sim
           return (
             <div key={id} className="pg__sim-wrap" style={{ zIndex: 10 + i }}>
-              <Component onClose={() => closeSim(id)} onAthenaEvent={NOOP} />
+              <Component onClose={() => closeSim(id)} onAthenaEvent={NOOP} simContext={simContext} onSimContext={onSimContext} onOpenApp={onOpenApp} />
             </div>
           )
         })}

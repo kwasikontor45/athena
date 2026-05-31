@@ -4,7 +4,7 @@ import { progressToCode, codeToProgress, resetProgress } from '../../utils/use-p
 import { joinCohort, getLearnerId, restoreFromPassphrase } from '../../utils/use-sync'
 import './desktop.css'
 
-const MISSION_POOL = LESSONS.filter(l => l.id !== 'desktop-navigation')
+const MISSION_POOL = LESSONS.filter(l => l.id !== 'desktop-navigation' && l.week < 5)
 
 function getDailyMission() {
   const d = new Date()
@@ -47,8 +47,9 @@ function WeekSection({ week, lessons, currentWeek, getLessonStatus, onSelectLess
         <div className="desktop__week-fill" style={{ width: `${pct}%` }} />
       </div>
       {lessons.map(lesson => {
-        const status = getLessonStatus(lesson.id)
-        const isDone = status === 'complete'
+        const status  = getLessonStatus(lesson.id)
+        const isDone  = status === 'complete'
+        const isNavLesson = lesson.id === 'desktop-navigation'
         return (
           <button
             key={lesson.id}
@@ -56,7 +57,10 @@ function WeekSection({ week, lessons, currentWeek, getLessonStatus, onSelectLess
             onClick={() => onSelectLesson(lesson.id)}
           >
             <span className="desktop__lesson-row-icon">{lesson.icon}</span>
-            <span className="desktop__lesson-row-title">{lesson.title}</span>
+            <span className="desktop__lesson-row-body">
+              <span className="desktop__lesson-row-title">{lesson.title}</span>
+              {isNavLesson && !isDone && <span className="desktop__lesson-row-sub">completes as you explore</span>}
+            </span>
             <span className="desktop__lesson-row-arrow">{isDone ? '✓' : '→'}</span>
           </button>
         )
@@ -80,6 +84,7 @@ export default function Desktop({
   earnedBadges, totalXP, currentWeek, completedLessons,
   noPassphrase,
 }) {
+  const allDone = LESSONS.every(l => completedLessons?.has(l.id))
   const [cpCopied,     setCpCopied]     = useState(false)
   const [pasteCode,    setPasteCode]    = useState('')
   const [pasteError,   setPasteError]   = useState('')
@@ -269,7 +274,19 @@ export default function Desktop({
   return (
     <div className="desktop">
       <div className="desktop__content">
-        <DailyMission completedLessons={completedLessons} onSelectLesson={onSelectLesson} />
+        {allDone ? (
+          <div className="desktop__finished">
+            <span className="desktop__finished-icon">🏆</span>
+            <div className="desktop__finished-text">
+              <strong>You finished Athena.</strong> All 13 lessons complete.
+            </div>
+            <a className="desktop__finished-link" href="https://py-bite.kontor.studio" target="_blank" rel="noopener noreferrer">
+              continue at py-bite →
+            </a>
+          </div>
+        ) : (
+          <DailyMission completedLessons={completedLessons} onSelectLesson={onSelectLesson} />
+        )}
 
         {noPassphrase && (
           <div className="desktop__restore-card">

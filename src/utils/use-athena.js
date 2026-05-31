@@ -72,6 +72,8 @@ async function fetchLearnerContext() {
   }
 }
 
+const ALL_LESSONS = ['mouse-basics','keyboard-basics','desktop-navigation','file-explorer','email','browser','doc-editor','school-portal','video-call','shortcuts','password-security','code-bootcamp','git-basics']
+
 function buildLearnerBlock(ctx) {
   if (!ctx) return ''
   const parts = []
@@ -81,6 +83,9 @@ function buildLearnerBlock(ctx) {
   } else {
     parts.push(`Completed lessons (${ctx.completedLessons.length}): ${ctx.completedLessons.join(', ')}.`)
   }
+
+  const nextLesson = ALL_LESSONS.find(l => !ctx.completedLessons.includes(l))
+  if (nextLesson) parts.push(`Their next suggested lesson: ${nextLesson}.`)
 
   if (ctx.weakSpots.length > 0) {
     parts.push(`Areas of struggle: ${ctx.weakSpots.join(', ')}.`)
@@ -107,13 +112,13 @@ function buildSystemPrompt(lesson, event, context, learnerBlock) {
   if (lesson === 'code-bootcamp') {
     const stepInfo = context ? `They are on the step: "${context}".` : ''
     if (event === 'step-failed') {
-      return `${codingBase}${profile}\n\nThe learner is building a drag-and-drop kanban board. ${stepInfo} Their code check just failed. Give one short, encouraging nudge — don't give the answer away, just help them think about where to look.`
+      return `${codingBase}${profile}\n\nThe learner is writing a Python grade calculator. ${stepInfo} Their code check just failed. Give one short, encouraging nudge — don't give the answer away, just help them think about what Python syntax or structure to check.`
     }
     if (event === 'step-advanced') {
-      return `${codingBase}${profile}\n\nThe learner just completed the step: "${context}". Celebrate briefly and set up excitement for what comes next.`
+      return `${codingBase}${profile}\n\nThe learner just completed the Python step: "${context}". Celebrate briefly and set up excitement for what comes next.`
     }
     if (event === 'lesson-complete') {
-      return `${codingBase}${profile}\n\nThe learner just finished the Code Bootcamp. This is a real frontend feature they built. Celebrate genuinely — they earned it.`
+      return `${codingBase}${profile}\n\nThe learner just finished Code Bootcamp — they wrote a working Python grade calculator and ran it live in the browser. Celebrate genuinely. Mention that their script is ready to version-control with Git next.`
     }
   }
 

@@ -75,16 +75,18 @@ const SIM_MAP = {
 }
 
 const LESSON_MAP = {
-  'my-files':      'file-explorer',
-  email:           'email',
-  browser:         'browser',
-  documents:       'doc-editor',
-  'school-portal': 'school-portal',
-  'video-call':    'video-call',
-  shortcuts:       'shortcuts',
-  password:        'password-security',
-  'code-bootcamp': 'code-bootcamp',
-  'git-basics':    'git-basics',
+  'my-files':       'file-explorer',
+  email:            'email',
+  browser:          'browser',
+  documents:        'doc-editor',
+  'school-portal':  'school-portal',
+  'video-call':     'video-call',
+  shortcuts:        'shortcuts',
+  password:         'password-security',
+  'code-bootcamp':  'code-bootcamp',
+  'git-basics':     'git-basics',
+  'mouse-practice': 'mouse-basics',
+  typing:           'keyboard-basics',
 }
 
 const LESSON_TO_APP = {
@@ -207,13 +209,9 @@ export default function App() {
       setCurrentEvent({ lesson: 'desktop-navigation', event: 'lesson-selected' })
       return
     }
-    if (getLessonStatus(lessonId) === 'locked') {
-      setCurrentEvent({ lesson: 'desktop-navigation', event: 'locked-lesson', context: lessonId })
-      return
-    }
     const appId = LESSON_TO_APP[lessonId]
     if (appId) { setOpenApp(appId); setCurrentView('desktop') }
-  }, [getLessonStatus])
+  }, [])
 
   const handleNavigate = useCallback((view) => {
     fireDesktopNavOnce('found-taskbar')

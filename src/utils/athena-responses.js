@@ -468,28 +468,28 @@ export const athenaResponses = {
 
   'code-bootcamp': {
     'bootcamp-opened': [
-      "Welcome to the Code Bootcamp! Today you're building a real kanban board — drag, drop, and all.",
-      "Bootcamp time. No theory, just building. You'll touch React state, DOM events, and a library called Dragula.",
-      "Ready to write code that moves? Literally. Let's build a board where cards fly between columns."
+      "Welcome to Code Bootcamp! You're writing a Python grade calculator — real code, runs live in your browser.",
+      "Let's write some Python. By the end you'll have a working script that takes grades and gives you a letter. No installs, no setup.",
+      "Python time. You'll build a grade calculator step by step — print, lists, averages, functions. Run it and see it work.",
     ],
     'step-advanced': [
-      "Step done. Each one is a brick — by the end you'll have a wall.",
+      "Step done. Each one is a brick — by the end you'll have a working script.",
       "Nice. You're seeing how the pieces connect.",
-      "Good pace. The best developers read before they write, and you're doing exactly that.",
+      "Good pace. The best programmers build up slowly — exactly what you're doing.",
       "Exactly right. Keep that momentum going.",
-      "That's it. On to the next piece."
+      "That's it. On to the next piece.",
     ],
     'step-failed': [
-      "Not quite — re-read the instruction carefully. The hint is there when you need it.",
-      "The validator caught something. Compare what you wrote against what the step asks for.",
-      "Close. Take another look — sometimes it's one character or one missing line.",
-      "Check the hint. It points to the exact thing the validator is looking for.",
-      "Read it once more slowly. The answer is in the instruction."
+      "Not quite — re-read the instruction and compare it to what you wrote.",
+      "The check caught something. The hint points to exactly what's missing.",
+      "Close. Sometimes it's one word or one indentation. Look carefully.",
+      "Check the hint — it shows the structure the validator is looking for.",
+      "Read it once more slowly. The answer is in the instruction.",
     ],
     'lesson-complete': [
-      "You just built a drag-and-drop kanban board. That's a real frontend feature — ship it.",
-      "Bootcamp complete. You handled React state, DOM sync, and user interaction. That's the trinity.",
-      "Look at what you built. Cards move, colors change, state stays true. You earned this one."
+      "You wrote a Python grade calculator and ran it live. That's real code — yours.",
+      "Bootcamp done. You used variables, lists, math, conditionals, and functions. That's the foundation.",
+      "Look at what you built. A script that takes grades and returns a letter. You earned this one.",
     ],
     'python-run': [
       "You just ran real Python — in the browser, no install needed. If you want to go deeper, py-bite.kontor.studio is a full Python course built for exactly where you are right now.",

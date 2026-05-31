@@ -7,6 +7,7 @@ import {
   README_V1, README_V2, ABOUT_FILE,
 } from '../../../utils/git-lessons'
 import { playChime } from '../../../utils/sound'
+import { runPython } from '../../../utils/pyodide-runner'
 import './git-sim.css'
 
 const LESSON_PROMPT  = 'learner@athena:~/my-project'
@@ -595,7 +596,6 @@ function SandboxTerminal({ lessonGitState }) {
       push(prompt_str(), cmd, [DIM('loading Python runtime…')])
       setLoading(true)
       try {
-        const { runPython } = await import('../../../utils/pyodide-runner')
         const { output, error } = await runPython(content, status => {
           if (status === 'running') {
             setHistory(prev => {
