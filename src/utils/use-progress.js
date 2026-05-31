@@ -132,9 +132,8 @@ export default function useProgress() {
   const getLessonStatus = useCallback((lessonId) => {
     if (state.completedLessons.has(lessonId)) return 'complete'
     const lesson = LESSONS.find(l => l.id === lessonId)
-    if (!lesson) return 'locked'
-    const currentWeek = deriveCurrentWeek(state.completedLessons)
-    return lesson.week <= currentWeek ? 'active' : 'locked'
+    if (!lesson) return 'active'
+    return 'active'
   }, [state.completedLessons])
 
   const getWeekProgress = useCallback((weekNumber) => {

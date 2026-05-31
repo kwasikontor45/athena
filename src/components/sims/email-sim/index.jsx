@@ -78,6 +78,7 @@ export default function EmailSim({ onClose, onAthenaEvent }) {
     setSent(prev => [...prev, { ...compose, id: `s${Date.now()}` }])
     setSendFlash(true)
     setTimeout(() => { setSendFlash(false); setView('inbox') }, 1200)
+    fire('wrote-subject')
     fire(isReply ? 'replied' : 'sent-email')
   }
 

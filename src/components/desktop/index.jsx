@@ -33,33 +33,31 @@ function DailyMission({ completedLessons, onSelectLesson }) {
 }
 
 function WeekSection({ week, lessons, currentWeek, getLessonStatus, onSelectLesson, completedLessons }) {
-  const isLocked  = week > currentWeek
   const isActive  = week === currentWeek
   const doneCount = lessons.filter(l => completedLessons?.has(l.id)).length
   const pct       = Math.round((doneCount / lessons.length) * 100)
 
   return (
-    <div className={`desktop__week${isActive ? ' desktop__week--active' : ''}${isLocked ? ' desktop__week--locked' : ''}`}>
+    <div className={`desktop__week${isActive ? ' desktop__week--active' : ''}`}>
       <div className="desktop__week-header">
         <span className="desktop__week-label">week {week}</span>
-        <span className="desktop__week-count">{isLocked ? '—' : `${doneCount}/${lessons.length}`}</span>
+        <span className="desktop__week-count">{doneCount}/{lessons.length}</span>
       </div>
       <div className="desktop__week-bar">
         <div className="desktop__week-fill" style={{ width: `${pct}%` }} />
       </div>
       {lessons.map(lesson => {
-        const status   = getLessonStatus(lesson.id)
-        const isDone   = status === 'complete'
-        const isRowLocked = status === 'locked'
+        const status = getLessonStatus(lesson.id)
+        const isDone = status === 'complete'
         return (
           <button
             key={lesson.id}
-            className={`desktop__lesson-row${isDone ? ' desktop__lesson-row--done' : ''}${isRowLocked ? ' desktop__lesson-row--locked' : ''}`}
+            className={`desktop__lesson-row${isDone ? ' desktop__lesson-row--done' : ''}`}
             onClick={() => onSelectLesson(lesson.id)}
           >
             <span className="desktop__lesson-row-icon">{lesson.icon}</span>
             <span className="desktop__lesson-row-title">{lesson.title}</span>
-            <span className="desktop__lesson-row-arrow">{isDone ? '✓' : isRowLocked ? '·' : '→'}</span>
+            <span className="desktop__lesson-row-arrow">{isDone ? '✓' : '→'}</span>
           </button>
         )
       })}
@@ -162,12 +160,11 @@ export default function Desktop({
                 const doneCount   = weekLessons.filter(l => completedIds.includes(l.id)).length
                 const pct         = Math.round((doneCount / weekLessons.length) * 100)
                 const isActive    = w === currentWeek
-                const isLocked    = w > currentWeek
                 return (
-                  <div key={w} className={`desktop__progress-week-row${isActive ? ' desktop__progress-week-row--active' : ''}${isLocked ? ' desktop__progress-week-row--locked' : ''}`}>
+                  <div key={w} className={`desktop__progress-week-row${isActive ? ' desktop__progress-week-row--active' : ''}`}>
                     <div className="desktop__progress-week-meta">
                       <span className="desktop__progress-week-label">Week {w}</span>
-                      <span className="desktop__progress-week-count">{isLocked ? 'locked' : `${doneCount} / ${weekLessons.length}`}</span>
+                      <span className="desktop__progress-week-count">{doneCount} / {weekLessons.length}</span>
                     </div>
                     <div className="desktop__progress-week-bar">
                       <div className="desktop__progress-week-fill" style={{ width: `${pct}%` }} />

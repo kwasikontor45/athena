@@ -171,6 +171,7 @@ export default function FileExplorerSim({ onClose, onAthenaEvent }) {
     setFs(prev => insertNode(prev, currentId, node))
     setSelectedId(node.id)
     setTimeout(() => startRename(node.id, 'new folder'), 30)
+    fireEvent('created-folder')
   }
 
   function moveToTrash(id) {
