@@ -90,17 +90,20 @@ export default function MousePracticeSim({ onClose, onAthenaEvent }) {
                 )}
 
                 {id === 'right-click' && (
-                  <div className="mp__context-wrap">
+                  <div
+                    className="mp__context-wrap"
+                    onContextMenu={e => {
+                      e.preventDefault()
+                      if (isDone) return
+                      setContextVisible(true)
+                      setTimeout(() => setContextVisible(false), 1600)
+                      fire('right-click')
+                    }}
+                  >
                     <button
                       className="mp__target"
                       disabled={isDone}
-                      onContextMenu={e => {
-                        e.preventDefault()
-                        if (isDone) return
-                        setContextVisible(true)
-                        setTimeout(() => setContextVisible(false), 1600)
-                        fire('right-click')
-                      }}
+                      onContextMenu={e => e.preventDefault()}
                     >
                       {isDone ? '✓ right-clicked' : 'Right-click me'}
                     </button>
