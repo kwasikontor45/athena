@@ -20,11 +20,29 @@ async function requestDashboardAccess(input) {
   } catch { return null }
 }
 
+const WELCOME_TEXT = "I'm Athena — I'm with you every step of the way. Click any lesson to get started, or ask me anything."
+
 const WELCOME = {
   id: crypto.randomUUID(),
   type: 'athena',
-  text: "I'm Athena — I'm with you every step of the way. Click any lesson to get started, or ask me anything.",
+  text: WELCOME_TEXT,
   timestamp: Date.now(),
+}
+
+const APP_GREETINGS = {
+  'my-files':       "Files and folders. Open a folder, create something, try renaming and moving. I'll call out each step.",
+  'email':          "Email time. Compose, send, reply — the basics everyone needs. Let me know if anything's unclear.",
+  'browser':        "Let's browse. Type a URL, open a new tab, hit the back button. I'm here if you get stuck.",
+  'documents':      "Document editor. Type something, try the formatting — bold, italic, save. Go at your own pace.",
+  'school-portal':  "Welcome to Westgate College. This is your student portal — find your courses, check your profile, submit work.",
+  'typing':         "Keyboard practice. Speed comes with repetition. Just go.",
+  'playground':     "Free explore. Everything's open, nothing's graded. Try whatever you want.",
+  'video-call':     "You're in the call. Try muting, raising your hand, opening the chat.",
+  'shortcuts':      "Five shortcuts, no looking back. Select all, copy, paste, undo, save — let's lock these in.",
+  'password':       "Password security. We're building a strong one from scratch. Follow the steps.",
+  'mouse-practice': "Mouse basics. Single click, double click, right click — three moves. You've got this.",
+  'code-bootcamp':  "Code Bootcamp. We write Python, step by step. Don't overthink it — just follow the prompts.",
+  'git-basics':     "Git basics. Your script is already written — now let's make sure it's never lost.",
 }
 
 const LESSON_LABELS = {
@@ -117,12 +135,13 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
     if (isTyping) { setOrbState('thinking'); onOrbStateChange?.('thinking') }
   }, [isTyping])
 
-  // Reset on sim change
+  // Reset on sim change with contextual greeting
   useEffect(() => {
     if (currentApp !== prevApp.current) {
       prevApp.current = currentApp
       setFailCount(0)
-      setMessages([{ ...WELCOME, id: crypto.randomUUID(), timestamp: Date.now() }])
+      const text = currentApp ? (APP_GREETINGS[currentApp] ?? WELCOME_TEXT) : WELCOME_TEXT
+      setMessages([{ id: crypto.randomUUID(), type: 'athena', text, timestamp: Date.now() }])
     }
   }, [currentApp])
 

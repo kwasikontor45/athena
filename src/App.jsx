@@ -14,7 +14,7 @@ import PasswordSim    from './components/sims/password-sim'
 import MousePracticeSim from './components/sims/mouse-practice-sim'
 import CodeBootcampSim from './components/sims/code-bootcamp-sim'
 import GitSim from './components/sims/git-sim'
-import useProgress, { codeToProgress } from './utils/use-progress'
+import useProgress, { codeToProgress, progressToCode } from './utils/use-progress'
 import { useCircadian } from './utils/use-circadian'
 import { useStreak } from './utils/use-streak'
 import { playFanfare } from './utils/sound'
@@ -34,10 +34,11 @@ function RestoreBanner({ onRestore, onDismiss }) {
   )
 }
 
-function SaveCodeBanner({ code, onDismiss }) {
+function SaveCodeBanner({ onDismiss }) {
   const [copied, setCopied] = useState(false)
+  const restoreUrl = `${window.location.origin}/?restore=${progressToCode()}`
   function handleCopy() {
-    navigator.clipboard.writeText(code).then(() => {
+    navigator.clipboard.writeText(restoreUrl).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     })
@@ -45,12 +46,11 @@ function SaveCodeBanner({ code, onDismiss }) {
   return (
     <div className="app__save-banner">
       <div className="app__save-banner-body">
-        <span className="app__save-banner-label">🔑 your save code —</span>
-        <span className="app__save-banner-code">{code}</span>
+        <span className="app__save-banner-label">🔑 save your progress —</span>
         <button className="app__save-banner-copy" onClick={handleCopy}>
-          {copied ? '✓ copied' : 'copy'}
+          {copied ? '✓ copied' : 'copy restore link'}
         </button>
-        <span className="app__save-banner-hint">write it down · enter it on any device to restore your progress</span>
+        <span className="app__save-banner-hint">open on any device to pick up where you left off</span>
       </div>
       <button className="app__save-banner-dismiss" onClick={onDismiss}>got it</button>
     </div>
@@ -153,7 +153,7 @@ export default function App() {
         playFanfare()
         setCelebration(lesson)
       }
-      if (!saveCodeDismissed.current && getPassphrase()) {
+      if (!saveCodeDismissed.current && progressToCode()) {
         setTimeout(() => setShowSaveCode(true), 4800)
       }
     }
@@ -268,9 +268,8 @@ export default function App() {
           onDismiss={() => setPendingRestore(null)}
         />
       )}
-      {showSaveCode && getPassphrase() && (
+      {showSaveCode && progressToCode() && (
         <SaveCodeBanner
-          code={getPassphrase()}
           onDismiss={() => {
             setShowSaveCode(false)
             saveCodeDismissed.current = true

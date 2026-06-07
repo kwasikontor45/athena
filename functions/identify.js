@@ -1,4 +1,3 @@
-const PHRASE_HASH='0b7e80cfaccb6214ca7089cd1f4f38f32c2d26c7e0a5038307d14eb055f8a06c'
 function R(d,s=200){return Response.json(d,{status:s})}
 function E(m,s=400){return Response.json({error:m},{status:s})}
 function uuid(){return crypto.randomUUID()}

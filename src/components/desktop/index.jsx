@@ -309,9 +309,14 @@ export default function Desktop({
                 onClick={handlePassphraseRestore}
                 disabled={restoreState === 'loading' || !restoreCode.trim()}
               >
-                {restoreState === 'loading' ? '…' : restoreState === 'error' ? 'not found' : 'restore'}
+                {restoreState === 'loading' ? '…' : 'restore'}
               </button>
             </div>
+            {restoreState === 'error' && (
+              <p className="desktop__progress-cp-error" style={{ marginTop: 8 }}>
+                Code not recognised — sync may be offline. Use Progress → copy link instead.
+              </p>
+            )}
           </div>
         )}
 
