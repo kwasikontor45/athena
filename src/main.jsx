@@ -4,7 +4,12 @@ import './styles/tokens.css'
 import './index.css'
 import App from './App.jsx'
 
-navigator.serviceWorker?.addEventListener('controllerchange', () => window.location.reload())
+if (navigator.serviceWorker) {
+  const hadController = !!navigator.serviceWorker.controller
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController) window.location.reload()
+  })
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
