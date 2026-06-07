@@ -92,6 +92,7 @@ export default function MousePracticeSim({ onClose, onAthenaEvent }) {
                 {id === 'right-click' && (
                   <div
                     className="mp__context-wrap"
+                    style={{ cursor: isDone ? 'default' : 'pointer' }}
                     onContextMenu={e => {
                       e.preventDefault()
                       if (isDone) return
@@ -103,7 +104,7 @@ export default function MousePracticeSim({ onClose, onAthenaEvent }) {
                     <button
                       className="mp__target"
                       disabled={isDone}
-                      onContextMenu={e => e.preventDefault()}
+                      style={{ pointerEvents: 'none' }}
                     >
                       {isDone ? '✓ right-clicked' : 'Right-click me'}
                     </button>
