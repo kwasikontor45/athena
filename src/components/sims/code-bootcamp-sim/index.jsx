@@ -334,13 +334,13 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
 
           {isLast && canAdvance && (
             <a
-              href="https://py-bite.kontor.studio"
+              href="https://py-bite.kwasikontor.dev"
               target="_blank"
               rel="noopener noreferrer"
               className="cb-sim__pybite"
             >
               <span className="cb-sim__pybite-label">want more Python?</span>
-              <span className="cb-sim__pybite-url">py-bite.kontor.studio →</span>
+              <span className="cb-sim__pybite-url">py-bite.kwasikontor.dev →</span>
             </a>
           )}
         </aside>

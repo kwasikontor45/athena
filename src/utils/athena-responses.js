@@ -492,9 +492,9 @@ export const athenaResponses = {
       "Look at what you built. A script that takes grades and returns a letter. You earned this one.",
     ],
     'python-run': [
-      "You just ran real Python — in the browser, no install needed. If you want to go deeper, py-bite.kontor.studio is a full Python course built for exactly where you are right now.",
-      "That's actual code execution. Not a simulation. If Python clicked for you, py-bite.kontor.studio takes it further — 18 lessons from basics to advanced.",
-      "Nice. You wrote it, you ran it, you saw the output. That's the loop. py-bite.kontor.studio is there when you're ready for more."
+      "You just ran real Python — in the browser, no install needed. If you want to go deeper, py-bite.kwasikontor.dev is a full Python course built for exactly where you are right now.",
+      "That's actual code execution. Not a simulation. If Python clicked for you, py-bite.kwasikontor.dev takes it further — 18 lessons from basics to advanced.",
+      "Nice. You wrote it, you ran it, you saw the output. That's the loop. py-bite.kwasikontor.dev is there when you're ready for more."
     ]
   }
 }

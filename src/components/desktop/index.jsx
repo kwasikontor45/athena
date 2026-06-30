@@ -220,7 +220,7 @@ export default function Desktop({
             {completedIds.includes('code-bootcamp') && completedIds.includes('git-basics') && (
               <div className="desktop__progress-next">
                 <div className="desktop__progress-next-label">what's next</div>
-                <a className="desktop__progress-next-card" href="https://py-bite.kontor.studio" target="_blank" rel="noopener noreferrer">
+                <a className="desktop__progress-next-card" href="https://py-bite.kwasikontor.dev" target="_blank" rel="noopener noreferrer">
                   <span className="desktop__progress-next-icon">🐍</span>
                   <div className="desktop__progress-next-body">
                     <div className="desktop__progress-next-title">py-bite</div>
@@ -291,7 +291,7 @@ export default function Desktop({
             <div className="desktop__finished-text">
               <strong>You finished Athena.</strong> All 13 lessons complete.
             </div>
-            <a className="desktop__finished-link" href="https://py-bite.kontor.studio" target="_blank" rel="noopener noreferrer">
+            <a className="desktop__finished-link" href="https://py-bite.kwasikontor.dev" target="_blank" rel="noopener noreferrer">
               continue at py-bite →
             </a>
           </div>
@@ -345,7 +345,7 @@ export default function Desktop({
             🎮 free explore — open any app
           </button>
           <div className="desktop__ext-links">
-            <a href="https://py-bite.kontor.studio" target="_blank" rel="noopener noreferrer" className="desktop__ext-link desktop__ext-link--highlight">🐍 py-bite ↗</a>
+            <a href="https://py-bite.kwasikontor.dev" target="_blank" rel="noopener noreferrer" className="desktop__ext-link desktop__ext-link--highlight">🐍 py-bite ↗</a>
             <a href="https://kontor.studio" target="_blank" rel="noopener noreferrer" className="desktop__ext-link">kontor.studio ↗</a>
             <a href="https://kwasikontor.dev" target="_blank" rel="noopener noreferrer" className="desktop__ext-link">kwasikontor.dev ↗</a>
           </div>
