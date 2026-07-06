@@ -3,7 +3,13 @@ async function rl(ip,ep,lim,DB){const w=Math.floor(Date.now()/60000);try{const r
 
 export async function onRequestPost({ request, env }) {
   const clientIp = request.headers.get('CF-Connecting-IP') || '0.0.0.0'
-  if (await rl(clientIp, 'unlock', 5, env.DB)) return Response.json({ error: 'too many attempts' }, { status: 429 })
+  // This endpoint fires on every chat message from every student (the widget
+  // checks each message against the unlock phrase before treating it as a
+  // question) — a classroom behind one shared IP can burn through a tight
+  // limit in seconds and lock the real admin out too. 60/min still makes
+  // guessing the passphrase impractical while giving real classroom traffic
+  // headroom.
+  if (await rl(clientIp, 'unlock', 60, env.DB)) return Response.json({ error: 'too many attempts' }, { status: 429 })
 
   const { phrase_hash } = await request.json().catch(() => ({}))
   if (!phrase_hash || typeof phrase_hash !== 'string') return Response.json({ error: 'phrase_hash required' }, { status: 400 })

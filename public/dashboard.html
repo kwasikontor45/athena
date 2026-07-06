@@ -561,11 +561,20 @@ async function loadLearner(id, name) {
   document.getElementById('drilldown-panel').scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-// Auto-login if secret in sessionStorage
+// Auto-login if secret in sessionStorage, or handed off via URL fragment
+// (#s=...) from the Athena widget's unlock flow. The fragment is never sent
+// to the server (unlike a query string) and gets scrubbed from the address
+// bar immediately so it doesn't linger in browser history.
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('secret-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin()
   })
+  const m = location.hash.match(/^#s=(.+)$/)
+  if (m) {
+    secret = decodeURIComponent(m[1])
+    sessionStorage.setItem(SECRET_KEY, secret)
+    history.replaceState(null, '', location.pathname)
+  }
   if (secret) {
     document.getElementById('auth-screen').style.display = 'none'
     document.getElementById('app').classList.add('visible')

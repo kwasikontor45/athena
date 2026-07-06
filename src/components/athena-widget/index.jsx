@@ -194,12 +194,18 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
 
     const dashResult = await requestDashboardAccess(text)
     if (dashResult?.secret) {
+      // Never render the raw secret into the chat transcript — it's on
+      // screen, persists in message history, and this widget is the same
+      // one every student uses. Hand it off via URL fragment (never sent
+      // to the server, unlike a query string) so the dashboard tab can
+      // pick it up and scrub it from its own address bar immediately.
       setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'user', text: '••••••••', timestamp: Date.now() }))
       setMessages(prev => addMsg(prev, {
         id: crypto.randomUUID(), type: 'athena',
-        text: `🔒 dashboard → ${dashResult.url}\n🗝 secret → ${dashResult.secret}`,
+        text: `🔒 unlocked — opening the dashboard in a new tab.`,
         timestamp: Date.now(),
       }))
+      window.open(`${dashResult.url}#s=${encodeURIComponent(dashResult.secret)}`, '_blank', 'noopener')
       return
     }
 
