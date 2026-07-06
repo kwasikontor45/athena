@@ -46,8 +46,8 @@ export const PHASES = {
 }
 
 export function getPhase(hour) {
-  if (hour >= 5  && hour < 11) return 'rose'
-  if (hour >= 11 && hour < 17) return 'ocean'
-  if (hour >= 17 && hour < 21) return 'gold'
-  return 'iris'
+  if (hour >= 6  && hour < 11) return 'ocean'
+  if (hour >= 11 && hour < 17) return 'gold'
+  if (hour >= 17 && hour < 21) return 'iris'
+  return 'rose'
 }
