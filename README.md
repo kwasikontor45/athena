@@ -109,7 +109,7 @@ Validation is lenient-with-coaching: `git add .` is accepted with a note explain
 
 Athena is always visible — a permanent left panel with a floating 🦉 orb that pulses with her state. The panel collapses to give sims more room.
 
-**Adaptive responses:** before each reply, Athena fetches your progress from the backend. She knows which lessons you've completed, where you've struggled, how long you've been learning, and what your next suggested lesson is. Responses are personalised — not generic.
+**Adaptive responses:** Athena builds her replies from your locally-stored progress (completed lessons, weak spots, streak). No backend call — the cloud-sync layer this used to run through was abandoned 2026-06-04; everything runs client-side now.
 
 She tries two live AI providers before falling back to built-in offline responses:
 
@@ -123,11 +123,11 @@ Set keys in `.env.local` to enable live AI. Athena works fully offline without t
 
 ## Progress & Identity
 
-**Save code** — after completing your first lesson, Athena shows you a three-word save code (e.g. `amber-cedar-42`). Write it down. Enter it on any device to restore your full progress from the cloud.
+**Save code** — after completing your first lesson, Athena shows you a three-word save code (e.g. `amber-cedar-42`). It encodes your local progress directly (`progressToCode`/`codeToProgress`) — no server round-trip. Paste it back in on any device/browser to restore.
 
-**Cloud sync** — every event ships to a Cloudflare D1 database via the `athena-sync` worker. The save code is your identity key — it reconnects you to your history from any browser.
+**Checkpoint links** — the Progress screen also generates a `?restore=` URL that encodes your local progress as base64 — same mechanism, shareable as a link instead of a phrase.
 
-**Checkpoint links** — the Progress screen also generates a `?restore=` URL that encodes your local progress as base64. Works without the cloud.
+> A Cloudflare D1 + `athena-sync` worker cloud-sync layer existed at one point but was abandoned 2026-06-04 (account cleared). The sync call sites (`trackEvent`, `joinCohort`, etc.) are still in the code and degrade silently — they don't error, they just do nothing. Progress is 100% local now.
 
 ---
 
@@ -135,8 +135,7 @@ Set keys in `.env.local` to enable live AI. Athena works fully offline without t
 
 - **PWA** — installable, works fully offline after first load
 - **Circadian engine** — UI palette shifts by time of day (dawn / day / golden hour / night)
-- **Cloud sync** — every lesson event syncs to Cloudflare D1 via `athena-sync` worker
-- **Instructor dashboard** — `athena.kontor.studio/dashboard.html` — cohort progress, per-lesson heatmap, learner drilldown, weak spot analysis. Phrase-gated via Athena chat.
+- **Instructor dashboard** — `athena.kontor.studio/dashboard.html` still exists but depended on the now-removed D1 backend for cohort-wide data; not currently functional, kept as a placeholder rather than fixed
 - **Free Explore** — Practice tab opens all sims simultaneously with no lesson requirements
 - **Celebration overlay** — gold confetti + fanfare on every lesson completion
 - **Streak counter** — consecutive day tracking, Athena greets with streak message from day 2
@@ -153,7 +152,6 @@ Set keys in `.env.local` to enable live AI. Athena works fully offline without t
 | AI runtime | Groq → OpenRouter → offline fallback |
 | Python execution | Pyodide (WebAssembly, runs in-browser) |
 | PWA | vite-plugin-pwa + Workbox |
-| Sync backend | Cloudflare Pages Functions + D1 |
 
 No UI library dependencies. Every component is hand-rolled.
 
@@ -215,7 +213,7 @@ src/
 │   ├── use-athena.js         # AI provider chain + learner profile injection
 │   ├── athena-responses.js   # Built-in offline responses for all lessons
 │   ├── use-progress.js       # XP, badges, localStorage, checkpoint encode/decode
-│   ├── use-sync.js           # Cloud sync — passphrase identity, event queue, D1 flush
+│   ├── use-sync.js           # Passphrase/save-code identity — D1 sync calls are dead code (backend abandoned 2026-06-04), degrade silently
 │   ├── use-circadian.js      # Time-of-day phase detection
 │   ├── circadian-phases.js   # Phase definitions + CSS token values
 │   ├── highlight.js          # Zero-dep syntax highlighter (JS + Python keywords)
