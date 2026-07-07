@@ -85,3 +85,21 @@
   color: rgba(255, 100, 100, 0.7);
   border-color: rgba(255, 100, 100, 0.4);
 }
+
+/* Mobile: this widget (week + bar + xp + share) was a fixed-width nowrap
+   block with no give — one of the main causes of taskbar overflow at
+   narrow widths. Share is reachable from the full Progress screen anyway. */
+@media (max-width: 700px) {
+  .pt__share {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pt__week {
+    display: none;
+  }
+  .pt__bar {
+    width: 40px;
+  }
+}

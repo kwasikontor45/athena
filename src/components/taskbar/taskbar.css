@@ -167,3 +167,27 @@
   text-transform: lowercase;
   opacity: 0.7;
 }
+
+/* Mobile: taskbar__right was overflowing into the nav at narrow widths —
+   contact link + sound + clock + phase + full ProgressTracker + brand all
+   competing for space with no wrap. Trim to the essentials. */
+@media (max-width: 700px) {
+  .taskbar__contact,
+  .taskbar__phase {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .taskbar__time {
+    display: none;
+  }
+  .taskbar__right {
+    gap: 8px;
+    min-width: 0;
+  }
+  .taskbar__nav-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
