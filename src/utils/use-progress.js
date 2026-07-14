@@ -10,6 +10,34 @@ const BADGE_RULES = [
   { badge: 'scholar',     lessonId: 'school-portal' },
 ]
 
+// Flat (lessonId, event) -> bit index, in lesson-declaration order. Every
+// other field (completedLessons, earnedBadges, totalXP) is fully derivable
+// from which of these bits are set, so a restore code only needs to encode
+// this one bitmask instead of the whole state blob.
+const EVENT_BITS = LESSONS.flatMap(l => l.requiredEvents.map(e => `${l.id}:${e}`))
+const EVENT_BIT_INDEX = new Map(EVENT_BITS.map((key, i) => [key, i]))
+
+function deriveState(completedEvents) {
+  const completedLessons = new Set()
+  let earnedBadges = []
+  let eventCount = 0
+
+  for (const lesson of LESSONS) {
+    const done = completedEvents[lesson.id] ?? new Set()
+    eventCount += done.size
+    if (lesson.requiredEvents.every(e => done.has(e))) {
+      completedLessons.add(lesson.id)
+      for (const { badge, lessonId } of BADGE_RULES) {
+        if (lessonId === lesson.id) earnedBadges.push(badge)
+      }
+    }
+  }
+  if (LESSONS.every(l => completedLessons.has(l.id))) earnedBadges.push('graduate')
+
+  const totalXP = eventCount * 10 + completedLessons.size * 50
+  return { completedLessons, completedEvents, earnedBadges, totalXP }
+}
+
 function serialize(s) {
   return JSON.stringify({
     completedLessons: [...s.completedLessons],
@@ -53,16 +81,41 @@ export function importProgress(json) {
   return parsed
 }
 
+// Short save codes: a bitmask over EVENT_BIT_INDEX, base36-encoded. Progress
+// grows the code (a brand-new learner's near-zero mask is 1-2 chars; someone
+// who's finished every lesson needs ~10) instead of a fixed-length blob.
 export function progressToCode() {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (!raw) return null
-  return btoa(raw)
+  const { completedEvents } = deserialize(raw)
+  let mask = 0n
+  for (const [lessonId, events] of Object.entries(completedEvents)) {
+    for (const event of events) {
+      const bit = EVENT_BIT_INDEX.get(`${lessonId}:${event}`)
+      if (bit !== undefined) mask |= 1n << BigInt(bit)
+    }
+  }
+  return mask.toString(36).toUpperCase()
 }
 
 export function codeToProgress(code) {
   try {
-    const json = atob(code.trim())
-    return importProgress(json)
+    const clean = code.trim().toUpperCase()
+    if (!/^[0-9A-Z]+$/.test(clean)) return null
+    let mask = 0n
+    for (const ch of clean) {
+      mask = mask * 36n + BigInt(parseInt(ch, 36))
+    }
+    const completedEvents = {}
+    EVENT_BITS.forEach((key, i) => {
+      if ((mask >> BigInt(i)) & 1n) {
+        const [lessonId, event] = key.split(':')
+        ;(completedEvents[lessonId] ??= new Set()).add(event)
+      }
+    })
+    const next = deriveState(completedEvents)
+    localStorage.setItem(STORAGE_KEY, serialize(next))
+    return next
   } catch {
     return null
   }
