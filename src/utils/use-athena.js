@@ -1,7 +1,5 @@
 import { athenaResponses } from './athena-responses'
-
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
+import { askTutor } from './use-tutor'
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
@@ -37,11 +35,6 @@ const LESSON_TOPICS = {
   'git-basics':          'Git version control (commits, push, pull, GitHub)',
 }
 
-function buildSystemPrompt(lesson) {
-  const topic = LESSON_TOPICS[lesson] || 'computer basics'
-  return `You are Athena, a warm and patient computer literacy teacher. The student is currently working on a lesson about ${topic}. Answer their question in 1–2 short, clear sentences. Be encouraging, practical, and specific to their lesson. Never mention that you are an AI or a language model.`
-}
-
 function getOfflineResponse(lesson, event, context) {
   const lessonBank = athenaResponses[lesson]
   if (lessonBank?.[event]) {
@@ -60,41 +53,20 @@ function getOfflineResponse(lesson, event, context) {
   return "You're doing great — keep going, one step at a time."
 }
 
-async function askGroq(lesson, question) {
-  if (!GROQ_KEY) return null
-  try {
-    const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 4000)
-    const res = await fetch(GROQ_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${GROQ_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: [
-          { role: 'system', content: buildSystemPrompt(lesson) },
-          { role: 'user',   content: question },
-        ],
-        max_tokens: 120,
-        temperature: 0.7,
-      }),
-      signal: ctrl.signal,
-    })
-    clearTimeout(timer)
-    if (!res.ok) return null
-    const data = await res.json()
-    return data.choices?.[0]?.message?.content?.trim() || null
-  } catch {
-    return null
-  }
+async function askTutorBackend(lesson, question) {
+  // Routed through the shared tutor Worker — the Groq key lives there,
+  // server-side, never in this client bundle. (It used to be called
+  // directly from here via a VITE_ env var, which meant the key shipped
+  // in the public JS bundle — that was a real exposure, fixed 2026-07-14.)
+  const topic = LESSON_TOPICS[lesson] || 'computer basics'
+  const result = await askTutor({ lessonTitle: topic, question })
+  return result.reply || null
 }
 
 export default function useAthena() {
   const ask = async ({ lesson, event, context = '' }) => {
     if (event === 'direct-question' && context) {
-      const reply = await askGroq(lesson, context)
+      const reply = await askTutorBackend(lesson, context)
       if (reply) return reply
     }
     return getOfflineResponse(lesson, event, context)

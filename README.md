@@ -168,10 +168,12 @@ cd athena
 # 2. Install
 npm install
 
-# 3. Optional: add AI API keys for live Athena responses
-#    VITE_GROQ_API_KEY=gsk_...
-#    VITE_OPENROUTER_API_KEY=sk-or-...
-#    Athena works offline without these — built-in responses cover all lessons
+# 3. Optional: point at the shared tutor Worker for live AI responses
+#    VITE_TUTOR_WORKER_URL=https://kontor-tutor-worker.<account>.workers.dev
+#    Athena works offline without this — built-in responses cover all lessons.
+#    Never set a Groq/OpenAI/etc key directly in this repo's env — any
+#    VITE_-prefixed var ships in the public JS bundle, key and all. AI
+#    provider keys live server-side only, in the tutor Worker.
 
 # 4. Start dev server
 npm run dev
