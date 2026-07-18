@@ -22,7 +22,12 @@ export async function getPyodide(onStatus) {
       pyodide = await window.loadPyodide({ indexURL: PYODIDE_URL })
       onStatus?.('ready')
       return pyodide
-    })()
+    })().catch(e => {
+      // Don't cache a failed load — clear it so the next Run click can
+      // actually retry instead of replaying the same rejection forever.
+      loadPromise = null
+      throw e
+    })
   }
 
   return loadPromise

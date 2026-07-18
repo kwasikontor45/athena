@@ -181,11 +181,19 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
     setPyOutput(null)
     setPyStatus(isPyodideReady() ? 'running' : 'loading')
     const code = files[mainFile] || ''
-    const { output, error } = await runPython(code, s => setPyStatus(s === 'ready' ? 'running' : 'loading'))
-    const result = { output, error }
-    setPyOutput(result)
-    setPyStatus(error ? 'error' : 'done')
-    onAthenaEvent?.({ lesson: 'code-bootcamp', event: 'python-run', context: error ? 'error' : 'success' })
+    try {
+      const { output, error } = await runPython(code, s => setPyStatus(s === 'ready' ? 'running' : 'loading'))
+      setPyOutput({ output, error })
+      setPyStatus(error ? 'error' : 'done')
+      onAthenaEvent?.({ lesson: 'code-bootcamp', event: 'python-run', context: error ? 'error' : 'success' })
+    } catch (e) {
+      // Pyodide itself can fail to load (CDN hiccup, network, ad-blocker) —
+      // without this, pyStatus stays stuck on 'loading'/'running' forever
+      // since nothing else ever resets it.
+      setPyOutput({ output: '', error: e?.message || 'Failed to start Python — try Run again.' })
+      setPyStatus('error')
+      onAthenaEvent?.({ lesson: 'code-bootcamp', event: 'python-run', context: 'error' })
+    }
   }
 
   function handleRestart() {
