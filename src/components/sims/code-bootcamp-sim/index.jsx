@@ -263,6 +263,7 @@ export default function CodeBootcampSim({ onClose, onAthenaEvent, onSimContext }
         <div className="cb-sim__editor-panel cb-sim__editor-panel--full">
           <div className="cb-sim__editor-bar">
             <span className="cb-sim__editor-name">{mainFile}</span>
+            <span className="cb-sim__runtime-note" role="note">Browser Python · no system shell or OS processes</span>
             <button
               className={`cb-sim__run-btn${pyStatus === 'loading' || pyStatus === 'running' ? ' cb-sim__run-btn--busy' : ''}`}
               onClick={handleRunPython}

@@ -794,9 +794,9 @@ function SandboxTerminal({ lessonGitState }) {
   return (
     <div className="gs-sandbox">
       <div className="gs-sandbox__header">
-        <span className="gs-sandbox__badge">SANDBOX</span>
-        <span className="gs-sandbox__title">free terminal</span>
-        <span className="gs-sandbox__hint">nano/vim &lt;file&gt; · git clone &lt;github-url&gt; · help</span>
+        <span className="gs-sandbox__badge">SIM</span>
+        <span className="gs-sandbox__title">practice terminal</span>
+        <span className="gs-sandbox__hint">Git is simulated · Python runs in browser · not your system shell</span>
       </div>
 
       {editorOpen ? (

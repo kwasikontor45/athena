@@ -62,7 +62,7 @@ A guided coding lesson where you write a Python grade calculator from scratch �
 5. Wrap it in a function called `calculate_grade`
 6. Call it and run it — validation checks actual output
 
-Code runs for real via [Pyodide](https://pyodide.org) (Python compiled to WebAssembly — no server, no install needed). Output appears inline below the editor.
+Code runs via [Pyodide](https://pyodide.org) (Python compiled to WebAssembly — no server, no install needed). These examples run in the browser. This is not a system shell: it cannot launch OS processes or programs, access the learner's computer files, or connect to network devices. Projects that need those features should be saved as `.py` files and run in a local Python environment or isolated lab.
 
 ```python
 # runs right here, in your browser
@@ -99,7 +99,7 @@ An 11-step terminal simulator: zero to ship. Picks up where Code Bootcamp left o
 | 10 | `git push -u origin main` |
 | 11 | Zero to ship — sandbox unlocked |
 
-The **sandbox terminal** opens after step 11. Try `git clone https://github.com/k6-bleedin6ed6e-k6/grades` to pull the exact grades.py script from Code Bootcamp. Also supports `touch`, `nano`/`vim`, `python script.py` (same Pyodide runtime), and free git commands.
+The **practice terminal** opens after step 11. Git and file commands are simulated; `python script.py` uses the same browser Pyodide runtime. It is not a real operating-system shell and cannot launch local processes or programs. Use a local Python environment or isolated lab for projects that need OS tools or network devices.
 
 Validation is lenient-with-coaching: `git add .` is accepted with a note explaining why naming files is better; weak commit messages are flagged.
 

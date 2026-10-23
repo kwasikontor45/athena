@@ -49,7 +49,11 @@ export async function runPython(code, onStatus) {
     return { output: out, error: null }
   } catch (e) {
     const out = outLines.join('\n').trimEnd()
-    return { output: out, error: e.message }
+    const message = e?.message || String(e)
+    const error = /emscripten does not support processes/i.test(message)
+      ? 'This code tried to start an operating-system process. Athena runs Python in your browser and cannot launch programs or shell commands. Save the code as a .py file and use a local Python environment or isolated lab with the required tools.'
+      : message
+    return { output: out, error }
   }
 }
 
