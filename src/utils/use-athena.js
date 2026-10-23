@@ -1,5 +1,6 @@
+import { useCallback } from 'react'
 import { athenaResponses } from './athena-responses'
-import { askTutor } from './use-tutor'
+import { askTutor, tutorEnabled } from './use-tutor'
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
@@ -64,13 +65,14 @@ async function askTutorBackend(lesson, question) {
 }
 
 export default function useAthena() {
-  const ask = async ({ lesson, event, context = '' }) => {
+  const ask = useCallback(async ({ lesson, event, context = '' }) => {
     if (event === 'direct-question' && context) {
       const reply = await askTutorBackend(lesson, context)
       if (reply) return reply
+      if (tutorEnabled()) return 'The live tutor is unavailable right now. You can try again, or continue with a lesson hint.'
     }
     return getOfflineResponse(lesson, event, context)
-  }
+  }, [])
 
   return { ask }
 }

@@ -164,6 +164,16 @@
 }
 
 /* ── Input row ── */
+.aw__privacy-note {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 7px 12px 0;
+  color: rgba(255,255,255,0.48);
+  font-size: 10px;
+  line-height: 1.4;
+}
+.aw__privacy-note code { color: var(--athena-gold); }
+
 .aw__input-row {
   display: flex;
   align-items: center;

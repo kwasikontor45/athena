@@ -108,6 +108,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState('desktop')
   const [openApp, setOpenApp] = useState(null)
   const [currentEvent, setCurrentEvent] = useState(null)
+  const handleAthenaEventHandled = useCallback(() => setCurrentEvent(null), [])
   const [simContext, setSimContext] = useState({})
   const [pendingRestore, setPendingRestore] = useState(() => {
     const params = new URLSearchParams(window.location.search)
@@ -297,7 +298,7 @@ export default function App() {
         <AthenaWidget
           currentEvent={currentEvent}
           currentLesson={currentLesson}
-          onEventHandled={() => setCurrentEvent(null)}
+          onEventHandled={handleAthenaEventHandled}
           badges={earnedBadges}
           currentApp={openApp}
           onOrbStateChange={setOrbState}

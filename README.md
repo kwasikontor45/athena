@@ -9,7 +9,7 @@
 
 ## What is Athena?
 
-Athena is an interactive, browser-based desktop environment that teaches real computer skills through hands-on practice. Every lesson takes place inside a simulated app that behaves like the real thing — guided by an AI assistant at every step.
+Athena is an interactive, browser-based desktop environment that teaches real computer skills through hands-on practice. Built-in lesson guidance works locally; optional free-form questions can use the shared AI tutor.
 
 No downloads. No account required. Works offline. Installable as a PWA.
 
@@ -109,15 +109,11 @@ Validation is lenient-with-coaching: `git add .` is accepted with a note explain
 
 Athena is always visible — a permanent left panel with a floating 🦉 orb that pulses with her state. The panel collapses to give sims more room.
 
-**Adaptive responses:** Athena builds her replies from your locally-stored progress (completed lessons, weak spots, streak). No backend call — the cloud-sync layer this used to run through was abandoned 2026-06-04; everything runs client-side now.
+**Built-in guidance:** Lesson events and common questions use local response content. Those interactions do not send progress or lesson activity to the tutor service.
 
-She tries two live AI providers before falling back to built-in offline responses:
+**Optional live tutor:** When a learner sends a free-form question, the browser sends that question and its lesson label to the shared `kontor-tutor-worker`; the Worker forwards it to Groq (`llama-3.1-8b-instant`). The provider key stays in the Worker. The tutor is limited to short, lesson-focused replies. Learners are told not to submit personal or sensitive information. If the live tutor fails, Athena says so instead of presenting a canned response as an AI answer.
 
-1. **Groq** (`llama-3.1-8b-instant`) — fast, free tier
-2. **OpenRouter** (`llama-3.1-8b` free) — fallback
-3. **Built-in offline responses** — full coverage for all 13 lessons + all events
-
-Set keys in `.env.local` to enable live AI. Athena works fully offline without them.
+Local development stays on built-in responses by default. To opt in, point `VITE_TUTOR_WORKER_URL` at a local Worker instance; never put an AI provider key in a `VITE_` variable.
 
 ---
 
@@ -149,7 +145,7 @@ Set keys in `.env.local` to enable live AI. Athena works fully offline without t
 | UI framework | React 19 |
 | Build tool | Vite 8 |
 | Styling | Plain CSS, custom design token system |
-| AI runtime | Groq → OpenRouter → offline fallback |
+| AI runtime | Local lesson guidance + optional shared Groq Worker |
 | Python execution | Pyodide (WebAssembly, runs in-browser) |
 | PWA | vite-plugin-pwa + Workbox |
 
@@ -176,12 +172,10 @@ cd athena
 # 2. Install
 npm install
 
-# 3. Optional: point at the shared tutor Worker for live AI responses
-#    VITE_TUTOR_WORKER_URL=https://kontor-tutor-worker.<account>.workers.dev
-#    Athena works offline without this — built-in responses cover all lessons.
-#    Never set a Groq/OpenAI/etc key directly in this repo's env — any
-#    VITE_-prefixed var ships in the public JS bundle, key and all. AI
-#    provider keys live server-side only, in the tutor Worker.
+# 3. Local tutor is offline by default. For an explicit local integration,
+#    set VITE_TUTOR_WORKER_URL=http://localhost:8787 in .env.local.
+#    Never put provider keys in this repo or in VITE_ variables; they belong
+#    in the server-side Worker secret store.
 
 # 4. Start dev server
 npm run dev

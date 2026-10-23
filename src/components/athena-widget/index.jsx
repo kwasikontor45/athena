@@ -20,6 +20,10 @@ async function requestDashboardAccess(input) {
   } catch { return null }
 }
 
+function isDashboardCommand(text) {
+  return /^\/dashboard(?:\s|$)/i.test(text)
+}
+
 const WELCOME_TEXT = "I'm Athena — I'm with you every step of the way. Click any lesson to get started, or ask me anything."
 
 const WELCOME = {
@@ -93,7 +97,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
   const [input,      setInput]      = useState('')
   const [isTyping,   setIsTyping]   = useState(false)
   const [orbState,   setOrbState]   = useState('idle')
-  const [failCount,  setFailCount]  = useState(0)
+  const failCount = useRef(0)
   const [orbPos,     setOrbPos]     = useState(null)
   const [unread,     setUnread]     = useState(0)
   const [collapsed,  setCollapsed]  = useState(() => {
@@ -130,70 +134,83 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping])
 
-  // Orb follows typing state
-  useEffect(() => {
-    if (isTyping) { setOrbState('thinking'); onOrbStateChange?.('thinking') }
-  }, [isTyping])
-
   // Reset on sim change with contextual greeting
   useEffect(() => {
     if (currentApp !== prevApp.current) {
       prevApp.current = currentApp
-      setFailCount(0)
+      failCount.current = 0
       const text = currentApp ? (APP_GREETINGS[currentApp] ?? WELCOME_TEXT) : WELCOME_TEXT
       setMessages([{ id: crypto.randomUUID(), type: 'athena', text, timestamp: Date.now() }])
     }
   }, [currentApp])
 
-  function pulseOrb(state, duration = 2200) {
+  const pulseOrb = useCallback((state, duration = 2200) => {
     if (orbTimer.current) clearTimeout(orbTimer.current)
     setOrbState(state)
     onOrbStateChange?.(state)
     orbTimer.current = setTimeout(() => { setOrbState('idle'); onOrbStateChange?.('idle') }, duration)
-  }
+  }, [onOrbStateChange])
 
   // Handle incoming events
   useEffect(() => {
     if (!currentEvent) return
-    const { lesson, event, context = '' } = currentEvent
-    const isFail    = event === 'step-failed'
-    const isSuccess = event === 'step-advanced' || event === 'lesson-complete'
+    let active = true
+    const timer = setTimeout(async () => {
+      if (!active) return
+      const { lesson, event, context = '' } = currentEvent
+      const isFail    = event === 'step-failed'
+      const isSuccess = event === 'step-advanced' || event === 'lesson-complete'
 
-    setFailCount(prev => {
-      const next = isFail ? prev + 1 : isSuccess ? 0 : prev
-      if (next >= FAIL_THRESHOLD) { pulseOrb('struggling', 3000); return 0 }
-      return next
-    })
+      if (isFail) {
+        failCount.current += 1
+        if (failCount.current >= FAIL_THRESHOLD) {
+          pulseOrb('struggling', 3000)
+          failCount.current = 0
+        }
+      } else if (isSuccess) {
+        failCount.current = 0
+      }
 
-    if (isSuccess) pulseOrb('success', 2000)
+      if (isSuccess) pulseOrb('success', 2000)
 
-    if (lesson !== 'circadian') {
-      setMessages(prev => addMsg(prev, {
-        id: crypto.randomUUID(), type: 'system',
-        text: systemLabel(lesson, event), timestamp: Date.now(),
-      }))
-    }
+      if (lesson !== 'circadian') {
+        setMessages(prev => addMsg(prev, {
+          id: crypto.randomUUID(), type: 'system',
+          text: systemLabel(lesson, event), timestamp: Date.now(),
+        }))
+      }
 
-    setIsTyping(true)
-    ask({ lesson, event, context }).then(text => {
+      setIsTyping(true)
+      const text = await ask({ lesson, event, context })
+      if (!active) return
       setIsTyping(false)
       setOrbState('idle')
       setMessages(prev => addMsg(prev, {
         id: crypto.randomUUID(), type: 'athena', text, timestamp: Date.now(),
       }))
       setUnread(u => u + 1)
-    })
 
-    onEventHandled?.()
-  }, [currentEvent])
+      onEventHandled?.()
+    }, 0)
+    return () => {
+      active = false
+      clearTimeout(timer)
+    }
+  }, [currentEvent, ask, onEventHandled, pulseOrb])
 
   async function handleSend() {
     const text = input.trim()
     if (!text || isTyping) return
     setInput('')
 
-    const dashResult = await requestDashboardAccess(text)
-    if (dashResult?.secret) {
+    if (isDashboardCommand(text)) {
+      const phrase = text.replace(/^\/dashboard\s*/i, '').trim()
+      if (!phrase) {
+        setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'athena', text: 'Enter the instructor phrase after /dashboard. This command is only for authorized instructors.', timestamp: Date.now() }))
+        return
+      }
+      const dashResult = await requestDashboardAccess(phrase)
+      if (dashResult?.secret) {
       // Never render the raw secret into the chat transcript — it's on
       // screen, persists in message history, and this widget is the same
       // one every student uses. Hand it off via URL fragment (never sent
@@ -206,6 +223,10 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
         timestamp: Date.now(),
       }))
       window.open(`${dashResult.url}#s=${encodeURIComponent(dashResult.secret)}`, '_blank', 'noopener')
+      return
+      }
+      setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'user', text: 'Instructor access requested', timestamp: Date.now() }))
+      setMessages(prev => addMsg(prev, { id: crypto.randomUUID(), type: 'athena', text: 'Instructor access could not be verified. Check the phrase with your instructor.', timestamp: Date.now() }))
       return
     }
 
@@ -221,10 +242,6 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
   }
 
-  function handleClear() {
-    setMessages([{ ...WELCOME, id: crypto.randomUUID(), timestamp: Date.now() }])
-  }
-
   function focusInput() {
     setUnread(0)
     inputRef.current?.focus()
@@ -234,7 +251,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
   function toggleCollapsed() {
     const next = !collapsed
     setCollapsed(next)
-    try { localStorage.setItem('athena_panel_collapsed', String(next)) } catch {}
+    try { localStorage.setItem('athena_panel_collapsed', String(next)) } catch { /* storage is optional */ }
   }
 
   return (
@@ -254,7 +271,7 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
           </button>
         </div>
 
-        {!collapsed && <div className="aw__messages">
+        {!collapsed && <div className="aw__messages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Athena conversation">
           {messages.map(msg => (
             <div key={msg.id} className={`aw__bubble aw__bubble--${msg.type}`}>
               {msg.text}
@@ -268,18 +285,23 @@ export default function AthenaWidget({ currentEvent, currentLesson, onEventHandl
           <div ref={bottomRef} />
         </div>}
 
-        {!collapsed && <div className="aw__input-row">
-          <input
-            ref={inputRef}
-            className="aw__input"
-            placeholder="ask Athena anything…"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isTyping}
-          />
-          <button className="aw__send" onClick={handleSend} disabled={isTyping || !input.trim()} aria-label="send">→</button>
-        </div>}
+        {!collapsed && <>
+      <p className="aw__privacy-note">Questions you send go to the shared AI tutor provider (Groq). Don’t include passwords or private information. Use <code>/dashboard phrase</code> only for instructor access.</p>
+          <div className="aw__input-row">
+            <input
+              ref={inputRef}
+              className="aw__input"
+              placeholder="ask Athena anything…"
+              value={input}
+              onChange={e => setInput(e.target.value.slice(0, 500))}
+              onKeyDown={handleKeyDown}
+              maxLength={500}
+              disabled={isTyping}
+              aria-label="Message Athena. Questions are processed by an external AI tutor provider."
+            />
+            <button className="aw__send" onClick={handleSend} disabled={isTyping || !input.trim()} aria-label="send">→</button>
+          </div>
+        </>}
       </div>
 
       {/* ── Floating orb — visible when collapsed, unread, or active ── */}
